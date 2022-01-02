@@ -18,17 +18,7 @@ public class CharacterControl : MonoBehaviour
 
     int rightFingerId = -1;
     int leftFingerId = -1;
-
-    private void Update()
-    {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        animator.SetFloat("Horizontal", horizontal);
-        animator.SetFloat("Vertical", vertical);
-
-    }
-
+    
     // Update is called once per frame
     void LateUpdate()
     {
@@ -80,10 +70,6 @@ public class CharacterControl : MonoBehaviour
         if (touch.position.x > Screen.width / 2) { return; }
         Vector2 value = touch.deltaPosition.normalized * m_CharacterSpeed * Time.deltaTime;
         controller.Move(transform.right * value.x + transform.forward * value.y);
-
-        print(Input.GetAxis("Mouse X"));
-        animator.SetFloat("Horizontal", touch.deltaPosition.normalized.y);
-        animator.SetFloat("Vertical", touch.deltaPosition.normalized.x);
     }
 
     void Rotation(Touch touch)
