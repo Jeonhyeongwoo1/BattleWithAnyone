@@ -4,12 +4,26 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public class ScenarioDirector : Singleton<ScenarioDirector>
+public class ScenarioDirector : MonoBehaviour
 {
-    public bool logSetting = true;
+    public static bool scenarioReady = false;
 
+    public bool logSetting = true;
     IScenario m_PreviousScenario = null;
     IScenario m_CurrentScenario = null;
+
+    public void OnScenarioAwaked(IScenario scenario)
+    {
+        Scene scene = SceneManager.GetSceneByName(scenario.scenarioName);
+
+        if(scene.name == null || !scene.IsValid())
+        {
+            scenarioReady = false;
+            return;
+        }
+
+        scenarioReady = true;
+    }
 
     public void OnLoadedScenario(IScenario scenario)
     {
@@ -23,6 +37,8 @@ public class ScenarioDirector : Singleton<ScenarioDirector>
         m_PreviousScenario = m_CurrentScenario;
         OnScenarioPrepare(m_PreviousScenario, scenario);
     }
+
+    public IScenario GetCurrentScenario() => m_CurrentScenario;
 
     void OnScenarioPrepare(IScenario from, IScenario to)
     {

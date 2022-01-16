@@ -1,35 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public class Model : SceneDirector<Model>, IPlayable
-{
-
-}
-
 public interface IPlayable
 {
-
 }
 
 public class SceneDirector<XType> : MonoBehaviour where XType : IPlayable
 {
-    List<XType> m_Loaded = new List<XType>();
+    private List<XType> m_Loaded = new List<XType>();
 
-    public void Ensure(XType xType, UnityAction done = null)
+    public void Ensure<T>(UnityAction done = null) where T : XType
     {
-        string name = nameof(xType);
+        string name = typeof(T).Name;
 
         Scene scene = SceneManager.GetSceneByName(name);
         if (scene.name == null || scene.isLoaded)
         {
-            Debug.Log(xType + " Scene is Loaded");
+            Debug.Log("X Type :" + name + " Is Loaded");
             return;
         }
 
-        OnLoadSceneAsync(xType, done);
+
+        OnLoadSceneAsync(name, done);
     }
 
     public bool Has(string name)
@@ -43,16 +39,14 @@ public class SceneDirector<XType> : MonoBehaviour where XType : IPlayable
         return m_Loaded.Find((v) => v.ToString() == name);
     }
     
-    public void OnLoadSceneAsync(XType xType, UnityAction done = null)
+    public void OnLoadSceneAsync(string name, UnityAction done = null)
     {
-        m_Loaded.Add(xType);
-        StartCoroutine(OnLoaidngSceneAsync(nameof(xType), done));
+        StartCoroutine(OnLoaidngSceneAsync(name, done));
     }
 
-    public void UnloadSceneAsync(XType xType, UnityAction done = null)
+    public void UnloadSceneAsync(string name, UnityAction done = null)
     {
-        m_Loaded.Remove(xType);
-        StartCoroutine(UnloadingSceneAsync(nameof(xType), done));
+        StartCoroutine(UnloadingSceneAsync(name, done));
     }
 
     IEnumerator UnloadingSceneAsync(string name, UnityAction done = null)

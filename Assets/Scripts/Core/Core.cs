@@ -6,9 +6,15 @@ public class Core : Singleton<Core>
 {
     static public ScenarioDirector scenario => Core.I?.m_ScenarioDirector;
     static public PlugDirector plugs => Core.I?.m_PlugDirector;
+    static public ModelDirector models => Core.I?.m_ModelDirector;
+    static public NetworkManager networkManager => Core.I.m_NetworkManager;
+    static public XSettings settings => Core.I.m_XSettings;
 
+    [SerializeField] ModelDirector m_ModelDirector = null;
     [SerializeField] ScenarioDirector m_ScenarioDirector = null;
     [SerializeField] PlugDirector m_PlugDirector = null;
+    [SerializeField] NetworkManager m_NetworkManager = null;
+    [SerializeField] XSettings m_XSettings = null;
 
     static UnityEvent m_EnsureDone = new UnityEvent();
 
@@ -58,6 +64,9 @@ public class Core : Singleton<Core>
     {
         EnsureCore<ScenarioDirector>(ref m_ScenarioDirector);
         EnsureCore<PlugDirector>(ref m_PlugDirector);
+        EnsureCore<NetworkManager>(ref m_NetworkManager);
+        EnsureCore<ModelDirector>(ref m_ModelDirector);
+        EnsureCore<XSettings>(ref m_XSettings);
 
         Debug.Log("Core Initialized.");
     }

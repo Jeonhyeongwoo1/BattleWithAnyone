@@ -14,7 +14,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Scenarios/ScenarioHome.unity
     guid: 5d74613d925c4416c89871aa007859ba
+  - enabled: 1
+    path: Assets/Scenes/Scenarios/ScenarioRoom.unity
+    guid: a11937999db4f4d5c9bfcbc228f19da7
+  - enabled: 1
+    path: Assets/Scenes/Models/Scifi.unity
+    guid: ddd3f8f4390574912a5404a1b2f49f95
   m_configObjects:
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 7dba8cac8b0114c9592725a8d50feca4,
+      type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000,
       guid: 53ddeadaec741469b9c360aba88e2f44, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 25194c8188076407d9236eb995c21a75,

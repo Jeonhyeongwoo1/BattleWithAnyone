@@ -1,0 +1,34 @@
+{
+    "data": [
+        {
+            "mapTitle": "Scifi",
+            "mapInfo": "Scifi 입니다.",
+            "imageName": "Scifi"
+        },
+        {
+            "mapTitle": "Japan",
+            "mapInfo": "Japan 입니다.",
+            "imageName": "Japan"
+        },
+        {
+            "mapTitle": "City",
+            "mapInfo": "City 입니다.",
+            "imageName": "City"
+        },
+        {
+            "mapTitle": "Castle",
+            "mapInfo": "Castle 입니다.",
+            "imageName": "Castle"
+        },
+        {
+            "mapTitle": "Dungeon",
+            "mapInfo": "Dungeon 입니다.",
+            "imageName": "Dungeon"
+        },
+        {
+            "mapTitle": "Suburban",
+            "mapInfo": "Suburban 입니다.",
+            "imageName": "Suburban"
+        }
+    ]
+}

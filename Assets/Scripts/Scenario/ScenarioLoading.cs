@@ -34,7 +34,7 @@ public class ScenarioLoading : MonoBehaviour, IScenario
 
     void OnLoadScenarioHome()
     {
-        ScenarioDirector.I.OnLoadScenario(nameof(ScenarioHome));
+        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }
 
     public void OnScenarioStop(UnityAction done)
@@ -63,8 +63,13 @@ public class ScenarioLoading : MonoBehaviour, IScenario
         done?.Invoke();
     }
 
+    private void Start()
+    {
+        Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
+    }
+
     private void Awake()
     {
-        ScenarioDirector.I.OnLoadedScenario(this);
+        Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
     }
 }

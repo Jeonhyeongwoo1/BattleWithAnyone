@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ScenarioHome : MonoBehaviour, IScenario
+public class ScenarioRoom : MonoBehaviour, IScenario
 {
-    public string scenarioName => typeof(ScenarioHome).Name;
+    public string scenarioName => typeof(ScenarioRoom).Name;
 
     public void OnScenarioPrepare(UnityAction done)
     {
+        
+
         done?.Invoke();
     }
 
@@ -27,8 +29,17 @@ public class ScenarioHome : MonoBehaviour, IScenario
         done?.Invoke();
     }
 
+    
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
+    }
+
     private void Awake()
     {
-        ScenarioDirector.I.OnLoadedScenario(this);
+        Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
     }
+
 }

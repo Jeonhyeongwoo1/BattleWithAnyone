@@ -1,13 +1,20 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class BattleWtihAnyOneStarter : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
-        ScenarioDirector.I.OnLoadScenario(nameof(ScenarioLoading));
+
+        if (ScenarioDirector.scenarioReady)
+        {
+            Debug.Log("Scnesario is Loaded");
+            return;
+        }
+
+        Core.scenario.OnLoadScenario(nameof(ScenarioLoading));
     }
 
 }
