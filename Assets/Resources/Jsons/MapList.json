@@ -11,24 +11,24 @@
             "imageName": "Japan"
         },
         {
-            "mapTitle": "City",
-            "mapInfo": "City 입니다.",
-            "imageName": "City"
+            "mapTitle": "Mansion",
+            "mapInfo": "Mansion 입니다.",
+            "imageName": "Mansion"
         },
         {
-            "mapTitle": "Castle",
-            "mapInfo": "Castle 입니다.",
-            "imageName": "Castle"
+            "mapTitle": "MedievalCitiy",
+            "mapInfo": "MedievalCitiy 입니다.",
+            "imageName": "MedievalCitiy"
         },
         {
-            "mapTitle": "Dungeon",
-            "mapInfo": "Dungeon 입니다.",
-            "imageName": "Dungeon"
+            "mapTitle": "Wildwest",
+            "mapInfo": "Wildwest 입니다.",
+            "imageName": "Wildwest"
         },
         {
-            "mapTitle": "Suburban",
-            "mapInfo": "Suburban 입니다.",
-            "imageName": "Suburban"
+            "mapTitle": "Battleground",
+            "mapInfo": "Battleground 입니다.",
+            "imageName": "Battleground"
         }
     ]
 }

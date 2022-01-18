@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4511327, g: 0.500921, b: 0.57394505, a: 1}
+  m_IndirectSpecularColor: {r: 0.4483934, g: 0.4976037, b: 0.57128495, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -17005,7 +17005,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 35.4
+  field of view: 60
   orthographic: 0
   orthographic size: 27
   m_Depth: -1
@@ -17030,8 +17030,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1405222026}
-  m_LocalRotation: {x: 0.053168934, y: -0.56702745, z: 0.036436785, w: 0.82117313}
-  m_LocalPosition: {x: 74.89755, y: 6.2481494, z: -45.12956}
+  m_LocalRotation: {x: 0.11680318, y: 0.81512195, z: -0.1765587, w: 0.53922194}
+  m_LocalPosition: {x: -46.74272, y: 25.863571, z: 3.4324036}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -23338,7 +23338,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1845498833
 AudioListener:
   m_ObjectHideFlags: 0

@@ -47,7 +47,7 @@ public class ModelDirector : MonoBehaviour
     public void Load<T>(UnityAction done = null) where T : BaseModel
     {
         string name = typeof(T).Name;
-        if (m_LoadedModel != null || m_LoadedModel.name == name)
+        if (m_LoadedModel != null || m_LoadedModel?.name == name)
         {
             Debug.LogError("Already Loaded Model.. Close previous Loaded Model");
             UnloadScene(m_LoadedModel.name);

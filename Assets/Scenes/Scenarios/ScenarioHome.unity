@@ -1491,7 +1491,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c726f0a872344d1397333580e229422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapPrefab: {fileID: 2120376424804215646, guid: 95d049bcece6248e987018ab764b7fc8,
+  mapPrefab: {fileID: 4387262876874038447, guid: 95d049bcece6248e987018ab764b7fc8,
     type: 3}
   m_MapContentView: {fileID: 1510950410}
   mapList:

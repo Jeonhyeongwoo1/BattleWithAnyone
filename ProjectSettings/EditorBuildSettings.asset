@@ -20,6 +20,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Models/Scifi.unity
     guid: ddd3f8f4390574912a5404a1b2f49f95
+  - enabled: 1
+    path: Assets/Scenes/Models/Battleground.unity
+    guid: 1cb175cee0d2a544889619b4c7cbfcd4
+  - enabled: 1
+    path: Assets/Scenes/Models/Japan.unity
+    guid: d8d6bfa240311ac4e8f7a0050de09f01
+  - enabled: 1
+    path: Assets/Scenes/Models/Wildwest.unity
+    guid: e758c97783a787845bde3dc4ffd4405f
+  - enabled: 1
+    path: Assets/Scenes/Models/Mansion.unity
+    guid: b1ab14272b0ad9042aa8d9b777ddbaf2
+  - enabled: 1
+    path: Assets/Scenes/Models/MedievalCity.unity
+    guid: f7e8acb3ef7c77c4a8f344fe05e8067e
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 7dba8cac8b0114c9592725a8d50feca4,
       type: 2}
