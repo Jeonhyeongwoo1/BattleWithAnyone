@@ -34,11 +34,11 @@ public class ScenarioHome : MonoBehaviour, IScenario
 
     public void OnScenarioStart(UnityAction done)
     {
-        Core.networkManager.ConnectPhotonNetwork(() => OnPhotonNetworkConnected(null));
+        Core.networkManager.ConnectPhotonNetwork(() => ConnectedPhotonNetwork(null));
         done?.Invoke();
     }
 
-    void OnPhotonNetworkConnected(UnityAction done)
+    void ConnectedPhotonNetwork(UnityAction done)
     {
         StopCoroutine(Loading());
         m_LoadingContent.SetActive(false);
@@ -66,6 +66,7 @@ public class ScenarioHome : MonoBehaviour, IScenario
         userInfo.SetUserInfo(m_Id.text);
         userInfo.gameObject.SetActive(true);
         m_LoginForm.gameObject.SetActive(false);
+    	PhotonNetwork.JoinLobby();
         roomMenu.OnEnableRoomMenu();
     }
 
@@ -74,8 +75,6 @@ public class ScenarioHome : MonoBehaviour, IScenario
         roomMenu.gameObject.SetActive(true);
         m_LoginForm.gameObject.SetActive(true);
         m_GamePlay.gameObject.SetActive(false);
-
-        PhotonNetwork.JoinLobby();
     }
 
     private void Start()

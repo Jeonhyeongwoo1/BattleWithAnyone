@@ -72,11 +72,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Log("On JoinRoom Failed");
     }
 
-    public override void OnJoinedLobby()
-    {
-        Log("On Joinned Lobby");
-    }
-    
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Log("Failed Create Room. Return Code : " + returnCode + ", Message : " + message);

@@ -70,6 +70,7 @@ public class ScenarioDirector : MonoBehaviour
     void OnScenarioStarted(IScenario from, IScenario to)
     {
         Log("On Scenario Started : " + to.scenarioName);
+        m_CurrentScenario = to;
 
         if (from != null)
         {

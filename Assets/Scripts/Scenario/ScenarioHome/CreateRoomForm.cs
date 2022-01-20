@@ -32,6 +32,7 @@ public class CreateRoomForm : MonoBehaviourPunCallbacks
 	[SerializeField] InputField m_RoomTitle;
 
 	Transform m_SelectedMap;
+	string m_MapTitle;
 
 	public void CreateMapList()
 	{
@@ -47,7 +48,7 @@ public class CreateRoomForm : MonoBehaviourPunCallbacks
 			map.GetChild(1).GetChild(0).GetComponent<Text>().text = mapInfo.mapTitle;
 			map.GetChild(1).GetChild(1).GetComponent<Text>().text = mapInfo.mapInfo;
 			map.GetComponent<Image>().sprite = mapInfo.sprite;
-			map.GetComponent<Button>().onClick.AddListener(() => OnClickMap(map));
+			map.GetComponent<Button>().onClick.AddListener(() => OnClickMap(map, mapInfo.mapTitle));
 		}
 	}
 
@@ -80,8 +81,26 @@ public class CreateRoomForm : MonoBehaviourPunCallbacks
 			return;
 		}
 
-		string roomTitle = string.IsNullOrEmpty(m_RoomTitle.text) ? m_RoomTitle.placeholder.GetComponent<Text>().text : m_RoomTitle.text;
-		PhotonNetwork.CreateRoom(roomTitle, new RoomOptions { MaxPlayers = 2 });
+		if (string.IsNullOrEmpty(m_RoomTitle.text))
+		{
+			Debug.Log("There isn't room Title");
+			return;
+		}
+
+		string[] LobbyOptions = new string[2];
+		LobbyOptions[0] = "RoomManager";
+		LobbyOptions[1] = "Map";
+		ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
+											{ "RoomManager", "Name" },
+											{ "Map", m_MapTitle }};
+											
+		RoomOptions roomOptions = new RoomOptions();
+		roomOptions.IsVisible = true;
+		roomOptions.IsOpen = true;
+		roomOptions.MaxPlayers = (byte)2;
+		roomOptions.CustomRoomPropertiesForLobby = LobbyOptions;
+		roomOptions.CustomRoomProperties = customProperties;
+		PhotonNetwork.CreateRoom(m_RoomTitle.text, roomOptions, TypedLobby.Default);
 
 	}
 
@@ -96,8 +115,7 @@ public class CreateRoomForm : MonoBehaviourPunCallbacks
 		Core.scenario.OnLoadScenario(nameof(ScenarioRoom));
 	}
 
-
-	void OnClickMap(Transform map)
+	void OnClickMap(Transform map, string mapTitle)
 	{
 		if (m_SelectedMap)
 		{
@@ -106,6 +124,7 @@ public class CreateRoomForm : MonoBehaviourPunCallbacks
 			m_SelectedMap.GetChild(1).GetChild(1).GetComponent<Text>().color = Color.white;
 		}
 
+		m_MapTitle = mapTitle;
 		m_SelectedMap = map;
 		map.GetChild(0).gameObject.SetActive(true);
 		m_SelectedMap.GetChild(1).GetChild(0).GetComponent<Text>().color = Color.yellow;
@@ -127,11 +146,21 @@ public class CreateRoomForm : MonoBehaviourPunCallbacks
 	{
 		if (m_MapContentView.childCount > 0)
 		{
-			foreach (Transform v in m_MapContentView)
+			for (int i = 0; i < m_MapContentView.childCount; i++)
 			{
-				DestroyImmediate(v.gameObject);
+				Transform tr = m_MapContentView.GetChild(i);
+				Destroy(tr.gameObject);
 			}
 		}
+
+		if (m_SelectedMap)
+		{
+			m_SelectedMap.GetChild(0).gameObject.SetActive(false);
+			m_SelectedMap.GetChild(1).GetChild(0).GetComponent<Text>().color = Color.white;
+			m_SelectedMap.GetChild(1).GetChild(1).GetComponent<Text>().color = Color.white;
+		}
+
+		m_MapTitle = null;
 	}
 
 }
