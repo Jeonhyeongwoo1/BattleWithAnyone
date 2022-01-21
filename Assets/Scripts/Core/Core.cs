@@ -28,13 +28,14 @@ public class Core : Singleton<Core>
         }
 
         if (done != null) { m_EnsureDone.AddListener(done); }
-
+/*
         Scene coreScene = SceneManager.GetSceneByName(nameof(Core));
         if (coreScene == null || !coreScene.IsValid())
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.LoadScene(nameof(Core), LoadSceneMode.Additive);
         }
+*/
     }
 
     static void OnSceneLoaded(Scene scene, LoadSceneMode mode)

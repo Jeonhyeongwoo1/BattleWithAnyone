@@ -116,6 +116,7 @@ public class RoomMenu : MonoBehaviourPunCallbacks
             else
             {
                 if (roomInfo.PlayerCount == 0) { continue; }
+				if (roomInfo.MaxPlayers == roomInfo.PlayerCount) { continue; } //풀방일 경우
 
                 CreateRoom(roomInfo, m_RoomContent);
                 m_CachedRoomList.Add(roomInfo.Name, roomInfo);
