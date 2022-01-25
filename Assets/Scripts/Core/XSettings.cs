@@ -12,7 +12,6 @@ public class XSettings : MonoBehaviour
     public MapList LoadMapList()
     {
         TextAsset mapList = Resources.Load<TextAsset>(mapListPath);
-        Debug.Log(mapListPath);
         if (mapList == null)
         {
             Debug.LogError("Failed to Load Map List");

@@ -35,6 +35,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Models/MedievalCity.unity
     guid: f7e8acb3ef7c77c4a8f344fe05e8067e
+  - enabled: 1
+    path: Assets/Scenes/Plugs/MapSettings.unity
+    guid: 8532690c8895c4a6d9a834ec7b280ab7
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 7dba8cac8b0114c9592725a8d50feca4,
       type: 2}

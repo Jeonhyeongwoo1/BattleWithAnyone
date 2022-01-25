@@ -82,7 +82,7 @@ public class ModelDirector : MonoBehaviour
         return typeof(T).Name == m_LoadedModel.name;
     }
 
-    public BaseModel GetLoadedModel() => m_LoadedModel;
+    public BaseModel GetLoaded() => m_LoadedModel;
 
     void UnloadScene(string name, UnityAction done = null)
     {
