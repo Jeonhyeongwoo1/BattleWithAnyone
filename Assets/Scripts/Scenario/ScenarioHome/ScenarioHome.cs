@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 using Photon.Pun;
 
 public class ScenarioHome : MonoBehaviour, IScenario
@@ -19,8 +20,10 @@ public class ScenarioHome : MonoBehaviour, IScenario
     [SerializeField] RectTransform m_LoginForm;
     [SerializeField] InputField m_Id;
     [SerializeField] Button m_LoginBtn;
+    
+    string m_NotSpecialPattern = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
 
-    public void OnScenarioPrepare(UnityAction done)
+	public void OnScenarioPrepare(UnityAction done)
     {
         m_LoadingContent.SetActive(true);
         StartCoroutine(Loading());
@@ -59,6 +62,14 @@ public class ScenarioHome : MonoBehaviour, IScenario
         if (string.IsNullOrEmpty(m_Id.text))
         {
             Debug.Log("There is no id value");
+            return;
+        }
+
+        Regex regex = new Regex(m_NotSpecialPattern);
+        if(regex.IsMatch(m_Id.text))
+        {
+            Debug.Log("There is special key");
+            m_Id.text = null;
             return;
         }
 

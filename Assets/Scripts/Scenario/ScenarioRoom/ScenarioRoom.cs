@@ -10,7 +10,9 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 {
 	public string scenarioName => typeof(ScenarioRoom).Name;
 
+	public string userName = "Joe";
 	public RoomUI roomUI;
+	public RoomChat roomChat;
 
 	[SerializeField] Text m_Title;
 	[SerializeField] Button m_Close;
@@ -41,9 +43,47 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 		done?.Invoke();
 	}
 
-	void JoinRoom()
+	public void OnScenarioStandbyCamera(UnityAction done)
 	{
-		PhotonNetwork.JoinLobby();
+		done?.Invoke();
+	}
+
+	public void OnScenarioStart(UnityAction done)
+	{
+		if (PhotonNetwork.InRoom)
+		{
+			roomChat.Connect(Core.networkManager.userNickName, PhotonNetwork.CurrentRoom.Name);
+			StartCoroutine(CheckingState());
+			PhotonNetwork.EnableCloseConnection = true;
+		}
+
+		done?.Invoke();
+	}
+
+	public void OnScenarioStop(UnityAction done)
+	{
+		PhotonNetwork.EnableCloseConnection = false;
+		done?.Invoke();
+	}
+
+	public override void OnPlayerLeftRoom(Player otherPlayer)
+	{
+		if (roomChat.IsConnect())
+		{
+			roomChat.OnSendMessage(otherPlayer.NickName + " Left Room..");
+		}
+
+		roomUI.ActiveKickPlayerBtn(false);
+	}
+
+	public override void OnPlayerEnteredRoom(Player newPlayer)
+	{
+		if (!newPlayer.IsMasterClient)
+		{
+			roomUI.m_Player2Txt.text = "Player";
+		}
+
+		roomUI.ActiveKickPlayerBtn(true);
 	}
 
 	public override void OnJoinedLobby()
@@ -54,6 +94,30 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 	public override void OnCreatedRoom()
 	{
 		Debug.Log("On CreateRoom");
+
+		StartCoroutine(CheckingState());
+		roomChat.Connect("Joe", "TestRoom");
+		PhotonNetwork.EnableCloseConnection = true;
+		roomUI.Init();
+	}
+
+	public override void OnDisconnected(DisconnectCause cause)
+	{
+		Debug.LogError(cause);
+	}
+
+	IEnumerator CheckingState()
+	{
+		while (PhotonNetwork.InRoom) { yield return new WaitForSeconds(1f); }
+
+		//Kick
+		roomChat.ChatDisConnect();
+		Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+	}
+
+	void JoinRoom()
+	{
+		PhotonNetwork.JoinLobby();
 	}
 
 	void CreateRoom()
@@ -72,26 +136,6 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 		roomOptions.CustomRoomPropertiesForLobby = LobbyOptions;
 		roomOptions.CustomRoomProperties = customProperties;
 		PhotonNetwork.CreateRoom("TestRoom", roomOptions, TypedLobby.Default);
-	}
-
-	public void OnScenarioStandbyCamera(UnityAction done)
-	{
-		done?.Invoke();
-	}
-
-	public void OnScenarioStart(UnityAction done)
-	{
-		done?.Invoke();
-	}
-
-	public void OnScenarioStop(UnityAction done)
-	{
-		done?.Invoke();
-	}
-
-	public void SetRoomInfo(string title)
-	{
-		m_Title.text = title;
 	}
 
 	// Start is called before the first frame update

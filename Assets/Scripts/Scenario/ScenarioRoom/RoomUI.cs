@@ -6,7 +6,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 
-public class RoomUI : MonoBehaviourPunCallbacks
+public class RoomUI : MonoBehaviour
 {
 	[Serializable]
 	public class Characters
@@ -26,11 +26,14 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	[SerializeField] Text m_Title;
 	[SerializeField] Button m_Close;
 	[SerializeField] Button m_GameStart;
+	[SerializeField] Button m_GameReady;
 	[SerializeField] Transform m_MasterCharacterSlot;
 	[SerializeField] Transform m_PlayerCharacterSlot;
 	[SerializeField] Button m_CharacterFormClose;
 	[SerializeField] RawImage m_MasterCharacter;
 	[SerializeField] RawImage m_PlayerCharacter;
+	[SerializeField] Button m_KickPlayer;
+	[SerializeField] GameObject m_Ready;
 
 	public Text m_Player1Txt;
 	public Text m_Player2Txt;
@@ -39,10 +42,19 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 	Characters m_SelectedCharacter;
 	Transform m_SelectedForm;
+	bool m_IsGameReady;
 
 	public void SetInfo(string title)
 	{
 		m_Title.text = title;
+	}
+
+	public void ActiveKickPlayerBtn(bool active)
+	{
+		if (PhotonNetwork.IsMasterClient)
+		{
+			m_KickPlayer.gameObject.SetActive(active);
+		}
 	}
 
 	public void SelectCharacter(string player)
@@ -97,14 +109,6 @@ public class RoomUI : MonoBehaviourPunCallbacks
 		m_SelectedForm.GetChild(1).localScale = Vector3.one;
 	}
 
-	public override void OnPlayerEnteredRoom(Player newPlayer)
-	{
-		if (!newPlayer.IsMasterClient)
-		{
-			m_Player2Txt.text = "Player";
-		}
-	}
-
 	void GoHome()
 	{
 		//Open Popup
@@ -146,6 +150,17 @@ public class RoomUI : MonoBehaviourPunCallbacks
 		}
 	}
 
+	void KickPlayer()
+	{
+		//Master, 방장은 Kick 불가능
+		foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
+		{
+			if (!player.Value.IsMasterClient)
+			{
+				PhotonNetwork.CloseConnection(player.Value);
+			}
+		}
+	}
 
 	void OnCharacterSelectionCompleted()
 	{
@@ -169,23 +184,80 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 	}
 
+	public void Init()
+	{
+
+		if (PhotonNetwork.IsMasterClient)
+		{
+			m_Player1Txt.text = "Master";
+			m_GameStart.gameObject.SetActive(true);
+
+			if (m_GameReady.gameObject.activeSelf)
+			{
+				m_GameReady.gameObject.SetActive(false);
+			}
+
+		}
+		else
+		{
+			m_Player2Txt.text = "Player";
+			m_GameReady.gameObject.SetActive(true);
+
+			if (m_GameStart.gameObject.activeSelf)
+			{
+				m_GameStart.gameObject.SetActive(false);
+			}
+
+		}
+	}
+
+	void GameReady()
+	{
+		if (PhotonNetwork.IsMasterClient || !PhotonNetwork.InRoom || !PhotonNetwork.IsConnectedAndReady) { return; }
+
+		if (m_IsGameReady)
+		{
+			m_Ready.SetActive(false);
+			m_IsGameReady = false;
+		}
+		else
+		{
+
+			if (m_SelectedCharacter == null)
+			{
+				Debug.Log("Selct Character");
+				return;
+			}
+
+			m_Ready.SetActive(true);
+			m_IsGameReady = true;
+		}
+	}
+
+	void GameStart()
+	{
+		if (!PhotonNetwork.IsMasterClient) { return; }
+		if (!m_IsGameReady) { return; }
+
+	
+	}
+
 	// Start is called before the first frame update
 	void Start()
 	{
 		m_Close.onClick.AddListener(GoHome);
 		m_CharacterFormClose.onClick.AddListener(OnCharacterFormClose);
 		m_CharacterSelectionCompleted.onClick.AddListener(OnCharacterSelectionCompleted);
+		m_KickPlayer.onClick.AddListener(KickPlayer);
+		m_GameReady.onClick.AddListener(GameReady);
+		m_GameStart.onClick.AddListener(GameStart);
+
+		Init();
 
 		//Init 한번만 할지 계속 만들지 고민..
 		SetCharacterList();
 
-		if (PhotonNetwork.IsMasterClient)
-		{
-			m_Player1Txt.text = "Master";
-		}
-		else
-		{
-			m_Player2Txt.text = "Player";
-		}
 	}
+
+
 }

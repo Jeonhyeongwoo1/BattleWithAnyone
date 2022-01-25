@@ -67,6 +67,10 @@ namespace Photon.Chat
         /// <summary>Subscribed users.</summary>
         public readonly HashSet<string> Subscribers = new HashSet<string>();
 
+        public bool BlockChat;
+
+		public string PlayerName;
+
         /// <summary>Used internally to create new channels. This does NOT create a channel on the server! Use ChatClient.Subscribe.</summary>
         public ChatChannel(string name)
         {
@@ -85,10 +89,27 @@ namespace Photon.Chat
         /// <summary>Used internally to add messages to this channel.</summary>
         public void Add(string[] senders, object[] messages, int lastMsgId)
         {
-            this.Senders.AddRange(senders);
-            this.Messages.AddRange(messages);
-            this.LastMsgId = lastMsgId;
-            this.TruncateMessages();
+
+			for (int i = 0; i < senders.Length; i++)
+			{
+				if (BlockChat)
+				{
+					if (senders[i] == PlayerName)
+					{
+						this.Senders.AddRange(senders);
+						this.Messages.AddRange(messages);
+					}
+					else { continue; }
+				}
+				else
+				{
+					this.Senders.AddRange(senders);
+					this.Messages.AddRange(messages);
+				}
+			}
+
+			this.LastMsgId = lastMsgId;
+			this.TruncateMessages();
         }
 
         /// <summary>Reduces the number of locally cached messages in this channel to the MessageLimit (if set).</summary>
@@ -115,11 +136,11 @@ namespace Photon.Chat
         /// <returns>All known messages in format "Sender: Message", line by line.</returns>
         public string ToStringMessages()
         {
-            StringBuilder txt = new StringBuilder();
-            for (int i = 0; i < this.Messages.Count; i++)
-            {
-                txt.AppendLine(string.Format("{0}: {1}", this.Senders[i], this.Messages[i]));
-            }
+			StringBuilder txt = new StringBuilder();
+			for (int i = 0; i < this.Messages.Count; i++)
+			{
+				txt.AppendLine(string.Format("{0}: {1}", this.Senders[i], this.Messages[i]));
+			}
             return txt.ToString();
         }
 

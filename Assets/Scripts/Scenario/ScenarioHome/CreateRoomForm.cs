@@ -5,6 +5,7 @@ using System;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Text.RegularExpressions;
 
 [Serializable]
 public class MapInfo
@@ -33,6 +34,7 @@ public class CreateRoomForm : MonoBehaviourPunCallbacks
 
 	Transform m_SelectedMap;
 	string m_MapTitle;
+	string m_NotSpecialPattern = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
 
 	public void CreateMapList()
 	{
@@ -87,13 +89,21 @@ public class CreateRoomForm : MonoBehaviourPunCallbacks
 			return;
 		}
 
+		Regex regex = new Regex(m_NotSpecialPattern);
+		if (regex.IsMatch(m_RoomTitle.text))
+		{
+			Debug.Log("There is special key");
+			m_RoomTitle.text = null;
+			return;
+		}
+
 		string[] LobbyOptions = new string[2];
 		LobbyOptions[0] = "RoomManager";
 		LobbyOptions[1] = "Map";
 		ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
 											{ "RoomManager", "Name" },
 											{ "Map", m_MapTitle }};
-											
+
 		RoomOptions roomOptions = new RoomOptions();
 		roomOptions.IsVisible = true;
 		roomOptions.IsOpen = true;
