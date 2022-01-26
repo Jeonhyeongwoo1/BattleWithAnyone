@@ -9,25 +9,22 @@ using Photon.Pun;
 public class ScenarioHome : MonoBehaviour, IScenario
 {
     public string scenarioName => typeof(ScenarioHome).Name;
-    public bool isCompleteLoading = false;
     public UserInfo userInfo;
     public RoomMenu roomMenu;
 
     [SerializeField] Button m_Exit;
-    [SerializeField] GameObject m_LoadingContent;
-    [SerializeField] Image m_Loading;
     [SerializeField] Button m_GamePlay;
     [SerializeField] RectTransform m_LoginForm;
     [SerializeField] InputField m_Id;
     [SerializeField] Button m_LoginBtn;
-    
+
     string m_NotSpecialPattern = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
 
-	public void OnScenarioPrepare(UnityAction done)
-	{
-		m_LoadingContent.SetActive(true);
-		StartCoroutine(Loading());
-		Core.plugs.DefaultEnsure();
+    public void OnScenarioPrepare(UnityAction done)
+    {
+        BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
+        BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
+        Core.plugs.DefaultEnsure();
         done?.Invoke();
     }
 
@@ -44,8 +41,7 @@ public class ScenarioHome : MonoBehaviour, IScenario
 
     void ConnectedPhotonNetwork(UnityAction done)
     {
-        StopCoroutine(Loading());
-        m_LoadingContent.SetActive(false);
+        BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
         m_GamePlay.gameObject.SetActive(true);
         m_Exit.gameObject.SetActive(true);
         done?.Invoke();
@@ -57,7 +53,6 @@ public class ScenarioHome : MonoBehaviour, IScenario
         done?.Invoke();
     }
 
-
     void OnClickLoginBtn()
     {
         if (string.IsNullOrEmpty(m_Id.text))
@@ -67,7 +62,7 @@ public class ScenarioHome : MonoBehaviour, IScenario
         }
 
         Regex regex = new Regex(m_NotSpecialPattern);
-        if(regex.IsMatch(m_Id.text))
+        if (regex.IsMatch(m_Id.text))
         {
             Debug.Log("There is special key");
             m_Id.text = null;
@@ -78,7 +73,7 @@ public class ScenarioHome : MonoBehaviour, IScenario
         userInfo.SetUserInfo(m_Id.text);
         userInfo.gameObject.SetActive(true);
         m_LoginForm.gameObject.SetActive(false);
-    	PhotonNetwork.JoinLobby();
+        PhotonNetwork.JoinLobby();
         roomMenu.OnEnableRoomMenu();
     }
 
@@ -99,26 +94,6 @@ public class ScenarioHome : MonoBehaviour, IScenario
     private void Awake()
     {
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
-    }
-
-    IEnumerator Loading(UnityAction done = null)
-    {
-        float elapsed = 0;
-        float duration = 1f;
-
-        while (!isCompleteLoading)
-        {
-            while (elapsed < duration)
-            {
-                elapsed += Time.deltaTime;
-                m_Loading.fillAmount = Mathf.Lerp(0, 1, elapsed / duration);
-                yield return null;
-            }
-
-            elapsed = 0;
-        }
-
-        done?.Invoke();
     }
 
 }

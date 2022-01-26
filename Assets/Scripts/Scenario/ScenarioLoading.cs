@@ -20,10 +20,14 @@ public class ScenarioLoading : MonoBehaviour, IScenario
     int m_LoadedCount = 0;
 
 	public void OnScenarioPrepare(UnityAction done)
-	{
-		BlockSkybox blockSkybox = BattleWtihAnyOneStarter.GetBlockSkybox();
-		blockSkybox.UseBlockSkybox(false, () => done?.Invoke());
-	}
+    {
+        BlockSkybox blockSkybox = BattleWtihAnyOneStarter.GetBlockSkybox();
+        blockSkybox.UseBlockSkybox(false, () =>
+        {
+            done?.Invoke();
+            blockSkybox.gameObject.SetActive(false);
+        });
+    }
 
     public void OnScenarioStandbyCamera(UnityAction done)
     {
