@@ -40,6 +40,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 			roomUI.SetInfo(title);
 		}
 
+		Core.plugs.DefaultEnsure();
 		done?.Invoke();
 	}
 

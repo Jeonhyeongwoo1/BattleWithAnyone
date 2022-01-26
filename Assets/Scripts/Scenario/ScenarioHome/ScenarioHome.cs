@@ -24,9 +24,10 @@ public class ScenarioHome : MonoBehaviour, IScenario
     string m_NotSpecialPattern = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
 
 	public void OnScenarioPrepare(UnityAction done)
-    {
-        m_LoadingContent.SetActive(true);
-        StartCoroutine(Loading());
+	{
+		m_LoadingContent.SetActive(true);
+		StartCoroutine(Loading());
+		Core.plugs.DefaultEnsure();
         done?.Invoke();
     }
 

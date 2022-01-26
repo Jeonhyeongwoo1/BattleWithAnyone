@@ -2102,8 +2102,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -361.88, y: 0}
-  m_SizeDelta: {x: 723.7522, y: 204}
+  m_AnchoredPosition: {x: -361.88, y: -0.8198}
+  m_SizeDelta: {x: 723.7522, y: 195.8032}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &896787806
 MonoBehaviour:
@@ -3173,6 +3173,7 @@ MonoBehaviour:
   m_PlayerCharacter: {fileID: 1957035206}
   m_KickPlayer: {fileID: 1306130476}
   m_Ready: {fileID: 1204823684}
+  m_MapSetting: {fileID: 1042045501}
   m_Player1Txt: {fileID: 1310527575}
   m_Player2Txt: {fileID: 1020080599}
   characters:

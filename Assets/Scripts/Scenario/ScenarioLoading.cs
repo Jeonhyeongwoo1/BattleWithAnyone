@@ -16,10 +16,14 @@ public class ScenarioLoading : MonoBehaviour, IScenario
     [SerializeField, Range(0, 4)] float m_MinLoadingTime = 3f;
     [SerializeField] AnimationCurve m_Curve;
 
-    public void OnScenarioPrepare(UnityAction done)
-    {
-        done?.Invoke();
-    }
+	string[] m_Plugables = { nameof(MapSettings) };
+    int m_LoadedCount = 0;
+
+	public void OnScenarioPrepare(UnityAction done)
+	{
+		BlockSkybox blockSkybox = BattleWtihAnyOneStarter.GetBlockSkybox();
+		blockSkybox.UseBlockSkybox(false, () => done?.Invoke());
+	}
 
     public void OnScenarioStandbyCamera(UnityAction done)
     {
@@ -46,16 +50,35 @@ public class ScenarioLoading : MonoBehaviour, IScenario
     {
         textAnimator.StartAnimation();
         StartCoroutine(Loading(OnLoadScenarioHome));
-    }
+        LoadPlugables();
+	}
 
-    IEnumerator Loading(UnityAction done)
+	void LoadPlugables()
+	{
+		foreach (string v in m_Plugables)
+		{
+			StartCoroutine(LoadingPlug(v, () => m_LoadedCount++));
+		}
+	}
+
+	IEnumerator LoadingPlug(string name, UnityAction done = null)
+	{
+		bool isDone = false;
+		Core.plugs.OnLoadSceneAsync(name, () => isDone = true);
+		while (!isDone) { yield return null; }
+		done?.Invoke();
+	}
+
+	IEnumerator Loading(UnityAction done)
     {
         float elapsed = 0;
-
+        float duration = 0, ensureMinTime = 0;
         while (elapsed < m_MinLoadingTime)
-        {
-            elapsed += Time.deltaTime;
-            loadingbar.value = Mathf.Lerp(0, 100, m_Curve.Evaluate(elapsed / m_MinLoadingTime));
+		{
+			elapsed += Time.deltaTime;
+			ensureMinTime = m_Curve.Evaluate(elapsed / m_MinLoadingTime);
+			duration = Mathf.Min(ensureMinTime, (m_LoadedCount / m_Plugables.Length));
+			loadingbar.value = Mathf.Lerp(0, 100, duration);
             loadingbarTxt.text = "Loading..." + loadingbar.value.ToString("0") + "%";
             yield return null;
         }

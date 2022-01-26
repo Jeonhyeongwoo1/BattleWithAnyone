@@ -5,9 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class BattleWtihAnyOneStarter : MonoBehaviour
 {
+	public static BlockSkybox GetBlockSkybox()
+	{
+		return FindObjectOfType<BlockSkybox>();
+	}
+
 	private void Start()
 	{
-		Core.Ensure(()=> OnLoadScenarioLoading());
+		Core.Ensure(() => OnLoadScenarioLoading());
 	}
 
 	void OnLoadScenarioLoading()
@@ -17,8 +22,8 @@ public class BattleWtihAnyOneStarter : MonoBehaviour
 			Debug.Log("Scnesario is Loaded");
 			return;
 		}
-		Debug.LogError(ScenarioDirector.scenarioReady);
+
+		GetBlockSkybox()?.SetAlpha(1);
 		Core.scenario.OnLoadScenario(nameof(ScenarioLoading));
 	}
-
 }

@@ -21,7 +21,7 @@ public class PlugDirector : MonoBehaviour
     {
         string name = typeof(T).Name;
         Scene scene = SceneManager.GetSceneByName(name);
-        if (scene.name == null || scene.isLoaded)
+        if (scene.name != null || scene.isLoaded)
         {
             return;
         }
@@ -73,21 +73,26 @@ public class PlugDirector : MonoBehaviour
         return (T)plugable;
     }
 
+    public void DefaultEnsure()
+    {
+        Ensure<MapSettings>();
+    }
+
     bool Has(string name)
     {
         IPlugable plugable = m_Loaded.Find((v) => v.plugName == name);
         return plugable != null;
     }
 
-    void OnLoadSceneAsync(string name, UnityAction done = null)
-    {
-        StartCoroutine(OnLoaidngSceneAsync(name, done));
-    }
+	public void OnLoadSceneAsync(string name, UnityAction done = null)
+	{
+		StartCoroutine(OnLoaidngSceneAsync(name, done));
+	}
 
-    void UnloadSceneAsync(string name, UnityAction done = null)
-    {
-        StartCoroutine(UnloadingSceneAsync(name, done));
-    }
+	public void UnloadSceneAsync(string name, UnityAction done = null)
+	{
+		StartCoroutine(UnloadingSceneAsync(name, done));
+	}
 
     IEnumerator UnloadingSceneAsync(string name, UnityAction done = null)
     {

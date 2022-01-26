@@ -4,216 +4,198 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using Photon.Pun;
-using Photon.Realtime;
 using System.Text.RegularExpressions;
 using UnityEngine.Events;
 
-[Serializable]
-public class MapInfo
+public class MapSettings : MonoBehaviour, IPlugable
 {
-    public string mapTitle;
-    public string mapInfo;
-    public string imageName;
-    public Sprite sprite;
-}
 
-[Serializable]
-public class MapList
-{
-    public MapInfo[] data;
-}
+	[Serializable]
+	public class MapPreferences
+	{
+		public string roomTitle;
+		public string mapTitle;
+		public int roundTime;
+		public int roundNumber;
+	}
 
-public class MapSettings : MonoBehaviourPunCallbacks, IPlugable
-{
-    public string plugName => typeof(MapSettings).Name;
+	[Serializable]
+	public class MapInfo
+	{
+		public string mapTitle;
+		public string mapInfo;
+		public Transform check;
+		public Text title;
+		public Text info;
+		public Button button;
+	}
 
-    public Transform mapPrefab;
-    public MapList mapList;
+	public string plugName => nameof(MapSettings);
 
-    [SerializeField] GameObject m_Map;
-    [SerializeField] Button m_Confirm;
-    [SerializeField] Button m_Cancel;
-    [SerializeField] Transform m_MapContentView;
-    [SerializeField] InputField m_RoomTitle;
+	public List<MapInfo> mapInfos = new List<MapInfo>();
+	public UnityAction<string, string, int, int> confirm;
 
-    Transform m_SelectedMap;
-    string m_MapTitle;
-    string m_NotSpecialPattern = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
+	[SerializeField] MapPreferences m_Preferences;
+	[SerializeField] GameObject m_Map;
+	[SerializeField] Button m_Confirm;
+	[SerializeField] Button m_Cancel;
+	[SerializeField] Transform m_MapContentView;
+	[SerializeField] InputField m_RoomTitle;
 
-    public void CreateMapList()
-    {
-        mapList = Core.settings.LoadMapList();
-        if (mapList == null) { return; }
+	[Header("[Round Settings]")]
+	[SerializeField] Toggle m_RoundTime120;
+	[SerializeField] Toggle m_RoundTime150;
+	[SerializeField] Toggle m_RoundTime180;
+	[SerializeField] Toggle m_RoundNumber1;
+	[SerializeField] Toggle m_RoundNumber3;
+	[SerializeField] Toggle m_RoundNumber5;
 
-        int c = mapList.data.Length;
-        for (int i = 0; i < c; i++)
-        {
-            MapInfo mapInfo = mapList.data[i];
-            mapInfo.sprite = LoadMapImage(mapInfo.imageName);
-            Transform map = Instantiate<Transform>(mapPrefab, Vector3.zero, Quaternion.identity, m_MapContentView);
-            map.GetChild(1).GetChild(0).GetComponent<Text>().text = mapInfo.mapTitle;
-            map.GetChild(1).GetChild(1).GetComponent<Text>().text = mapInfo.mapInfo;
-            map.GetComponent<Image>().sprite = mapInfo.sprite;
-            map.GetComponent<Button>().onClick.AddListener(() => OnClickMap(map, mapInfo.mapTitle));
-        }
-    }
+	MapInfo m_SelectedMap;
+	string m_NotContainSpecial = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
 
-    public void OpenAsync(UnityAction done = null)
-    {
-        CreateMapList();
-        m_Map.SetActive(true);
-        done?.Invoke();
-    }
+	public void OpenAsync(UnityAction done = null)
+	{
+		m_Map.SetActive(true);
+		done?.Invoke();
+	}
 
-    public void CloseAsync(UnityAction done = null)
-    {
-        m_Map.SetActive(false);
-        done?.Invoke();
-    }
+	public void CloseAsync(UnityAction done = null)
+	{
+		m_Map.SetActive(false);
+		done?.Invoke();
+	}
 
-    public void Open(UnityAction done = null)
-    {
-        Debug.Log("Open");
-        CreateMapList();
-        m_Map.SetActive(true);
-        done?.Invoke();
-    }
+	public void Open(UnityAction done = null)
+	{
+		m_Map.SetActive(true);
+		done?.Invoke();
+	}
 
-    public void Close(UnityAction done = null)
-    {
-        m_Map.SetActive(false);
-        done?.Invoke();
-    }
+	public void Close(UnityAction done = null)
+	{
+		m_Map.SetActive(false);
 
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        Debug.LogError("On Create Room Failed : " + message);
-    }
+		if (m_SelectedMap != null)
+		{
+			m_SelectedMap.button.gameObject.SetActive(false);
+			m_SelectedMap.title.color = Color.white;
+			m_SelectedMap.info.color = Color.white;
+		}
 
-    public override void OnCreatedRoom()
-    {
-        Debug.Log("On Created Room");
-        Core.scenario.OnLoadScenario(nameof(ScenarioRoom));
-    }
+		m_RoundNumber3.isOn = true;
+		m_RoundTime150.isOn = true;
+		m_Preferences.roundTime = 3;
+		m_Preferences.roundNumber = 150;
+		m_RoomTitle.text = null;
 
-    public override void OnDisable()
-    {
-        if (m_MapContentView.childCount > 0)
-        {
-            for (int i = 0; i < m_MapContentView.childCount; i++)
-            {
-                Transform tr = m_MapContentView.GetChild(i);
-                Destroy(tr.gameObject);
-            }
-        }
+		done?.Invoke();
+	}
 
-        if (m_SelectedMap)
-        {
-            m_SelectedMap.GetChild(0).gameObject.SetActive(false);
-            m_SelectedMap.GetChild(1).GetChild(0).GetComponent<Text>().color = Color.white;
-            m_SelectedMap.GetChild(1).GetChild(1).GetComponent<Text>().color = Color.white;
-        }
+	void OnClickConfirm()
+	{
+		if (!PhotonNetwork.IsConnected)
+		{
+			Debug.LogError("Network isn't Connected");
+			return;
+		}
 
-        m_MapTitle = null;
-    }
+		if (string.IsNullOrEmpty(m_Preferences.mapTitle))
+		{
+			Debug.Log("Select Map");
+			return;
+		}
 
-    void OnClickConfirm()
-    {
-        if (!PhotonNetwork.IsConnected)
-        {
-            Debug.LogError("Network isn't Connected");
-            return;
-        }
+		m_Preferences.roomTitle = m_RoomTitle.text;
+		if (string.IsNullOrEmpty(m_Preferences.roomTitle))
+		{
+			Debug.Log("Input room title");
+			return;
+		}
 
-        //Create Room
-        if (!m_SelectedMap)
-        {
-            Debug.Log("Map is not Selected");
-            return;
-        }
+		Regex regex = new Regex(m_NotContainSpecial);
+		if (regex.IsMatch(m_Preferences.roomTitle))
+		{
+			Debug.Log("There is special key");
+			m_RoomTitle.text = null;
+			return;
+		}
 
-        if (string.IsNullOrEmpty(m_RoomTitle.text))
-        {
-            Debug.Log("There isn't room Title");
-            return;
-        }
+		confirm?.Invoke(m_Preferences.mapTitle, m_Preferences.roomTitle, m_Preferences.roundTime, m_Preferences.roundNumber);
+	}
 
-        Regex regex = new Regex(m_NotSpecialPattern);
-        if (regex.IsMatch(m_RoomTitle.text))
-        {
-            Debug.Log("There is special key");
-            m_RoomTitle.text = null;
-            return;
-        }
+	void OnSelectMap(MapInfo map)
+	{
+		if (map == null) { return; }
 
-        string[] LobbyOptions = new string[2];
-        LobbyOptions[0] = "RoomManager";
-        LobbyOptions[1] = "Map";
-        ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
-                                            { "RoomManager", "Name" },
-                                            { "Map", m_MapTitle }};
+		if (m_SelectedMap != null)
+		{
+			m_SelectedMap.check.gameObject.SetActive(false);
+			m_SelectedMap.title.color = Color.white;
+			m_SelectedMap.info.color = Color.white;
+		}
 
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.IsVisible = true;
-        roomOptions.IsOpen = true;
-        roomOptions.MaxPlayers = (byte)2;
-        roomOptions.CustomRoomPropertiesForLobby = LobbyOptions;
-        roomOptions.CustomRoomProperties = customProperties;
-        PhotonNetwork.CreateRoom(m_RoomTitle.text, roomOptions, TypedLobby.Default);
+		map.check.gameObject.SetActive(true);
+		map.title.color = Color.yellow;
+		map.info.color = Color.yellow;
+		m_SelectedMap = map;
+		m_Preferences.mapTitle = map.mapTitle;
+	}
 
-    }
+	Sprite LoadMapImage(string imageName)
+	{
+		string path = Core.settings.mapImagePath + "/" + imageName;
+		Sprite image = Resources.Load<Sprite>(path);
 
-    void OnClickMap(Transform map, string mapTitle)
-    {
-        if (m_SelectedMap)
-        {
-            m_SelectedMap.GetChild(0).gameObject.SetActive(false);
-            m_SelectedMap.GetChild(1).GetChild(0).GetComponent<Text>().color = Color.white;
-            m_SelectedMap.GetChild(1).GetChild(1).GetComponent<Text>().color = Color.white;
-        }
+		if (image == null)
+		{
+			Debug.LogError("Failed to Load Image");
+			return null;
+		}
 
-        m_MapTitle = mapTitle;
-        m_SelectedMap = map;
-        map.GetChild(0).gameObject.SetActive(true);
-        m_SelectedMap.GetChild(1).GetChild(0).GetComponent<Text>().color = Color.yellow;
-        m_SelectedMap.GetChild(1).GetChild(1).GetComponent<Text>().color = Color.yellow;
-    }
+		return image;
+	}
 
-    void OnClickCancel()
-    {
-        m_Map.SetActive(false);
-    }
+	void SetRoundTime(int value, bool on)
+	{
+		if (!on) { return; }
 
-    Sprite LoadMapImage(string imageName)
-    {
-        string path = Core.settings.mapImagePath + "/" + imageName;
-        Sprite image = Resources.Load<Sprite>(path);
+		m_Preferences.roundTime = value;
+	}
 
-        if (image == null)
-        {
-            Debug.LogError("Failed to Load Image");
-            return null;
-        }
+	void SetRoundNumber(int value, bool on)
+	{
+		if (!on) { return; }
 
-        return image;
-    }
+		m_Preferences.roundNumber = value;
+	}
 
-    private void Awake()
-    {
-        m_Map.SetActive(false);
-    }
+	private void Awake()
+	{
+		m_Map.SetActive(false);
+		m_RoundNumber1.onValueChanged.AddListener((b) => SetRoundNumber(1, b));
+		m_RoundNumber3.onValueChanged.AddListener((b) => SetRoundNumber(3, b));
+		m_RoundNumber5.onValueChanged.AddListener((b) => SetRoundNumber(5, b));
+		m_RoundTime120.onValueChanged.AddListener((b) => SetRoundTime(120, b));
+		m_RoundTime150.onValueChanged.AddListener((b) => SetRoundTime(150, b));
+		m_RoundTime180.onValueChanged.AddListener((b) => SetRoundTime(180, b));
+		m_Confirm.onClick.AddListener(OnClickConfirm);
+		m_Cancel.onClick.AddListener(() => Close());
+		mapInfos.ForEach((v) => v.button.onClick.AddListener(() => OnSelectMap(v)));
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        m_Confirm.onClick.AddListener(OnClickConfirm);
-        m_Cancel.onClick.AddListener(OnClickCancel);
-        Core.Ensure(() => Core.plugs.Loaded(this));
-    }
+		//Awake Default
+		m_Preferences.roundTime = 3;
+		m_Preferences.roundNumber = 150;
+	}
 
-    private void OnDestroy()
-    {
-        Core.Ensure(() => Core.plugs.Unloaded(this));
-    }
+	// Start is called before the first frame update
+	void Start()
+	{
+		Core.Ensure(() => Core.plugs.Loaded(this));
+	}
+
+	private void OnDestroy()
+	{
+		Core.Ensure(() => Core.plugs.Unloaded(this));
+	}
 
 }
