@@ -7,210 +7,216 @@ using UnityEngine.UI;
 
 public class RoomMenu : MonoBehaviourPunCallbacks
 {
-	public Room roomPrefab;
+    public Room roomPrefab;
 
-	[SerializeField] Button m_SearchedClose;
-	[SerializeField] Text m_SearchedRoomCount;
-	[SerializeField] Transform m_SearchedRoom;
-	[SerializeField] Transform m_SearchedRoomContent;
-	[SerializeField] SearchRoom m_SearchRoomPopup;
-	[SerializeField] Button m_Search;
-	[SerializeField] Button m_Refresh;
-	[SerializeField] Text m_NoRoom;
-	[SerializeField] Transform m_Room;
-	[SerializeField] Button m_CreateRoom;
-	[SerializeField] Transform m_RoomContent;
+    [SerializeField] Button m_SearchedClose;
+    [SerializeField] Text m_SearchedRoomCount;
+    [SerializeField] Transform m_SearchedRoom;
+    [SerializeField] Transform m_SearchedRoomContent;
+    [SerializeField] SearchRoom m_SearchRoomPopup;
+    [SerializeField] Button m_Search;
+    [SerializeField] Button m_Refresh;
+    [SerializeField] Text m_NoRoom;
+    [SerializeField] Transform m_Room;
+    [SerializeField] Button m_CreateRoom;
+    [SerializeField] Transform m_RoomContent;
 
-	bool m_IsRefreshing = false;
-	Dictionary<string, RoomInfo> m_CachedRoomList = new Dictionary<string, RoomInfo>();
-	List<RoomInfo> m_CopyRoomList = new List<RoomInfo>();
+    bool m_IsRefreshing = false;
+    Dictionary<string, RoomInfo> m_CachedRoomList = new Dictionary<string, RoomInfo>();
+    List<RoomInfo> m_CopyRoomList = new List<RoomInfo>();
 
-	public void OnEnableRoomMenu()
-	{
-		m_Room.gameObject.SetActive(true);
-		m_CreateRoom.gameObject.SetActive(true);
-	}
+    public void OnEnableRoomMenu()
+    {
+        m_Room.gameObject.SetActive(true);
+        m_CreateRoom.gameObject.SetActive(true);
+    }
 
-	public override void OnRoomListUpdate(List<RoomInfo> roomList)
-	{
-		if (m_IsRefreshing)
-		{
-			foreach (RoomInfo v in roomList)
-			{
-				m_CopyRoomList.Add(v);
-			}
-			return;
-		}
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        if (m_IsRefreshing)
+        {
+            foreach (RoomInfo v in roomList)
+            {
+                m_CopyRoomList.Add(v);
+            }
+            return;
+        }
 
-		RoomListUpdate(roomList);
-	}
+        RoomListUpdate(roomList);
+    }
 
-	public override void OnCreateRoomFailed(short returnCode, string message)
-	{
-		Debug.LogError("On Create Room Failed : " + message);
-	}
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError("error code : " + returnCode + "On Create Room Failed : " + message);
 
-	public override void OnCreatedRoom()
-	{
-		Debug.Log("On Created Room");
+        if (returnCode == 32766)
+        {
+            Debug.LogError("There is exist same room");
+        }
+    }
 
-		Core.scenario.OnLoadScenario(nameof(ScenarioRoom));
-		MapSettings settings = Core.plugs.Get<MapSettings>();
-		settings?.Close();
-	}
+    public override void OnCreatedRoom()
+    {
+        Debug.Log("On Created Room");
 
-	public void SearchRoom(string roomName)
-	{
-		if (m_SearchedRoomContent.childCount != 0)
-		{
-			DestroySearchedRoomList();
-		}
+        Core.scenario.OnLoadScenario(nameof(ScenarioRoom));
+        MapSettings settings = Core.plugs.Get<MapSettings>();
+        settings?.Close();
+    }
 
-		if (!m_SearchedRoom.gameObject.activeSelf)
-		{
-			m_SearchedRoom.gameObject.SetActive(true);
-		}
+    public void SearchRoom(string roomName)
+    {
+        if (m_SearchedRoomContent.childCount != 0)
+        {
+            DestroySearchedRoomList();
+        }
 
-		int count = 0;
-		foreach (KeyValuePair<string, RoomInfo> roomInfo in m_CachedRoomList)
-		{
-			bool o = roomInfo.Key.Contains(roomName);
-			if (o)
-			{
-				OtherCreateRoom(roomInfo.Value, m_SearchedRoomContent);
-				count++;
-			}
-		}
+        if (!m_SearchedRoom.gameObject.activeSelf)
+        {
+            m_SearchedRoom.gameObject.SetActive(true);
+        }
 
-		m_SearchedRoomCount.text = count.ToString();
+        int count = 0;
+        foreach (KeyValuePair<string, RoomInfo> roomInfo in m_CachedRoomList)
+        {
+            bool o = roomInfo.Key.Contains(roomName);
+            if (o)
+            {
+                OtherCreateRoom(roomInfo.Value, m_SearchedRoomContent);
+                count++;
+            }
+        }
 
-	}
+        m_SearchedRoomCount.text = count.ToString();
 
-	void SearchedRoomClose()
-	{
-		DestroySearchedRoomList();
-		m_SearchedRoom.gameObject.SetActive(false);
-	}
+    }
 
-	void DestroySearchedRoomList()
-	{
-		for (int i = 0; i < m_SearchedRoomContent.childCount; i++)
-		{
-			Transform tr = m_SearchedRoomContent.GetChild(i);
-			if (tr.name == "Top") { continue; }
-			Destroy(tr.gameObject);
-		}
-	}
+    void SearchedRoomClose()
+    {
+        DestroySearchedRoomList();
+        m_SearchedRoom.gameObject.SetActive(false);
+    }
 
-	void RoomListUpdate(List<RoomInfo> roomList)
-	{
-		int count = roomList.Count;
-		for (int i = 0; i < count; i++)
-		{
-			RoomInfo roomInfo = roomList[i];
-			if (m_CachedRoomList.ContainsKey(roomInfo.Name) && roomInfo.RemovedFromList)
-			{
-				m_CachedRoomList.Remove(roomInfo.Name);
-				Transform room = m_RoomContent.Find(roomInfo.Name);
-				if (room) { Destroy(room.gameObject); }
-			}
-			else
-			{
-				if (roomInfo.PlayerCount == 0) { continue; }
-				if (roomInfo.MaxPlayers == roomInfo.PlayerCount) { continue; } //풀방일 경우
+    void DestroySearchedRoomList()
+    {
+        for (int i = 0; i < m_SearchedRoomContent.childCount; i++)
+        {
+            Transform tr = m_SearchedRoomContent.GetChild(i);
+            if (tr.name == "Top") { continue; }
+            Destroy(tr.gameObject);
+        }
+    }
 
-				OtherCreateRoom(roomInfo, m_RoomContent);
-				m_CachedRoomList.Add(roomInfo.Name, roomInfo);
-			}
-		}
+    void RoomListUpdate(List<RoomInfo> roomList)
+    {
+        int count = roomList.Count;
+        for (int i = 0; i < count; i++)
+        {
+            RoomInfo roomInfo = roomList[i];
+            if (m_CachedRoomList.ContainsKey(roomInfo.Name) && roomInfo.RemovedFromList)
+            {
+                m_CachedRoomList.Remove(roomInfo.Name);
+                Transform room = m_RoomContent.Find(roomInfo.Name);
+                if (room) { Destroy(room.gameObject); }
+            }
+            else if (m_CachedRoomList.ContainsKey(roomInfo.Name)) { continue; }
+            else
+            {
+                if (roomInfo.PlayerCount == 0) { continue; }
+                if (roomInfo.MaxPlayers == roomInfo.PlayerCount) { continue; } //풀방일 경우
 
-		m_Refresh.gameObject.SetActive(m_CachedRoomList.Count != 0);
-		m_Search.gameObject.SetActive(m_CachedRoomList.Count != 0);
-		m_NoRoom.gameObject.SetActive(m_CachedRoomList.Count == 0);
+                OtherCreateRoom(roomInfo, m_RoomContent);
+                m_CachedRoomList.Add(roomInfo.Name, roomInfo);
+            }
+        }
 
-	}
+        m_Refresh.gameObject.SetActive(m_CachedRoomList.Count != 0);
+        m_Search.gameObject.SetActive(m_CachedRoomList.Count != 0);
+        m_NoRoom.gameObject.SetActive(m_CachedRoomList.Count == 0);
 
-	void OtherCreateRoom(RoomInfo roomInfo, Transform parent)
-	{
-		string roomManager = (string)roomInfo.CustomProperties["RoomManager"];
-		string mapTitle = (string)roomInfo.CustomProperties["Map"];
-		Room room = Instantiate<Room>(roomPrefab, Vector3.zero, Quaternion.identity, parent);
-		room.SetRoomInfo(roomInfo.Name, roomManager, mapTitle);
-		room.name = roomInfo.Name;
-	}
+    }
 
-	void OnClickCreateRoom()
-	{
-		if (Core.plugs.Has<MapSettings>())
-		{
-			MapSettings settings = Core.plugs.Get<MapSettings>();
-			settings.Open();
-			settings.confirm = (a, b, c, d) => UserCreateRoom(a, b, c, d);
-		}
-	}
+    void OtherCreateRoom(RoomInfo roomInfo, Transform parent)
+    {
+        string roomManager = (string)roomInfo.CustomProperties["RoomManager"];
+        string mapTitle = (string)roomInfo.CustomProperties["Map"];
+        Room room = Instantiate<Room>(roomPrefab, Vector3.zero, Quaternion.identity, parent);
+        room.SetRoomInfo(roomInfo.Name, roomManager, mapTitle);
+        room.name = roomInfo.Name;
+    }
 
-	void UserCreateRoom(string map, string title, int time, int number)
-	{
-		string[] LobbyOptions = new string[4];
-		LobbyOptions[0] = "RoomManager";
-		LobbyOptions[1] = "Map";
-		LobbyOptions[2] = "RoundTime";
-		LobbyOptions[3] = "RoundNumber";
+    void OnClickCreateRoom()
+    {
+        if (Core.plugs.Has<MapSettings>())
+        {
+            MapSettings settings = Core.plugs.Get<MapSettings>();
+            settings.Open();
+            settings.confirm = (a, b, c, d) => UserCreateRoom(a, b, c, d);
+        }
+    }
 
-		ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
-											{ "RoomManager", PhotonNetwork.LocalPlayer.NickName },
-											{ "Map", map },
-											{ "RoundTime", time},
-											{ "RoundNumber", number }};
+    void UserCreateRoom(string map, string title, int time, int number)
+    {
+        string[] LobbyOptions = new string[4];
+        LobbyOptions[0] = "RoomManager";
+        LobbyOptions[1] = "Map";
+        LobbyOptions[2] = "RoundTime";
+        LobbyOptions[3] = "RoundNumber";
 
-		RoomOptions roomOptions = new RoomOptions();
-		roomOptions.IsVisible = true;
-		roomOptions.IsOpen = true;
-		roomOptions.MaxPlayers = (byte)2;
-		roomOptions.CustomRoomPropertiesForLobby = LobbyOptions;
-		roomOptions.CustomRoomProperties = customProperties;
-		PhotonNetwork.CreateRoom(title, roomOptions, TypedLobby.Default);
+        ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
+                                            { "RoomManager", PhotonNetwork.LocalPlayer.NickName },
+                                            { "Map", map },
+                                            { "RoundTime", time},
+                                            { "RoundNumber", number }};
 
-	}
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.IsVisible = true;
+        roomOptions.IsOpen = true;
+        roomOptions.MaxPlayers = (byte)2;
+        roomOptions.CustomRoomPropertiesForLobby = LobbyOptions;
+        roomOptions.CustomRoomProperties = customProperties;
+        PhotonNetwork.CreateRoom(title, roomOptions, TypedLobby.Default);
 
-	void RefreshRoom()
-	{
-		if (m_CachedRoomList.Count == 0) { return; }
+    }
 
-		StartCoroutine(RefreshingRoom());
-	}
+    void RefreshRoom()
+    {
+        if (m_CachedRoomList.Count == 0) { return; }
 
-	IEnumerator RefreshingRoom()
-	{
-		m_IsRefreshing = true;
+        StartCoroutine(RefreshingRoom());
+    }
 
-		for (int i = 0; i < m_RoomContent.childCount; i++)
-		{
-			Transform tr = m_RoomContent.GetChild(i);
-			Destroy(tr.gameObject);
-		}
+    IEnumerator RefreshingRoom()
+    {
+        m_IsRefreshing = true;
 
-		foreach (KeyValuePair<string, RoomInfo> roomInfo in m_CachedRoomList)
-		{
-			OtherCreateRoom(roomInfo.Value, m_RoomContent);
-			yield return new WaitForSeconds(0.2f);
-		}
+        for (int i = 0; i < m_RoomContent.childCount; i++)
+        {
+            Transform tr = m_RoomContent.GetChild(i);
+            Destroy(tr.gameObject);
+        }
 
-		if (m_CopyRoomList.Count > 0)
-		{
-			RoomListUpdate(m_CopyRoomList);
-			m_CopyRoomList.Clear();
-		}
+        foreach (KeyValuePair<string, RoomInfo> roomInfo in m_CachedRoomList)
+        {
+            OtherCreateRoom(roomInfo.Value, m_RoomContent);
+            yield return new WaitForSeconds(0.2f);
+        }
 
-		m_IsRefreshing = false;
+        if (m_CopyRoomList.Count > 0)
+        {
+            RoomListUpdate(m_CopyRoomList);
+            m_CopyRoomList.Clear();
+        }
 
-	}
+        m_IsRefreshing = false;
 
-	void Awake()
-	{
-		m_SearchedClose.onClick.AddListener(SearchedRoomClose);
-		m_Refresh.onClick.AddListener(RefreshRoom);
-		m_Search.onClick.AddListener(() => m_SearchRoomPopup.Open());
-		m_CreateRoom.onClick.AddListener(OnClickCreateRoom);
-	}
+    }
+
+    void Awake()
+    {
+        m_SearchedClose.onClick.AddListener(SearchedRoomClose);
+        m_Refresh.onClick.AddListener(RefreshRoom);
+        m_Search.onClick.AddListener(() => m_SearchRoomPopup.Open());
+        m_CreateRoom.onClick.AddListener(OnClickCreateRoom);
+    }
 }

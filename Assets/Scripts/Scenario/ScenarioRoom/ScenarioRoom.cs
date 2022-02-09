@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -57,7 +55,6 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
         {
             roomChat.Connect(Core.networkManager.userNickName, PhotonNetwork.CurrentRoom.Name);
             roomChat.connectCompleted = ConnectCompleted;
-		    StartCoroutine(CheckingState());
             PhotonNetwork.EnableCloseConnection = true;
         }
 
@@ -99,31 +96,27 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
     {
         Debug.Log("On CreateRoom");
 
-        StartCoroutine(CheckingState());
         roomChat.Connect("Joe", "TestRoom");
         roomChat.connectCompleted = ConnectCompleted;
         PhotonNetwork.EnableCloseConnection = true;
         roomUI.Init();
     }
 
-	//Photon Network, Chat Connect Completed
-	void ConnectCompleted()
-	{
+    //Photon Network, Chat Connect Completed
+    void ConnectCompleted()
+    {
         BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
-	}
+    }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.LogError(cause);
     }
 
-    IEnumerator CheckingState()
+    public override void OnLeftRoom()
     {
-        while (PhotonNetwork.InRoom) { yield return new WaitForSeconds(1f); }
-
-        //Kick
         roomChat.DisConnect();
-    //    Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }
 
     void JoinRoom()

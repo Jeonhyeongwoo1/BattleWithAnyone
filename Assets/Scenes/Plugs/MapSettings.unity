@@ -926,7 +926,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &579579096
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1377,14 +1377,13 @@ GameObject:
   - component: {fileID: 696522767}
   - component: {fileID: 696522766}
   - component: {fileID: 696522765}
-  - component: {fileID: 696522768}
   m_Layer: 0
   m_Name: MapSettings 10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &696522764
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1398,7 +1397,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 579579096}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 927728477}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1467,71 +1466,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 10
   m_TargetDisplay: 0
---- !u!114 &696522768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 696522763}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c180ea140bef4161a923cea232099d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mapInfos:
-  - mapTitle: scifi
-    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
-    check: {fileID: 6112153477292812834}
-    title: {fileID: 8550698471673075582}
-    info: {fileID: 8769878587314369547}
-    button: {fileID: 6252190437519117758}
-  - mapTitle: japan
-    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
-    check: {fileID: 3023204850443819705}
-    title: {fileID: 832041181583599589}
-    info: {fileID: 329591681142260880}
-    button: {fileID: 3162109597220486437}
-  - mapTitle: mansion
-    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
-    check: {fileID: 5885152009925475905}
-    title: {fileID: 8346532759227908893}
-    info: {fileID: 8992043285854888040}
-    button: {fileID: 6033354233470228957}
-  - mapTitle: medievalcitiy
-    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
-    check: {fileID: 4924753989956154648}
-    title: {fileID: 7359066963047237700}
-    info: {fileID: 7583596134336015153}
-    button: {fileID: 5066189554006430340}
-  - mapTitle: wildwest
-    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
-    check: {fileID: 3070208778225609132}
-    title: {fileID: 640363668555699440}
-    info: {fileID: 575888686398699397}
-    button: {fileID: 2922017821245525552}
-  - mapTitle: battleground
-    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
-    check: {fileID: 4489892550797202239}
-    title: {fileID: 2033332060538072675}
-    info: {fileID: 1380679106091879702}
-    button: {fileID: 4348727210034574499}
-  m_Preferences:
-    roomTitle: 
-    mapTitle: 
-    roundTime: 0
-    roundNumber: 0
-  m_Map: {fileID: 579579095}
-  m_Confirm: {fileID: 952219212}
-  m_Cancel: {fileID: 1937799163}
-  m_MapContentView: {fileID: 1808095683}
-  m_RoomTitle: {fileID: 1219997551}
-  m_RoundTime120: {fileID: 1843148574}
-  m_RoundTime150: {fileID: 664237808}
-  m_RoundTime180: {fileID: 728255142}
-  m_RoundNumber1: {fileID: 1773963661}
-  m_RoundNumber3: {fileID: 775128772}
-  m_RoundNumber5: {fileID: 956490262}
 --- !u!1 &728255140
 GameObject:
   m_ObjectHideFlags: 0
@@ -2085,6 +2019,104 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &927728475
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 927728477}
+  - component: {fileID: 927728476}
+  m_Layer: 0
+  m_Name: MapSettings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &927728476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927728475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c180ea140bef4161a923cea232099d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapInfos:
+  - mapTitle: scifi
+    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
+    check: {fileID: 6112153477292812834}
+    title: {fileID: 8550698471673075582}
+    info: {fileID: 8769878587314369547}
+    button: {fileID: 6252190437519117758}
+  - mapTitle: japan
+    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
+    check: {fileID: 3023204850443819705}
+    title: {fileID: 832041181583599589}
+    info: {fileID: 329591681142260880}
+    button: {fileID: 3162109597220486437}
+  - mapTitle: mansion
+    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
+    check: {fileID: 5885152009925475905}
+    title: {fileID: 8346532759227908893}
+    info: {fileID: 8992043285854888040}
+    button: {fileID: 6033354233470228957}
+  - mapTitle: medievalcitiy
+    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
+    check: {fileID: 4924753989956154648}
+    title: {fileID: 7359066963047237700}
+    info: {fileID: 7583596134336015153}
+    button: {fileID: 5066189554006430340}
+  - mapTitle: wildwest
+    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
+    check: {fileID: 3070208778225609132}
+    title: {fileID: 640363668555699440}
+    info: {fileID: 575888686398699397}
+    button: {fileID: 2922017821245525552}
+  - mapTitle: battleground
+    mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
+    check: {fileID: 4489892550797202239}
+    title: {fileID: 2033332060538072675}
+    info: {fileID: 1380679106091879702}
+    button: {fileID: 4348727210034574499}
+  m_Preferences:
+    roomTitle: 
+    mapTitle: 
+    roundTime: 0
+    roundNumber: 0
+  m_Map: {fileID: 696522763}
+  m_Confirm: {fileID: 952219212}
+  m_Cancel: {fileID: 1937799163}
+  m_MapContentView: {fileID: 1808095683}
+  m_RoomTitle: {fileID: 1219997551}
+  m_RoundTime120: {fileID: 1843148574}
+  m_RoundTime150: {fileID: 664237808}
+  m_RoundTime180: {fileID: 728255142}
+  m_RoundNumber1: {fileID: 1773963661}
+  m_RoundNumber3: {fileID: 775128772}
+  m_RoundNumber5: {fileID: 956490262}
+--- !u!4 &927728477
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927728475}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 696522764}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &952219210
 GameObject:
   m_ObjectHideFlags: 0
