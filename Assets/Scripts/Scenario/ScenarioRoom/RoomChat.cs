@@ -22,7 +22,7 @@ public class RoomChat : MonoBehaviour, IChatClientListener
     string m_ChannelName;
 
     public bool IsConnect() => m_ChatClient.CanChat;
-    public void ChatDisConnect() => m_ChatClient.Disconnect();
+    public void DisConnect() => m_ChatClient.Disconnect();
 
     public void Log(string message)
     {

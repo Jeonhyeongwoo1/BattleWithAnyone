@@ -6,65 +6,69 @@ using UnityEngine.SceneManagement;
 
 public class BattleWtihAnyOneStarter : MonoBehaviour
 {
-    [SerializeField] BlockSkybox m_BlockSkybox;
-    [SerializeField] LoadingAnimation m_LoadingAnimation;
+	public XSettings.Profile profile;
 
-    static BlockSkybox blockSkybox;
-    static LoadingAnimation loadingAnimation;
+	[SerializeField] BlockSkybox m_BlockSkybox;
+	[SerializeField] LoadingAnimation m_LoadingAnimation;
 
-    public static LoadingAnimation GetLoading()
-    {
-        if (!loadingAnimation)
-        {
-            loadingAnimation = FindObjectOfType<LoadingAnimation>();
-        }
+	static BlockSkybox blockSkybox;
+	static LoadingAnimation loadingAnimation;
 
-        return loadingAnimation;
-    }
+	public static LoadingAnimation GetLoading()
+	{
+		if (!loadingAnimation)
+		{
+			loadingAnimation = FindObjectOfType<LoadingAnimation>();
+		}
 
-    public static BlockSkybox GetBlockSkybox()
-    {
-        if (!blockSkybox)
-        {
-            blockSkybox = FindObjectOfType<BlockSkybox>();
-        }
+		return loadingAnimation;
+	}
 
-        return blockSkybox;
-    }
+	public static BlockSkybox GetBlockSkybox()
+	{
+		if (!blockSkybox)
+		{
+			blockSkybox = FindObjectOfType<BlockSkybox>();
+		}
 
-    private void Start()
-    {
-        Core.Ensure(() => OnLoadScenarioLoading());
-    }
+		return blockSkybox;
+	}
 
-    private void Awake()
-    {
-        Ensure();
-        GetBlockSkybox()?.gameObject.SetActive(false);
-        GetLoading()?.gameObject.SetActive(false);
-    }
+	private void Start()
+	{
+		Core.Ensure(() => OnLoadScenarioLoading());
+	}
 
-    T CopyTo<T>(ref T component) where T : MonoBehaviour
-    {
-        return component as T;
-    }
+	private void Awake()
+	{
+		Ensure();
+		GetBlockSkybox()?.gameObject.SetActive(false);
+		GetLoading()?.gameObject.SetActive(false);
+	}
 
-    void Ensure()
-    {
-        blockSkybox = CopyTo<BlockSkybox>(ref m_BlockSkybox);
-        loadingAnimation = CopyTo<LoadingAnimation>(ref m_LoadingAnimation);
-    }
+	T CopyTo<T>(ref T component) where T : MonoBehaviour
+	{
+		return component as T;
+	}
 
-    void OnLoadScenarioLoading()
-    {
-        if (ScenarioDirector.scenarioReady)
-        {
-            Debug.Log("Scnesario is Loaded");
-            return;
-        }
+	void Ensure()
+	{
+		blockSkybox = CopyTo<BlockSkybox>(ref m_BlockSkybox);
+		loadingAnimation = CopyTo<LoadingAnimation>(ref m_LoadingAnimation);
+	}
 
-        blockSkybox.SetAlpha(1);
-        blockSkybox.gameObject.SetActive(true);
-        Core.scenario.OnLoadScenario(nameof(ScenarioLoading));
-    }
+	void OnLoadScenarioLoading()
+	{
+		Core.settings.profile = profile;
+
+		if (ScenarioDirector.scenarioReady)
+		{
+			Debug.Log("Scnesario is Loaded");
+			return;
+		}
+
+		blockSkybox.SetAlpha(1);
+		blockSkybox.gameObject.SetActive(true);
+		Core.scenario.OnLoadScenario(nameof(ScenarioLoading));
+	}
 }

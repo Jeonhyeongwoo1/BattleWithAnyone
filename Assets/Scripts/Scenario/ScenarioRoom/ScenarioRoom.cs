@@ -122,8 +122,8 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
         while (PhotonNetwork.InRoom) { yield return new WaitForSeconds(1f); }
 
         //Kick
-        roomChat.ChatDisConnect();
-        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+        roomChat.DisConnect();
+    //    Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }
 
     void JoinRoom()

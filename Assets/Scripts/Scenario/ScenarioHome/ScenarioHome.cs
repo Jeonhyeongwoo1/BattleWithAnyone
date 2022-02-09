@@ -3,97 +3,127 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using System.Text.RegularExpressions;
 using Photon.Pun;
 
-public class ScenarioHome : MonoBehaviour, IScenario
+public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
 {
-    public string scenarioName => typeof(ScenarioHome).Name;
-    public UserInfo userInfo;
-    public RoomMenu roomMenu;
+	public string scenarioName => typeof(ScenarioHome).Name;
+	public UserInfo userInfo;
+	public RoomMenu roomMenu;
 
-    [SerializeField] Button m_Exit;
-    [SerializeField] Button m_GamePlay;
-    [SerializeField] RectTransform m_LoginForm;
-    [SerializeField] InputField m_Id;
-    [SerializeField] Button m_LoginBtn;
+	[SerializeField] Button m_Exit;
+	[SerializeField] RectTransform m_LoginForm;
+	[SerializeField] InputField m_Id;
+	[SerializeField] InputField m_Password;
+	[SerializeField] Button m_LoginBtn;
 
-    string m_NotSpecialPattern = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
+	public void OnScenarioPrepare(UnityAction done)
+	{
+		BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
+		BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
+		Core.plugs.DefaultEnsure();
+		done?.Invoke();
+	}
 
-    public void OnScenarioPrepare(UnityAction done)
-    {
-        BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
-        BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
-        Core.plugs.DefaultEnsure();
-        done?.Invoke();
-    }
+	public void OnScenarioStandbyCamera(UnityAction done)
+	{
+		done?.Invoke();
+	}
 
-    public void OnScenarioStandbyCamera(UnityAction done)
-    {
-        done?.Invoke();
-    }
+	public void OnScenarioStart(UnityAction done)
+	{
+        Debug.LogError(PhotonNetwork.NetworkClientState);
+		Core.networkManager.ConnectPhotonNetwork(() => ConnectedPhotonNetwork(null));
+		done?.Invoke();
+	}
 
-    public void OnScenarioStart(UnityAction done)
-    {
-        Core.networkManager.ConnectPhotonNetwork(() => ConnectedPhotonNetwork(null));
-        done?.Invoke();
-    }
+	void ConnectedPhotonNetwork(UnityAction done)
+	{
+		BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
+		m_Exit.gameObject.SetActive(true);
+		roomMenu.gameObject.SetActive(true);
+		if (!Core.networkManager.isLogined)
+		{
+			m_LoginForm.gameObject.SetActive(true);
+		}
+		else
+		{
 
-    void ConnectedPhotonNetwork(UnityAction done)
-    {
-        BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
-        m_GamePlay.gameObject.SetActive(true);
-        m_Exit.gameObject.SetActive(true);
-        done?.Invoke();
-    }
+			PhotonNetwork.JoinLobby();
+		}
 
-    public void OnScenarioStop(UnityAction done)
-    {
-        StopAllCoroutines();
-        done?.Invoke();
-    }
+		done?.Invoke();
+	}
 
-    void OnClickLoginBtn()
-    {
-        if (string.IsNullOrEmpty(m_Id.text))
-        {
-            Debug.Log("There is no id value");
-            return;
-        }
+	public void OnScenarioStop(UnityAction done)
+	{
+		StopAllCoroutines();
+		done?.Invoke();
+	}
 
-        Regex regex = new Regex(m_NotSpecialPattern);
-        if (regex.IsMatch(m_Id.text))
-        {
-            Debug.Log("There is special key");
-            m_Id.text = null;
-            return;
-        }
+	void OnLogin()
+	{
+		string id = m_Id.text;
+		string password = m_Password.text;
 
-        Core.networkManager.SetPlayerName(m_Id.text);
-        userInfo.SetUserInfo(m_Id.text);
-        userInfo.gameObject.SetActive(true);
-        m_LoginForm.gameObject.SetActive(false);
-        PhotonNetwork.JoinLobby();
-        roomMenu.OnEnableRoomMenu();
-    }
+		if (string.IsNullOrEmpty(id))
+		{
+			m_Id.ActivateInputField();
+			Debug.Log("Input id");
+			return;
+		}
 
-    void OnClickGamePlay()
-    {
-        roomMenu.gameObject.SetActive(true);
-        m_LoginForm.gameObject.SetActive(true);
-        m_GamePlay.gameObject.SetActive(false);
-    }
+		if (string.IsNullOrEmpty(password))
+		{
+			m_Password.ActivateInputField();
+			Debug.Log("Input password");
+			return;
+		}
 
-    private void Start()
-    {
-        m_GamePlay.onClick.AddListener(OnClickGamePlay);
-        m_LoginBtn.onClick.AddListener(OnClickLoginBtn);
-        Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
-    }
+		Core.networkManager.ReqLogin(id, password, LoginSuccessed, LoginFailed);
 
-    private void Awake()
-    {
-        Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
-    }
+	}
+
+	void LoginSuccessed(string data)
+	{
+		if (string.IsNullOrEmpty(data))
+		{
+			LoginFailed(null);
+			return;
+		}
+
+		Member member = JsonUtility.FromJson<Member>(data);
+
+		Core.networkManager.SetPlayerName(member.mbr_id);
+		userInfo.SetUserInfo(member.mbr_id);
+		Core.networkManager.isLogined = true;
+		PhotonNetwork.JoinLobby();
+	}
+
+	public override void OnJoinedLobby()
+	{
+		roomMenu.OnEnableRoomMenu();
+		userInfo.gameObject.SetActive(true);
+		m_LoginForm.gameObject.SetActive(false);
+	}
+
+	void LoginFailed(string error)
+	{
+		//Error
+		m_Id.text = null;
+		m_Password.text = null;
+
+	}
+
+	private void Start()
+	{
+		Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
+	}
+
+	private void Awake()
+	{
+		Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
+		m_LoginBtn.onClick.AddListener(OnLogin);
+	}
 
 }

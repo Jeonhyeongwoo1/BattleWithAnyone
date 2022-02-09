@@ -6,7 +6,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 
-public class RoomUI : MonoBehaviour
+public class RoomUI : MonoBehaviourPunCallbacks
 {
 	[Serializable]
 	public class Characters
@@ -115,7 +115,10 @@ public class RoomUI : MonoBehaviour
 		{
 			PhotonNetwork.LeaveRoom();
 		}
+	}
 
+	public override void OnLeftRoom()
+	{
 		Core.scenario.OnLoadScenario(nameof(ScenarioHome));
 	}
 

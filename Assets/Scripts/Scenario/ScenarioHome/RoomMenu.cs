@@ -45,11 +45,6 @@ public class RoomMenu : MonoBehaviourPunCallbacks
 		RoomListUpdate(roomList);
 	}
 
-	public override void OnJoinedLobby()
-	{
-		Debug.Log("Joined");
-	}
-
 	public override void OnCreateRoomFailed(short returnCode, string message)
 	{
 		Debug.LogError("On Create Room Failed : " + message);
@@ -163,7 +158,7 @@ public class RoomMenu : MonoBehaviourPunCallbacks
 		LobbyOptions[3] = "RoundNumber";
 
 		ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
-											{ "RoomManager", "Name" },
+											{ "RoomManager", PhotonNetwork.LocalPlayer.NickName },
 											{ "Map", map },
 											{ "RoundTime", time},
 											{ "RoundNumber", number }};

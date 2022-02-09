@@ -140,21 +140,7 @@ public class MapSettings : MonoBehaviour, IPlugable
 		m_SelectedMap = map;
 		m_Preferences.mapTitle = map.mapTitle;
 	}
-
-	Sprite LoadMapImage(string imageName)
-	{
-		string path = Core.settings.mapImagePath + "/" + imageName;
-		Sprite image = Resources.Load<Sprite>(path);
-
-		if (image == null)
-		{
-			Debug.LogError("Failed to Load Image");
-			return null;
-		}
-
-		return image;
-	}
-
+	
 	void SetRoundTime(int value, bool on)
 	{
 		if (!on) { return; }
