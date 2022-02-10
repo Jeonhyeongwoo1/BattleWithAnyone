@@ -10,6 +10,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     public UserInfo userInfo;
     public RoomMenu roomMenu;
 
+    [SerializeField] Signup m_Signup;
     [SerializeField] Button m_Exit;
     [SerializeField] RectTransform m_LoginForm;
     [SerializeField] InputField m_Id;
@@ -42,6 +43,25 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         done?.Invoke();
     }
 
+    public void OnScenarioStop(UnityAction done)
+    {
+        StopAllCoroutines();
+        done?.Invoke();
+    }
+
+    public override void OnJoinedLobby()
+    {
+        BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
+        roomMenu.OnEnableRoomMenu();
+        userInfo.gameObject.SetActive(true);
+        m_LoginForm.gameObject.SetActive(false);
+    }
+
+    public void Signup()
+    {
+        m_Signup.Open();
+    }
+
     void ConnectedPhotonNetwork(UnityAction done)
     {
         BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
@@ -52,26 +72,20 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         done?.Invoke();
     }
 
-    public void OnScenarioStop(UnityAction done)
-    {
-        StopAllCoroutines();
-        done?.Invoke();
-    }
-
     void OnLogin()
     {
 
         string id = m_Id.text;
         string password = m_Password.text;
 
-		if (Core.settings.profile == XSettings.Profile.local)
-		{
+        if (Core.settings.profile == XSettings.Profile.local)
+        {
             XSettings.User user = Core.settings.user;
             id = user.Get().id;
             password = user.Get().password;
-		}
+        }
 
-		if (string.IsNullOrEmpty(id))
+        if (string.IsNullOrEmpty(id))
         {
             m_Id.ActivateInputField();
             Debug.Log("Input id");
@@ -84,7 +98,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
             Debug.Log("Input password");
             return;
         }
-        
+
         Core.networkManager.ReqLogin(id, password, LoginSuccessed, LoginFailed);
 
     }
@@ -103,14 +117,6 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         userInfo.SetUserInfo(member.mbr_id);
         Core.networkManager.isLogined = true;
         PhotonNetwork.JoinLobby();
-    }
-
-    public override void OnJoinedLobby()
-    {
-        BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
-        roomMenu.OnEnableRoomMenu();
-        userInfo.gameObject.SetActive(true);
-        m_LoginForm.gameObject.SetActive(false);
     }
 
     void LoginFailed(string error)
