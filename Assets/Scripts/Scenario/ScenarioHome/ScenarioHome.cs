@@ -60,10 +60,18 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
 
     void OnLogin()
     {
+
         string id = m_Id.text;
         string password = m_Password.text;
 
-        if (string.IsNullOrEmpty(id))
+		if (Core.settings.profile == XSettings.Profile.local)
+		{
+            XSettings.User user = Core.settings.user;
+            id = user.Get().id;
+            password = user.Get().password;
+		}
+
+		if (string.IsNullOrEmpty(id))
         {
             m_Id.ActivateInputField();
             Debug.Log("Input id");
@@ -76,9 +84,8 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
             Debug.Log("Input password");
             return;
         }
-        PhotonNetwork.JoinLobby();
-        Core.networkManager.isLogined = true;
-        // Core.networkManager.ReqLogin(id, password, LoginSuccessed, LoginFailed);
+        
+        Core.networkManager.ReqLogin(id, password, LoginSuccessed, LoginFailed);
 
     }
 
