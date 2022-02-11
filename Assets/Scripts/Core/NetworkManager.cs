@@ -26,7 +26,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void ReqCheckUserId(string id, UnityAction<string> success, UnityAction<string> fail)
     {
-        string url = Core.settings.url + "/checkId" + id;
+        string url = Core.settings.url + "/checkId/" + id;
 
         UnityWebRequest request = UnityWebRequest.Get(url);
         StartCoroutine(RequestData(request, success, fail));
@@ -38,7 +38,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         WWWForm form = new WWWForm();
         form.AddField("id", id);
-        form.AddField("passsword", password);
+        form.AddField("pw", password);
         form.AddField("email", email);
         form.AddField("phoneNumber", phoneNumber);
         form.AddField("name", name);
