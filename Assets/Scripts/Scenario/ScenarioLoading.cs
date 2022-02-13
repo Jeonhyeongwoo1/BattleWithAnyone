@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -16,10 +15,10 @@ public class ScenarioLoading : MonoBehaviour, IScenario
     [SerializeField, Range(0, 4)] float m_MinLoadingTime = 3f;
     [SerializeField] AnimationCurve m_Curve;
 
-	string[] m_Plugables = { nameof(MapSettings) };
+    string[] m_Plugables = { nameof(MapSettings) };
     int m_LoadedCount = 0;
 
-	public void OnScenarioPrepare(UnityAction done)
+    public void OnScenarioPrepare(UnityAction done)
     {
         BlockSkybox blockSkybox = BattleWtihAnyOneStarter.GetBlockSkybox();
         blockSkybox.UseBlockSkybox(false, () =>
@@ -40,9 +39,9 @@ public class ScenarioLoading : MonoBehaviour, IScenario
         done?.Invoke();
     }
 
-    void OnLoadScenarioHome()
+    void OnLoadScenarioLogin()
     {
-        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+        Core.scenario.OnLoadScenario(nameof(ScenarioLogin));
     }
 
     public void OnScenarioStop(UnityAction done)
@@ -53,36 +52,36 @@ public class ScenarioLoading : MonoBehaviour, IScenario
     void StartLoading()
     {
         textAnimator.StartAnimation();
-        StartCoroutine(Loading(OnLoadScenarioHome));
+        StartCoroutine(Loading(OnLoadScenarioLogin));
         LoadPlugables();
-	}
+    }
 
-	void LoadPlugables()
-	{
-		foreach (string v in m_Plugables)
-		{
-			StartCoroutine(LoadingPlug(v, () => m_LoadedCount++));
-		}
-	}
+    void LoadPlugables()
+    {
+        foreach (string v in m_Plugables)
+        {
+            StartCoroutine(LoadingPlug(v, () => m_LoadedCount++));
+        }
+    }
 
-	IEnumerator LoadingPlug(string name, UnityAction done = null)
-	{
-		bool isDone = false;
-		Core.plugs.OnLoadSceneAsync(name, () => isDone = true);
-		while (!isDone) { yield return null; }
-		done?.Invoke();
-	}
+    IEnumerator LoadingPlug(string name, UnityAction done = null)
+    {
+        bool isDone = false;
+        Core.plugs.OnLoadSceneAsync(name, () => isDone = true);
+        while (!isDone) { yield return null; }
+        done?.Invoke();
+    }
 
-	IEnumerator Loading(UnityAction done)
+    IEnumerator Loading(UnityAction done)
     {
         float elapsed = 0;
         float duration = 0, ensureMinTime = 0;
         while (elapsed < m_MinLoadingTime)
-		{
-			elapsed += Time.deltaTime;
-			ensureMinTime = m_Curve.Evaluate(elapsed / m_MinLoadingTime);
-			duration = Mathf.Min(ensureMinTime, (m_LoadedCount / m_Plugables.Length));
-			loadingbar.value = Mathf.Lerp(0, 100, duration);
+        {
+            elapsed += Time.deltaTime;
+            ensureMinTime = m_Curve.Evaluate(elapsed / m_MinLoadingTime);
+            duration = Mathf.Min(ensureMinTime, (m_LoadedCount / m_Plugables.Length));
+            loadingbar.value = Mathf.Lerp(0, 100, duration);
             loadingbarTxt.text = "Loading..." + loadingbar.value.ToString("0") + "%";
             yield return null;
         }

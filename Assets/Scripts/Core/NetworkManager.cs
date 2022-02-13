@@ -24,6 +24,22 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         userNickName = PhotonNetwork.LocalPlayer.NickName;
     }
 
+    public void ReqFindId(string email, string userName, UnityAction<string> success, UnityAction<string> fail)
+    {
+        string url = Core.settings.url + "/FindId/" + email + userName;
+
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        StartCoroutine(RequestData(request, success, fail));
+    }
+
+    public void ReqFindPassword(string id, string email, UnityAction<string> success, UnityAction<string> fail)
+    {
+        string url = Core.settings.url + "/FindPw/" + id + email;
+
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        StartCoroutine(RequestData(request, success, fail));
+    }
+
     public void ReqCheckUserId(string id, UnityAction<string> success, UnityAction<string> fail)
     {
         string url = Core.settings.url + "/checkId/" + id;

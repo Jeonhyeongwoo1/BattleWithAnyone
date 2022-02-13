@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Scenarios/ScenarioLoading.unity
     guid: 111a5eaa0eb134eb2a40ce76a73b5f78
   - enabled: 1
+    path: Assets/Scenes/Scenarios/ScenarioLogin.unity
+    guid: 3ddda30a8ac01468d8687294b6896dc2
+  - enabled: 1
     path: Assets/Scenes/Scenarios/ScenarioHome.unity
     guid: 5d74613d925c4416c89871aa007859ba
   - enabled: 1
