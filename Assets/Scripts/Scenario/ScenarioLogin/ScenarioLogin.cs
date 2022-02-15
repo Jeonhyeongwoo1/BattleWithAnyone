@@ -37,12 +37,12 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         done?.Invoke();
     }
 
-    public void Signup()
+    public void OpenSignup()
     {
         m_Signup.Open();
     }
 
-    public void FindMember()
+    public void OpenFindMember()
     {
         m_FindMember.Open();
     }
