@@ -41,6 +41,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Plugs/MapSettings.unity
     guid: 8532690c8895c4a6d9a834ec7b280ab7
+  - enabled: 1
+    path: Assets/Scenes/Plugs/Popups.unity
+    guid: 8214e1df373702647b11942ad8356718
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 7dba8cac8b0114c9592725a8d50feca4,
       type: 2}

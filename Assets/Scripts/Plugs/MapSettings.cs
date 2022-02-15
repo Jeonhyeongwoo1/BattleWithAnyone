@@ -53,18 +53,6 @@ public class MapSettings : MonoBehaviour, IPlugable
 	MapInfo m_SelectedMap;
 	string m_NotContainSpecial = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
 
-	public void OpenAsync(UnityAction done = null)
-	{
-		m_Map.SetActive(true);
-		done?.Invoke();
-	}
-
-	public void CloseAsync(UnityAction done = null)
-	{
-		m_Map.SetActive(false);
-		done?.Invoke();
-	}
-
 	public void Open(UnityAction done = null)
 	{
 		m_Map.SetActive(true);

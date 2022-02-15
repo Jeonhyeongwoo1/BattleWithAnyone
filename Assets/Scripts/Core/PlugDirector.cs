@@ -7,8 +7,6 @@ using UnityEngine.SceneManagement;
 public interface IPlugable
 {
     string plugName { get; }
-    void OpenAsync(UnityAction done = null);
-    void CloseAsync(UnityAction done = null);
     void Open(UnityAction done = null);
     void Close(UnityAction done = null);
 }
