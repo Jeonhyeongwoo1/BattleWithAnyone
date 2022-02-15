@@ -15,7 +15,7 @@ public class ScenarioLoading : MonoBehaviour, IScenario
     [SerializeField, Range(0, 4)] float m_MinLoadingTime = 3f;
     [SerializeField] AnimationCurve m_Curve;
 
-    string[] m_Plugables = { nameof(MapSettings) };
+    string[] m_Plugables = { nameof(MapSettings), nameof(Popups) };
     int m_LoadedCount = 0;
 
     public void OnScenarioPrepare(UnityAction done)
@@ -76,6 +76,7 @@ public class ScenarioLoading : MonoBehaviour, IScenario
     {
         float elapsed = 0;
         float duration = 0, ensureMinTime = 0;
+
         while (elapsed < m_MinLoadingTime)
         {
             elapsed += Time.deltaTime;

@@ -116,7 +116,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
     public override void OnLeftRoom()
     {
         roomChat.DisConnect();
-        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+        Core.scenario?.OnLoadScenario(nameof(ScenarioHome));
     }
 
     void JoinRoom()

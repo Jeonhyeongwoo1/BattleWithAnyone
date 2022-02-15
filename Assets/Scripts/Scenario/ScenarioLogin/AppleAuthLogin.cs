@@ -23,7 +23,8 @@ public class AppleAuthLogin : MonoBehaviour
     {
         if (!AppleAuthManager.IsCurrentPlatformSupported)
         {
-            Debug.Log("Not Supported Platform");
+            NoticePopup.content = "지원하지않는 기기입니다.";
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
 
@@ -33,7 +34,9 @@ public class AppleAuthLogin : MonoBehaviour
         if (m_AppleAuthManager == null) { return; }
 
         m_AppleAuthManager.SetCredentialsRevokedCallback(result =>
-        { //취소
+        {
+            NoticePopup.content = "Apple 로그인에 실패하였습니다.";
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             Debug.LogError("Received revoke callback " + result);
         });
 
@@ -81,7 +84,9 @@ public class AppleAuthLogin : MonoBehaviour
             error =>
             {
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
-                Debug.LogWarning("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
+                NoticePopup.content = "Apple 로그인에 실패하였습니다.";
+                Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
+                Debug.LogError("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
                 isSuccessed = false;
                 isDone = true;
             });
@@ -90,7 +95,6 @@ public class AppleAuthLogin : MonoBehaviour
 
         if (isSuccessed)
         {
-            Debug.Log("Quick Login Successed!!");
             Core.networkManager.isLogined = true;
             done?.Invoke();
             yield break;
@@ -120,6 +124,8 @@ public class AppleAuthLogin : MonoBehaviour
             },
             error =>
             {
+                NoticePopup.content = "Apple 로그인에 실패하였습니다.";
+                Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
                 Debug.LogWarning("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
                 isSuccessed = false;
@@ -130,7 +136,6 @@ public class AppleAuthLogin : MonoBehaviour
 
         if (isSuccessed)
         {
-            Debug.Log("AuthLogin Successed!!");
             Core.networkManager.isLogined = true;
             done?.Invoke();
             yield break;

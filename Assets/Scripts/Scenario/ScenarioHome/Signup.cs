@@ -41,8 +41,8 @@ public class Signup : MonoBehaviour
 
         if (string.IsNullOrEmpty(id))
         {
-            //
-            Debug.LogError("Input sign id");
+            NoticePopup.content = "아이디를 입력해주세요.";
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
 
@@ -51,10 +51,10 @@ public class Signup : MonoBehaviour
 
     public void OnSignup()
     {
-
         if (!m_IsCheckedUserId)
         {
-            Debug.Log("Check User Id");
+            NoticePopup.content = "아이디를 확인을 해주세요.";
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
 

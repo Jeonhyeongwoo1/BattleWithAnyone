@@ -42,14 +42,16 @@ public class FindMember : MonoBehaviour
 
         if (string.IsNullOrEmpty(email))
         {
-            Debug.Log("Input email");
+            NoticePopup.content = "이메일을 입력해주세요.";
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             m_FindId_Email.ActivateInputField();
             return;
         }
 
         if (string.IsNullOrEmpty(userName))
         {
-            Debug.Log("Input userName");
+            NoticePopup.content = "이름을 입력해주세요.";
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             m_FindId_UserName.ActivateInputField();
             return;
         }
@@ -64,14 +66,16 @@ public class FindMember : MonoBehaviour
 
         if (string.IsNullOrEmpty(id))
         {
-            Debug.Log("Input id");
+            NoticePopup.content = "아이디를 입력해주세요.";
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             m_FindPw_Id.ActivateInputField();
             return;
         }
 
         if (string.IsNullOrEmpty(email))
         {
-            Debug.Log("Input email");
+            NoticePopup.content = "이메일을 입력해주세요.";
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             m_FindPw_Email.ActivateInputField();
             return;
         }
@@ -126,5 +130,4 @@ public class FindMember : MonoBehaviour
         m_FindPw.onClick.AddListener(FindPassword);
         m_FindId.onClick.AddListener(FindId);
     }
-
 }

@@ -60,22 +60,26 @@ public class ScenarioLogin : MonoBehaviour, IScenario
             return;
         }
 
+        Popups popups = Core.plugs.Get<Popups>();
+        NoticePopup notice = popups.Get<NoticePopup>();
+
         if (string.IsNullOrEmpty(id))
         {
             m_Id.ActivateInputField();
-            Debug.Log("Input id");
+            NoticePopup.content = "ID를 입력해주세요.";
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
 
         if (string.IsNullOrEmpty(password))
         {
             m_Password.ActivateInputField();
-            Debug.Log("Input password");
+            NoticePopup.content = "비밀번호를 입력해주세요.";
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
 
         Core.networkManager.ReqLogin(id, password, LoginSuccessed, LoginFailed);
-
     }
 
     void LoginSuccessed(string data)

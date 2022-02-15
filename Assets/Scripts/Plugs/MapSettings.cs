@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -10,166 +9,172 @@ using UnityEngine.Events;
 public class MapSettings : MonoBehaviour, IPlugable
 {
 
-	[Serializable]
-	public class MapPreferences
-	{
-		public string roomTitle;
-		public string mapTitle;
-		public int roundTime;
-		public int roundNumber;
-	}
+    [Serializable]
+    public class MapPreferences
+    {
+        public string roomTitle;
+        public string mapTitle;
+        public int roundTime;
+        public int roundNumber;
+    }
 
-	[Serializable]
-	public class MapInfo
-	{
-		public string mapTitle;
-		public string mapInfo;
-		public Transform check;
-		public Text title;
-		public Text info;
-		public Button button;
-	}
+    [Serializable]
+    public class MapInfo
+    {
+        public string mapTitle;
+        public string mapInfo;
+        public Transform check;
+        public Text title;
+        public Text info;
+        public Button button;
+    }
 
-	public string plugName => nameof(MapSettings);
+    public string plugName => nameof(MapSettings);
 
-	public List<MapInfo> mapInfos = new List<MapInfo>();
-	public UnityAction<string, string, int, int> confirm;
+    public List<MapInfo> mapInfos = new List<MapInfo>();
+    public UnityAction<string, string, int, int> confirm;
 
-	[SerializeField] MapPreferences m_Preferences;
-	[SerializeField] GameObject m_Map;
-	[SerializeField] Button m_Confirm;
-	[SerializeField] Button m_Cancel;
-	[SerializeField] Transform m_MapContentView;
-	[SerializeField] InputField m_RoomTitle;
+    [SerializeField] MapPreferences m_Preferences;
+    [SerializeField] GameObject m_Map;
+    [SerializeField] Button m_Confirm;
+    [SerializeField] Button m_Cancel;
+    [SerializeField] Transform m_MapContentView;
+    [SerializeField] InputField m_RoomTitle;
 
-	[Header("[Round Settings]")]
-	[SerializeField] Toggle m_RoundTime120;
-	[SerializeField] Toggle m_RoundTime150;
-	[SerializeField] Toggle m_RoundTime180;
-	[SerializeField] Toggle m_RoundNumber1;
-	[SerializeField] Toggle m_RoundNumber3;
-	[SerializeField] Toggle m_RoundNumber5;
+    [Header("[Round Settings]")]
+    [SerializeField] Toggle m_RoundTime120;
+    [SerializeField] Toggle m_RoundTime150;
+    [SerializeField] Toggle m_RoundTime180;
+    [SerializeField] Toggle m_RoundNumber1;
+    [SerializeField] Toggle m_RoundNumber3;
+    [SerializeField] Toggle m_RoundNumber5;
 
-	MapInfo m_SelectedMap;
-	string m_NotContainSpecial = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
+    MapInfo m_SelectedMap;
+    string m_NotContainSpecial = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
 
-	public void Open(UnityAction done = null)
-	{
-		m_Map.SetActive(true);
-		done?.Invoke();
-	}
+    public void Open(UnityAction done = null)
+    {
+        m_Map.SetActive(true);
+        done?.Invoke();
+    }
 
-	public void Close(UnityAction done = null)
-	{
-		m_Map.SetActive(false);
+    public void Close(UnityAction done = null)
+    {
+        m_Map.SetActive(false);
 
-		if (m_SelectedMap != null)
-		{
-			m_SelectedMap.button.gameObject.SetActive(false);
-			m_SelectedMap.title.color = Color.white;
-			m_SelectedMap.info.color = Color.white;
-		}
+        if (m_SelectedMap != null)
+        {
+            m_SelectedMap.button.gameObject.SetActive(false);
+            m_SelectedMap.title.color = Color.white;
+            m_SelectedMap.info.color = Color.white;
+        }
 
-		m_RoundNumber3.isOn = true;
-		m_RoundTime150.isOn = true;
-		m_Preferences.roundTime = 3;
-		m_Preferences.roundNumber = 150;
-		m_RoomTitle.text = null;
+        m_RoundNumber3.isOn = true;
+        m_RoundTime150.isOn = true;
+        m_Preferences.roundTime = 3;
+        m_Preferences.roundNumber = 150;
+        m_RoomTitle.text = null;
 
-		done?.Invoke();
-	}
+        done?.Invoke();
+    }
 
-	void OnClickConfirm()
-	{
-		if (!PhotonNetwork.IsConnected)
-		{
-			Debug.LogError("Network isn't Connected");
-			return;
-		}
+    void OnClickConfirm()
+    {
+        Popups popups = Core.plugs.Get<Popups>();
 
-		if (string.IsNullOrEmpty(m_Preferences.mapTitle))
-		{
-			Debug.Log("Select Map");
-			return;
-		}
+        if (!PhotonNetwork.IsConnected)
+        {
+            NoticePopup.content = "네트워크 연결이 끊겼습니다.";
+            popups.OpenPopupAsync<NoticePopup>();
+            return;
+        }
 
-		m_Preferences.roomTitle = m_RoomTitle.text;
-		if (string.IsNullOrEmpty(m_Preferences.roomTitle))
-		{
-			Debug.Log("Input room title");
-			return;
-		}
+        if (string.IsNullOrEmpty(m_Preferences.mapTitle))
+        {
+            NoticePopup.content = "맵을 선택해주세요.";
+            popups.OpenPopupAsync<NoticePopup>();
+            return;
+        }
 
-		Regex regex = new Regex(m_NotContainSpecial);
-		if (regex.IsMatch(m_Preferences.roomTitle))
-		{
-			Debug.Log("There is special key");
-			m_RoomTitle.text = null;
-			return;
-		}
+        m_Preferences.roomTitle = m_RoomTitle.text;
+        if (string.IsNullOrEmpty(m_Preferences.roomTitle))
+        {
+            NoticePopup.content = "맵 이름을 입력해주세요.";
+            popups.OpenPopupAsync<NoticePopup>();
+            return;
+        }
 
-		confirm?.Invoke(m_Preferences.mapTitle, m_Preferences.roomTitle, m_Preferences.roundTime, m_Preferences.roundNumber);
-	}
+        Regex regex = new Regex(m_NotContainSpecial);
+        if (regex.IsMatch(m_Preferences.roomTitle))
+        {
+            NoticePopup.content = "맵 이름에 허용되지 않는 글자가 있습니다.";
+            popups.OpenPopupAsync<NoticePopup>();
+            m_RoomTitle.text = null;
+            return;
+        }
 
-	void OnSelectMap(MapInfo map)
-	{
-		if (map == null) { return; }
+        confirm?.Invoke(m_Preferences.mapTitle, m_Preferences.roomTitle, m_Preferences.roundTime, m_Preferences.roundNumber);
+    }
 
-		if (m_SelectedMap != null)
-		{
-			m_SelectedMap.check.gameObject.SetActive(false);
-			m_SelectedMap.title.color = Color.white;
-			m_SelectedMap.info.color = Color.white;
-		}
+    void OnSelectMap(MapInfo map)
+    {
+        if (map == null) { return; }
 
-		map.check.gameObject.SetActive(true);
-		map.title.color = Color.yellow;
-		map.info.color = Color.yellow;
-		m_SelectedMap = map;
-		m_Preferences.mapTitle = map.mapTitle;
-	}
-	
-	void SetRoundTime(int value, bool on)
-	{
-		if (!on) { return; }
+        if (m_SelectedMap != null)
+        {
+            m_SelectedMap.check.gameObject.SetActive(false);
+            m_SelectedMap.title.color = Color.white;
+            m_SelectedMap.info.color = Color.white;
+        }
 
-		m_Preferences.roundTime = value;
-	}
+        map.check.gameObject.SetActive(true);
+        map.title.color = Color.yellow;
+        map.info.color = Color.yellow;
+        m_SelectedMap = map;
+        m_Preferences.mapTitle = map.mapTitle;
+    }
 
-	void SetRoundNumber(int value, bool on)
-	{
-		if (!on) { return; }
+    void SetRoundTime(int value, bool on)
+    {
+        if (!on) { return; }
 
-		m_Preferences.roundNumber = value;
-	}
+        m_Preferences.roundTime = value;
+    }
 
-	private void Awake()
-	{
-		m_Map.SetActive(false);
-		m_RoundNumber1.onValueChanged.AddListener((b) => SetRoundNumber(1, b));
-		m_RoundNumber3.onValueChanged.AddListener((b) => SetRoundNumber(3, b));
-		m_RoundNumber5.onValueChanged.AddListener((b) => SetRoundNumber(5, b));
-		m_RoundTime120.onValueChanged.AddListener((b) => SetRoundTime(120, b));
-		m_RoundTime150.onValueChanged.AddListener((b) => SetRoundTime(150, b));
-		m_RoundTime180.onValueChanged.AddListener((b) => SetRoundTime(180, b));
-		m_Confirm.onClick.AddListener(OnClickConfirm);
-		m_Cancel.onClick.AddListener(() => Close());
-		mapInfos.ForEach((v) => v.button.onClick.AddListener(() => OnSelectMap(v)));
+    void SetRoundNumber(int value, bool on)
+    {
+        if (!on) { return; }
 
-		//Awake Default
-		m_Preferences.roundTime = 3;
-		m_Preferences.roundNumber = 150;
-	}
+        m_Preferences.roundNumber = value;
+    }
 
-	// Start is called before the first frame update
-	void Start()
-	{
-		Core.Ensure(() => Core.plugs.Loaded(this));
-	}
+    private void Awake()
+    {
+        m_Map.SetActive(false);
+        m_RoundNumber1.onValueChanged.AddListener((b) => SetRoundNumber(1, b));
+        m_RoundNumber3.onValueChanged.AddListener((b) => SetRoundNumber(3, b));
+        m_RoundNumber5.onValueChanged.AddListener((b) => SetRoundNumber(5, b));
+        m_RoundTime120.onValueChanged.AddListener((b) => SetRoundTime(120, b));
+        m_RoundTime150.onValueChanged.AddListener((b) => SetRoundTime(150, b));
+        m_RoundTime180.onValueChanged.AddListener((b) => SetRoundTime(180, b));
+        m_Confirm.onClick.AddListener(OnClickConfirm);
+        m_Cancel.onClick.AddListener(() => Close());
+        mapInfos.ForEach((v) => v.button.onClick.AddListener(() => OnSelectMap(v)));
 
-	private void OnDestroy()
-	{
-		Core.Ensure(() => Core.plugs.Unloaded(this));
-	}
+        //Awake Default
+        m_Preferences.roundTime = 3;
+        m_Preferences.roundNumber = 150;
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        Core.Ensure(() => Core.plugs.Loaded(this));
+    }
+
+    private void OnDestroy()
+    {
+        Core.Ensure(() => Core.plugs.Unloaded(this));
+    }
 
 }

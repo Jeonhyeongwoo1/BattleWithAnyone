@@ -168,7 +168,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c44dbd1733cf2d4bac8d6f48837b81b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Popups: []
+  m_Popups:
+  - {fileID: 1328714399}
   m_IsOpenedPopups: []
 --- !u!1 &567090528
 GameObject:
@@ -346,7 +347,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1328714396
 RectTransform:
   m_ObjectHideFlags: 0
@@ -418,8 +419,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56e13a88d783c1c439a943a2a2ff7404, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Content: {fileID: 0}
-  m_NoticeOpenTime: 0
+  m_NoticeDurationIcon: {fileID: 1674776499}
+  m_Content: {fileID: 567090530}
+  m_Frame: {fileID: 955255600}
+  m_NoticeOpenTime: 1
+  m_Curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1674776497
 GameObject:
   m_ObjectHideFlags: 0
@@ -432,7 +459,7 @@ GameObject:
   - component: {fileID: 1674776500}
   - component: {fileID: 1674776499}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -509,7 +536,7 @@ GameObject:
   - component: {fileID: 1825364356}
   - component: {fileID: 1825364355}
   m_Layer: 5
-  m_Name: Popups UI 1
+  m_Name: Popups UI 80
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -593,7 +620,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 80
   m_TargetDisplay: 0

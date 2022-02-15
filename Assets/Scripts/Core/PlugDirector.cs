@@ -73,7 +73,18 @@ public class PlugDirector : MonoBehaviour
 
     public void DefaultEnsure()
     {
+        Ensure<Popups>();
         Ensure<MapSettings>();
+    }
+
+    public void OnLoadSceneAsync(string name, UnityAction done = null)
+    {
+        StartCoroutine(OnLoaidngSceneAsync(name, done));
+    }
+
+    public void UnloadSceneAsync(string name, UnityAction done = null)
+    {
+        StartCoroutine(UnloadingSceneAsync(name, done));
     }
 
     bool Has(string name)
@@ -81,16 +92,6 @@ public class PlugDirector : MonoBehaviour
         IPlugable plugable = m_Loaded.Find((v) => v.plugName == name);
         return plugable != null;
     }
-
-	public void OnLoadSceneAsync(string name, UnityAction done = null)
-	{
-		StartCoroutine(OnLoaidngSceneAsync(name, done));
-	}
-
-	public void UnloadSceneAsync(string name, UnityAction done = null)
-	{
-		StartCoroutine(UnloadingSceneAsync(name, done));
-	}
 
     IEnumerator UnloadingSceneAsync(string name, UnityAction done = null)
     {
