@@ -95,9 +95,6 @@ public class RoomChat : MonoBehaviour, IChatClientListener
     public void OnChatStateChange(ChatState state)
     {
         Log("Chat State Changed :" + state);
-
-
-
     }
 
     public void OnGetMessages(string channelName, string[] senders, object[] messages)
@@ -147,10 +144,17 @@ public class RoomChat : MonoBehaviour, IChatClientListener
     }
 
     public void OnPrivateMessage(string sender, object message, string channelName) { }
-    public void OnUserSubscribed(string channel, string user) { Debug.Log("User: " + user); }
-    public void OnUserUnsubscribed(string channel, string user) { Debug.Log("User: " + user); }
+    public void OnUserSubscribed(string channel, string user) { Log("User: " + user); }
+    public void OnUserUnsubscribed(string channel, string user) { Log("User: " + user); }
 
-    // Start is called before the first frame update
+	void OnApplicationQuit()
+	{
+		if (m_ChatClient != null)
+		{
+			m_ChatClient.Disconnect();
+		}
+	}
+
     void Start()
     {
         m_InputFieldChat.enabled = false;
@@ -159,16 +163,12 @@ public class RoomChat : MonoBehaviour, IChatClientListener
         m_BlockChat.onClick.AddListener(OnBlockChat);
     }
 
-    /// <summary>
-    /// Update is called every frame, if the MonoBehaviour is enabled.
-    /// </summary>
     void Update()
     {
         if (m_ChatClient != null)
         {
             m_ChatClient.Service();
         }
-
     }
 
 }

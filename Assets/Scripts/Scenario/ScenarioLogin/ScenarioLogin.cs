@@ -66,7 +66,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         if (string.IsNullOrEmpty(id))
         {
             m_Id.ActivateInputField();
-            NoticePopup.content = "ID를 입력해주세요.";
+            NoticePopup.content = MessageCommon.Get("login.checkid");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -74,7 +74,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         if (string.IsNullOrEmpty(password))
         {
             m_Password.ActivateInputField();
-            NoticePopup.content = "비밀번호를 입력해주세요.";
+            NoticePopup.content = MessageCommon.Get("login.checkpw");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }

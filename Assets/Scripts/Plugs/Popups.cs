@@ -4,6 +4,7 @@ using UnityEngine.Events;
 
 public abstract class BasePopup : MonoBehaviour
 {
+	public UnityAction removeOpenedPopup;
     public abstract void OpenAsync(UnityAction done = null);
     public abstract void CloseAsync(UnityAction done = null);
 }
@@ -58,8 +59,9 @@ public class Popups : MonoBehaviour, IPlugable
                 if (!p.gameObject.activeSelf) { p.gameObject.SetActive(true); }
 
                 p.OpenAsync(() =>
-                {
-                    m_IsOpenedPopups.Add(p);
+				{
+					m_IsOpenedPopups.Add(p);
+					p.removeOpenedPopup = () => m_IsOpenedPopups.Remove(p);
                     done?.Invoke();
                 });
                 return;

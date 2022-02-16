@@ -24,10 +24,10 @@ public class Room : MonoBehaviourPunCallbacks, IPointerClickHandler, IPointerEnt
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //OnClick
         if (!PhotonNetwork.IsConnectedAndReady && !PhotonNetwork.InLobby)
-        {
-            Debug.LogError("Network isn't connected");
+		{
+			NoticePopup.content = MessageCommon.Get("network.disconnect");
+			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>(() => Core.scenario.OnLoadScenario(nameof(ScenarioLogin)));
             return;
         }
 

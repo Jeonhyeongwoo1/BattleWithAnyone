@@ -35,6 +35,7 @@ public class NoticePopup : BasePopup
     {
         m_Content.text = null;
         content = null;
+        gameObject.SetActive(false);
         done?.Invoke();
     }
 
@@ -49,9 +50,6 @@ public class NoticePopup : BasePopup
             yield return null;
         }
 
-        Popups popups = Core.plugs.Get<Popups>();
-        popups?.ClosePopupAsync<NoticePopup>();
+		CloseAsync(() => removeOpenedPopup?.Invoke());
     }
-
-
 }

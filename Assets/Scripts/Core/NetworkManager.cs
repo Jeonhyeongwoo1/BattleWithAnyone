@@ -26,7 +26,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void ReqFindId(string email, string userName, UnityAction<string> success, UnityAction<string> fail)
     {
-        string url = Core.settings.url + "/FindId/" + email + userName;
+        string url = Core.settings.url + "/findId/" + email + "/" + userName;
 
         UnityWebRequest request = UnityWebRequest.Get(url);
         StartCoroutine(RequestData(request, success, fail));
@@ -34,7 +34,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void ReqFindPassword(string id, string email, UnityAction<string> success, UnityAction<string> fail)
     {
-        string url = Core.settings.url + "/FindPw/" + id + email;
+        string url = Core.settings.url + "/findPw/" + id + "/" + email; 
 
         UnityWebRequest request = UnityWebRequest.Get(url);
         StartCoroutine(RequestData(request, success, fail));
@@ -163,6 +163,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Log("Failed Create Room. Return Code : " + returnCode + ", Message : " + message);
+    }
+
+    void OnApplicationQuit()
+    {
+        if(PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.Disconnect();
+        }
     }
 
     IEnumerator ConnectingNetwork(UnityAction done)

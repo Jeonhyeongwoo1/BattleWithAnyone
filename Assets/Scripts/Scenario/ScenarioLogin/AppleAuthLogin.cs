@@ -23,7 +23,7 @@ public class AppleAuthLogin : MonoBehaviour
     {
         if (!AppleAuthManager.IsCurrentPlatformSupported)
         {
-            NoticePopup.content = "지원하지않는 기기입니다.";
+            NoticePopup.content = MessageCommon.Get("login.apple.platfromsupport");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -35,7 +35,7 @@ public class AppleAuthLogin : MonoBehaviour
 
         m_AppleAuthManager.SetCredentialsRevokedCallback(result =>
         {
-            NoticePopup.content = "Apple 로그인에 실패하였습니다.";
+            NoticePopup.content = MessageCommon.Get("login.apple.failed");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             Debug.LogError("Received revoke callback " + result);
         });
@@ -84,7 +84,7 @@ public class AppleAuthLogin : MonoBehaviour
             error =>
             {
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
-                NoticePopup.content = "Apple 로그인에 실패하였습니다.";
+                NoticePopup.content = MessageCommon.Get("login.apple.failed");
                 Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
                 Debug.LogError("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
                 isSuccessed = false;
@@ -124,7 +124,7 @@ public class AppleAuthLogin : MonoBehaviour
             },
             error =>
             {
-                NoticePopup.content = "Apple 로그인에 실패하였습니다.";
+                NoticePopup.content = MessageCommon.Get("login.apple.failed");
                 Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
                 Debug.LogWarning("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());

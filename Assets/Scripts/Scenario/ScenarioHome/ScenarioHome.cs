@@ -49,6 +49,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
         roomMenu.gameObject.SetActive(true);
         userInfo.gameObject.SetActive(true);
+        m_Exit.gameObject.SetActive(true);
     }
 
     IEnumerator WaitingForNetworkConnection(UnityAction done)
@@ -69,6 +70,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     private void Awake()
     {
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
+        m_Exit.onClick.AddListener(()=> Application.Quit());
     }
 
 }

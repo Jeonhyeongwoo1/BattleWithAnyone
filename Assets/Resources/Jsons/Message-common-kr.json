@@ -1,0 +1,16 @@
+{
+    "login.inputid":"ID를 입력해주세요.",
+    "login.inputpw":"비밀번호를 입력해주세요.",
+    "login.checkid":"아이디를 확인 해주세요.",
+    "login.apple.platfromsupport":"지원하지않는 기기입니다.",
+    "login.apple.failed":"Apple 로그인에 실패하였습니다.",
+    "network.disconnect":"네트워크 연결이 끊겼습니다.",
+    "map.selectmap":"맵을 선택해주세요.",
+    "map.inputtitle":"방 제목을 입력해주세요.",
+    "map.notcontain":"방 제목에 허용되지 않는 글자가 있습니다.",
+    "login.availableid":"사용가능한 아이디 입니다.",
+    "login.notavailableid":"사용 불가능한 아이디 입니다.",
+    "signup.signupfailed":"회원가입을 실패했습니다.",
+    "signup.signupsucceesd":"회원가입에 성공하였습니다.",
+    "room.inputroomname":"방 이름을 입력해주세요."
+}

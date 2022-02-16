@@ -39,7 +39,8 @@ public class SearchRoom : MonoBehaviour
 	{
 		if (string.IsNullOrEmpty(m_InputedRoomName.text))
 		{
-			Debug.Log("Input Player name");
+			NoticePopup.content = MessageCommon.Get("room.inputroomname");
+			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			return;
 		}
 
@@ -50,7 +51,7 @@ public class SearchRoom : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		m_Close.onClick.AddListener(()=> Close());
+		m_Close.onClick.AddListener(() => Close());
 		m_Search.onClick.AddListener(OnSearchRoom);
 	}
 }

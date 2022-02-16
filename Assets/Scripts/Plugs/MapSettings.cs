@@ -83,15 +83,15 @@ public class MapSettings : MonoBehaviour, IPlugable
         Popups popups = Core.plugs.Get<Popups>();
 
         if (!PhotonNetwork.IsConnected)
-        {
-            NoticePopup.content = "네트워크 연결이 끊겼습니다.";
+		{
+			NoticePopup.content = MessageCommon.Get("network.disconnect");
             popups.OpenPopupAsync<NoticePopup>();
             return;
         }
 
         if (string.IsNullOrEmpty(m_Preferences.mapTitle))
         {
-            NoticePopup.content = "맵을 선택해주세요.";
+            NoticePopup.content = MessageCommon.Get("map.selectmap");
             popups.OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -99,7 +99,7 @@ public class MapSettings : MonoBehaviour, IPlugable
         m_Preferences.roomTitle = m_RoomTitle.text;
         if (string.IsNullOrEmpty(m_Preferences.roomTitle))
         {
-            NoticePopup.content = "맵 이름을 입력해주세요.";
+            NoticePopup.content = MessageCommon.Get("map.inputtitle");
             popups.OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -107,7 +107,7 @@ public class MapSettings : MonoBehaviour, IPlugable
         Regex regex = new Regex(m_NotContainSpecial);
         if (regex.IsMatch(m_Preferences.roomTitle))
         {
-            NoticePopup.content = "맵 이름에 허용되지 않는 글자가 있습니다.";
+            NoticePopup.content = MessageCommon.Get("map.notcontain");
             popups.OpenPopupAsync<NoticePopup>();
             m_RoomTitle.text = null;
             return;
