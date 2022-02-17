@@ -8,7 +8,7 @@ using System;
 public class RoomUI : MonoBehaviourPunCallbacks
 {
 	[Serializable]
-	public class Characters
+	public class Character
 	{
 		public string name;
 		public string info;
@@ -29,20 +29,22 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	[SerializeField] Button m_GameStart;
 	[SerializeField] Button m_GameReady;
 	[SerializeField] Button m_CharacterFormClose;
-	[SerializeField] RawImage m_MasterCharacter;
-	[SerializeField] RawImage m_PlayerCharacter;
 	[SerializeField] Button m_KickPlayer;
 	[SerializeField] GameObject m_Ready;
 	[SerializeField] Button m_MapSetting;
+	[SerializeField] RawImage m_MasterCharacter;
+	[SerializeField] RawImage m_PlayerCharacter;
+	[SerializeField] Transform m_SelectedPlayerCharacter;
+	[SerializeField] Transform m_SelectedMasterCharacter;
 
 	public Text m_Player1Txt;
 	public Text m_Player2Txt;
 
-	public List<Characters> characters = new List<Characters>();
+	public List<Character> characters = new List<Character>();
 
-	Characters m_SelectedCharacter;
+	Character m_SelectedCharacter;
 	Transform m_SelectedForm;
-	bool m_IsGameReady;
+	bool m_IsGameReady = false;
 
 	public void SetInfo(string title)
 	{
@@ -64,7 +66,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 	public void SetCharacterList()
 	{
-		foreach (Characters character in characters)
+		foreach (Character character in characters)
 		{
 			Transform tr = Instantiate<Transform>(m_CharacterPrefab, Vector3.zero, Quaternion.identity, m_CharacterContentList);
 			tr.GetChild(0).GetChild(0).GetComponent<Image>().sprite = character.sprite;
@@ -74,7 +76,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 		}
 	}
 
-	void OnSelectCharacter(Characters character, Transform form)
+	void OnSelectCharacter(Character character, Transform form)
 	{
 		if (m_SelectedCharacter != null)
 		{
@@ -122,6 +124,9 @@ public class RoomUI : MonoBehaviourPunCallbacks
 		{
 			m_SelectedCharacter.model.gameObject.SetActive(false);
 			m_SelectedCharacter = null;
+
+			//Change
+			photonView.RPC("ChangeCharacter", RpcTarget.All, "", PhotonNetwork.IsMasterClient ? "Master" : "Player");
 		}
 
 		if (m_SelectedForm != null)
@@ -130,8 +135,8 @@ public class RoomUI : MonoBehaviourPunCallbacks
 			m_SelectedForm = null;
 		}
 
-		m_CharacterSelectionCompleted.gameObject.SetActive(false);
-		m_CharacterSelectForm.gameObject.SetActive(false);
+		m_CharacterSelectionCompleted.gameObject.SetActive(false); //캐릭터 선택완료
+		m_CharacterSelectForm.gameObject.SetActive(false); //캐릭터 선택창
 	}
 
 	void OnDestroyCharacterContentList()
@@ -160,7 +165,6 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 	void OnCharacterSelectionCompleted()
 	{
-
 		if (m_SelectedCharacter == null)
 		{
 			Debug.Log("Select Character");
@@ -169,15 +173,34 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 		m_CharacterSelectForm.gameObject.SetActive(false);
 
-		if (PhotonNetwork.IsMasterClient)
+		photonView.RPC("ChangeCharacter", RpcTarget.All, m_SelectedCharacter.name, PhotonNetwork.IsMasterClient ? "Master" : "Player");
+	}
+
+	[PunRPC]
+	public void ChangeCharacter(string character, string playerType)
+	{
+		Transform target = playerType == "Master" ? m_SelectedMasterCharacter : m_SelectedPlayerCharacter;
+
+		if (target.childCount > 0)
 		{
-			m_MasterCharacter.gameObject.SetActive(true);
-		}
-		else
-		{
-			m_PlayerCharacter.gameObject.SetActive(true);
+			for (int i = 0; i < target.childCount; i++)
+			{
+				Destroy(target.GetChild(i).gameObject);
+			}
 		}
 
+		Transform c = null;
+		foreach (var v in characters)
+		{
+			if (v.name == character)
+			{
+				c = Instantiate<Transform>(v.model, target.position, Quaternion.Euler(new Vector3(0, -180, 0)), target);
+				if(!c.gameObject.activeSelf)
+				{
+					c.gameObject.SetActive(true);
+				}
+			}
+		}
 	}
 
 	public void Init()
@@ -211,22 +234,21 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	{
 		if (PhotonNetwork.IsMasterClient || !PhotonNetwork.InRoom || !PhotonNetwork.IsConnectedAndReady) { return; }
 
-		if (m_IsGameReady)
+		if (m_SelectedCharacter == null)
 		{
-			m_Ready.SetActive(false);
-			m_IsGameReady = false;
+			NoticePopup.content = MessageCommon.Get("room.selectcharacter");
+			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+			return;
 		}
-		else
-		{
-			if (m_SelectedCharacter == null)
-			{
-				Debug.Log("Selct Character");
-				return;
-			}
 
-			m_Ready.SetActive(true);
-			m_IsGameReady = true;
-		}
+		photonView.RPC("PlayerGameReadied", RpcTarget.All);
+	}
+
+	[PunRPC]
+	void PlayerGameReadied()
+	{
+		m_IsGameReady = !m_IsGameReady;
+		m_Ready.SetActive(m_IsGameReady);
 	}
 
 	void OpenMapSetting()
