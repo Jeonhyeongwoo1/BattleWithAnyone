@@ -34,7 +34,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void ReqFindPassword(string id, string email, UnityAction<string> success, UnityAction<string> fail)
     {
-        string url = Core.settings.url + "/findPw/" + id + "/" + email; 
+        string url = Core.settings.url + "/findPw/" + id + "/" + email;
 
         UnityWebRequest request = UnityWebRequest.Get(url);
         StartCoroutine(RequestData(request, success, fail));
@@ -117,6 +117,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(ConnectingNetwork(done));
     }
 
+    public void StartCheckingNetwork()
+    {
+        StartCoroutine(CheckingNetwork());
+    }
+
     public void LeaveRoom()
     {
         if (!PhotonNetwork.IsConnected) { return; }
@@ -167,10 +172,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     void OnApplicationQuit()
     {
-        if(PhotonNetwork.IsConnected)
+        if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.Disconnect();
         }
+    }
+
+    //네트워크 상태를 체크한다.///
+    IEnumerator CheckingNetwork()
+    {
+        while (!PhotonNetwork.IsConnected) { yield return new WaitForSeconds(1f); }
+
+        Core.scenario.OnLoadScenario(nameof(ScenarioLogin));
     }
 
     IEnumerator ConnectingNetwork(UnityAction done)

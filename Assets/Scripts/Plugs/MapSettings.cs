@@ -64,7 +64,7 @@ public class MapSettings : MonoBehaviour, IPlugable
 
         if (m_SelectedMap != null)
         {
-            m_SelectedMap.button.gameObject.SetActive(false);
+            m_SelectedMap.check.gameObject.SetActive(false);
             m_SelectedMap.title.color = Color.white;
             m_SelectedMap.info.color = Color.white;
         }
@@ -83,8 +83,8 @@ public class MapSettings : MonoBehaviour, IPlugable
         Popups popups = Core.plugs.Get<Popups>();
 
         if (!PhotonNetwork.IsConnected)
-		{
-			NoticePopup.content = MessageCommon.Get("network.disconnect");
+        {
+            NoticePopup.content = MessageCommon.Get("network.disconnect");
             popups.OpenPopupAsync<NoticePopup>();
             return;
         }

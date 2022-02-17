@@ -49,6 +49,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
         roomMenu.gameObject.SetActive(true);
         userInfo.gameObject.SetActive(true);
+        userInfo.SetUserInfo(Core.networkManager.userNickName);
         m_Exit.gameObject.SetActive(true);
     }
 
@@ -70,7 +71,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     private void Awake()
     {
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
-        m_Exit.onClick.AddListener(()=> Application.Quit());
+        m_Exit.onClick.AddListener(() => Application.Quit());
     }
 
 }

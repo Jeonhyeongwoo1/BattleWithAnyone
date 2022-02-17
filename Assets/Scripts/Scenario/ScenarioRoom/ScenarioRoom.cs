@@ -38,6 +38,13 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
             string title = PhotonNetwork.CurrentRoom.Name;
 
             roomUI.SetInfo(title);
+            roomUI.SetMasterName(PhotonNetwork.MasterClient.NickName);
+
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                Debug.Log(PhotonNetwork.NickName);
+                roomUI.SetPlayerName(PhotonNetwork.NickName);
+            }
         }
 
         Core.plugs.DefaultEnsure();
@@ -73,17 +80,14 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
         {
             roomChat.OnSendMessage(otherPlayer.NickName + " Left Room..");
         }
-
+        Debug.LogError(otherPlayer.IsMasterClient);
         roomUI.ActiveKickPlayerBtn(false);
+        roomUI.OnLeftPlayer();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        if (!newPlayer.IsMasterClient)
-        {
-            roomUI.m_Player2Txt.text = "Player";
-        }
-
+        roomUI.SetPlayerName(newPlayer.NickName);
         roomUI.ActiveKickPlayerBtn(true);
     }
 
@@ -100,6 +104,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
         roomChat.connectCompleted = ConnectCompleted;
         PhotonNetwork.EnableCloseConnection = true;
         roomUI.Init();
+        Core.networkManager.isLogined = true;
     }
 
     //Photon Network, Chat Connect Completed
