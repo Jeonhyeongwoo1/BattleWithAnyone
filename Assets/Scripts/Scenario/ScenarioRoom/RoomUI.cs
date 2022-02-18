@@ -47,81 +47,72 @@ public class RoomUI : MonoBehaviourPunCallbacks
     public void SetPlayerName(string name) => m_PlayerName.text = name;
     public void SetMasterName(string name) => m_MasterName.text = name;
 
-    public void ActiveKickPlayerBtn(bool active)
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            m_KickPlayer.gameObject.SetActive(active);
-        }
-    }
+	public void Init()
+	{
+		if (PhotonNetwork.IsMasterClient)
+		{
+			m_GameStart.gameObject.SetActive(true);
+			m_MapSetting.gameObject.SetActive(true);
+			m_GameReady.gameObject.SetActive(false);
+		}
+		else
+		{
+			m_GameReady.gameObject.SetActive(true);
+			m_MapSetting.gameObject.SetActive(false);
+			m_GameStart.gameObject.SetActive(false);
+		}
+	}
 
     public void SelectCharacter()
     {
         m_CharacterSelectForm.gameObject.SetActive(true);
     }
 
-    public void SetCharacterList()
+    public void OnPlayerEnter(string playerName)
     {
-        foreach (Character character in characters)
-        {
-            Transform tr = Instantiate<Transform>(m_CharacterPrefab, Vector3.zero, Quaternion.identity, m_CharacterContentList);
-            tr.GetChild(0).GetChild(0).GetComponent<Image>().sprite = character.sprite;
-            tr.GetChild(1).GetComponent<Text>().text = character.name;
-            tr.GetComponent<Button>().onClick.AddListener(() => OnSelectCharacter(character, tr));
-            tr.name = character.name;
-        }
+		m_KickPlayer.gameObject.SetActive(true);
+		m_PlayerName.text = playerName;
+        
+        if (m_SelectedCharacter != null)
+		{
+			photonView.RPC("CreateCharacter", RpcTarget.Others, m_SelectedCharacter.name);
+		}
     }
 
-    public void OnLeftPlayer()
+    public void OnPlayerLeft()
     {
-        //상대방이 나갈경우 상대방의 데이터를 초기화한다.
-        //내가 Master일 경우에는 상대방 데이터만 초기화한다.
-        //만약 내가 Plyaer이고 Master가 방을 나갈경우에는 방장 데이터를 초기화하고 내가 방장자리로 이동한다.
+		//상대방이 나가면 내가 원래 방장이든 아니든 캐릭터 선택 Reset한 후 새롭게 생성
+		//Master가 아니면 Master자리로 이동(왼쪽이 Master)
 
-        if (PhotonNetwork.IsMasterClient)
+		if (m_SelectedPlayerCharacter.childCount > 0)
+		{
+			Destroy(m_SelectedPlayerCharacter.GetChild(0).gameObject);
+		}
+
+		if (m_SelectedMasterCharacter.childCount > 0)
+		{
+			Destroy(m_SelectedMasterCharacter.GetChild(0).gameObject);
+		}
+
+        m_GameReady.gameObject.SetActive(false);
+        m_GameStart.gameObject.SetActive(true);
+		m_KickPlayer.gameObject.SetActive(false);
+		m_MasterName.text = Core.networkManager.userNickName;
+		m_PlayerName.text = null;
+		if (m_IsGameReady)
+		{
+			m_Ready.SetActive(false);
+			m_IsGameReady = false;
+		}
+
+        if(m_SelectedCharacter != null)
         {
-            if (m_SelectedPlayerCharacter.childCount > 0)
-            {
-                Destroy(m_SelectedPlayerCharacter.GetChild(0).gameObject);
-            }
-
-            m_PlayerName.text = null;
-            if (m_IsGameReady)
-            {
-                m_Ready.SetActive(false);
-                m_IsGameReady = false;
-            }
-        }
-        else
-        {
-
-            if (m_SelectedPlayerCharacter.childCount > 0)
-            {
-                Destroy(m_SelectedPlayerCharacter.GetChild(0).gameObject);
-            }
-
-            if (m_SelectedMasterCharacter.childCount > 0)
-            {
-                Destroy(m_SelectedMasterCharacter.GetChild(0).gameObject);
-            }
-
-            m_MasterName.text = m_PlayerName.text;
-            m_PlayerName.text = null;
-            if (m_IsGameReady)
-            {
-                m_Ready.SetActive(false);
-                m_IsGameReady = false;
-            }
-
-            Transform character = Instantiate<Transform>(m_SelectedCharacter.model,
-                                                            m_SelectedPlayerCharacter.position,
-                                                            Quaternion.Euler(new Vector3(0, -180, 0)),
-                                                            m_SelectedMasterCharacter);
-
-
-
-        }
-    }
+			Transform character = Instantiate<Transform>(m_SelectedCharacter.model,
+															m_SelectedMasterCharacter.position,
+															Quaternion.Euler(new Vector3(0, -180, 0)),
+															m_SelectedMasterCharacter);
+		}
+	}
 
     void OnSelectCharacter(Character character, Transform form)
     {
@@ -145,7 +136,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
         m_CharacterSelectionCompleted.gameObject.SetActive(true);
         m_CharacterDrag.SetCharacter(character.model);
-        //Set Info
+        //캐릭터 정보 넣기
 
     }
 
@@ -223,8 +214,80 @@ public class RoomUI : MonoBehaviourPunCallbacks
         photonView.RPC("ChangeCharacter", RpcTarget.All, m_SelectedCharacter.name, PhotonNetwork.IsMasterClient ? "Master" : "Player");
     }
 
-    [PunRPC]
-    public void ChangeCharacter(string character, string playerType)
+	void SetCharacterList()
+	{
+		foreach (Character character in characters)
+		{
+			Transform tr = Instantiate<Transform>(m_CharacterPrefab, Vector3.zero, Quaternion.identity, m_CharacterContentList);
+			tr.GetChild(0).GetChild(0).GetComponent<Image>().sprite = character.sprite;
+			tr.GetChild(1).GetComponent<Text>().text = character.name;
+			tr.GetComponent<Button>().onClick.AddListener(() => OnSelectCharacter(character, tr));
+			tr.name = character.name;
+		}
+	}
+
+	void GameReady()
+	{
+		if (PhotonNetwork.IsMasterClient || !PhotonNetwork.InRoom || !PhotonNetwork.IsConnectedAndReady) { return; }
+
+		if (m_SelectedCharacter == null)
+		{
+			NoticePopup.content = MessageCommon.Get("room.selectcharacter");
+			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+			return;
+		}
+
+		photonView.RPC("PlayerGameReadied", RpcTarget.All);
+	}
+
+	void OpenMapSetting()
+	{
+		if (Core.plugs.Has<MapSettings>())
+		{
+			MapSettings settings = Core.plugs.Get<MapSettings>();
+			settings.Open();
+			settings.confirm = (a, b, c, d) => ChangedMapSetting(a, b, c, d);
+			return;
+		}
+
+		Core.plugs.Load<MapSettings>(() =>
+		{
+			MapSettings settings = Core.plugs.Get<MapSettings>();
+			settings.Open();
+			settings.confirm = (a, b, c, d) => ChangedMapSetting(a, b, c, d);
+		});
+	}
+
+	void ChangedMapSetting(string map, string title, int time, int number)
+	{
+
+	}
+
+	void GameStart()
+	{
+		if (!PhotonNetwork.IsMasterClient) { return; }
+		if (!m_IsGameReady) { return; }
+
+	}
+
+	[PunRPC]
+	void CreateCharacter(string character)
+	{
+		foreach (var v in characters)
+		{
+			if (v.name == character)
+			{
+				Transform c = Instantiate<Transform>(v.model, m_SelectedMasterCharacter.position, Quaternion.Euler(new Vector3(0, -180, 0)), m_SelectedMasterCharacter);
+				if (!c.gameObject.activeSelf)
+				{
+					c.gameObject.SetActive(true);
+				}
+			}
+		}
+	}
+
+	[PunRPC]
+    void ChangeCharacter(string character, string playerType)
     {
         Transform target = playerType == "Master" ? m_SelectedMasterCharacter : m_SelectedPlayerCharacter;
         if (target.childCount > 0)
@@ -249,84 +312,15 @@ public class RoomUI : MonoBehaviourPunCallbacks
         }
     }
 
-    public void Init()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            m_GameStart.gameObject.SetActive(true);
-            m_MapSetting.gameObject.SetActive(true);
-            if (m_GameReady.gameObject.activeSelf)
-            {
-                m_GameReady.gameObject.SetActive(false);
-            }
-
-        }
-        else
-        {
-            m_GameReady.gameObject.SetActive(true);
-            m_MapSetting.gameObject.SetActive(false);
-
-            if (m_GameStart.gameObject.activeSelf)
-            {
-                m_GameStart.gameObject.SetActive(false);
-            }
-
-        }
-    }
-
-    void GameReady()
-    {
-        if (PhotonNetwork.IsMasterClient || !PhotonNetwork.InRoom || !PhotonNetwork.IsConnectedAndReady) { return; }
-
-        if (m_SelectedCharacter == null)
-        {
-            NoticePopup.content = MessageCommon.Get("room.selectcharacter");
-            Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-            return;
-        }
-
-        photonView.RPC("PlayerGameReadied", RpcTarget.All);
-    }
-
-    [PunRPC]
-    void PlayerGameReadied()
-    {
-        m_IsGameReady = !m_IsGameReady;
-        m_Ready.SetActive(m_IsGameReady);
-    }
-
-    void OpenMapSetting()
-    {
-        if (Core.plugs.Has<MapSettings>())
-        {
-            MapSettings settings = Core.plugs.Get<MapSettings>();
-            settings.Open();
-            settings.confirm = (a, b, c, d) => ChangedMapSetting(a, b, c, d);
-            return;
-        }
-
-        Core.plugs.Load<MapSettings>(() =>
-        {
-            MapSettings settings = Core.plugs.Get<MapSettings>();
-            settings.Open();
-            settings.confirm = (a, b, c, d) => ChangedMapSetting(a, b, c, d);
-        });
-    }
-
-    void ChangedMapSetting(string map, string title, int time, int number)
-    {
-
-    }
-
-    void GameStart()
-    {
-        if (!PhotonNetwork.IsMasterClient) { return; }
-        if (!m_IsGameReady) { return; }
-
-    }
-
+	[PunRPC]
+	void PlayerGameReadied()
+	{
+		m_IsGameReady = !m_IsGameReady;
+		m_Ready.SetActive(m_IsGameReady);
+	}
+    
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         m_Close.onClick.AddListener(GoHome);
         m_CharacterFormClose.onClick.AddListener(OnCharacterFormClose);

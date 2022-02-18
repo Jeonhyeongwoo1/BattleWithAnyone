@@ -6,72 +6,85 @@ using Photon.Pun;
 
 public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
 {
-    public string scenarioName => typeof(ScenarioHome).Name;
-    public UserInfo userInfo;
-    public RoomMenu roomMenu;
+	public string scenarioName => typeof(ScenarioHome).Name;
+	public UserInfo userInfo;
+	public RoomMenu roomMenu;
 
-    [SerializeField] Button m_Exit;
+	[SerializeField] Button m_Exit;
 
-    public void OnScenarioPrepare(UnityAction done)
-    {
-        BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
-        BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
-        Core.plugs.DefaultEnsure();
-        done?.Invoke();
-    }
+	public string testname = "전형우";
 
-    public void OnScenarioStandbyCamera(UnityAction done)
-    {
-        done?.Invoke();
-    }
+	public void OnScenarioPrepare(UnityAction done)
+	{
+		BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
+		BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
+		Core.plugs.DefaultEnsure();
+		done?.Invoke();
+	}
 
-    public void OnScenarioStart(UnityAction done)
-    {
-        if (Core.networkManager.isLogined && PhotonNetwork.IsConnected)
-        {
-            StartCoroutine(WaitingForNetworkConnection(() => PhotonNetwork.JoinLobby()));
-            done?.Invoke();
-            return;
-        }
+	public void OnScenarioStandbyCamera(UnityAction done)
+	{
+		done?.Invoke();
+	}
 
-        Core.networkManager.ConnectPhotonNetwork(() => PhotonNetwork.JoinLobby());
-        done?.Invoke();
-    }
+	public void OnScenarioStart(UnityAction done)
+	{
+		if (Core.networkManager.isLogined && PhotonNetwork.IsConnected)
+		{
+			StartCoroutine(WaitingForNetworkConnection(() => PhotonNetwork.JoinLobby()));
+			done?.Invoke();
+			return;
+		}
 
-    public void OnScenarioStop(UnityAction done)
-    {
-        StopAllCoroutines();
-        done?.Invoke();
-    }
+		Core.networkManager.ConnectPhotonNetwork(JoinLobby);
+		done?.Invoke();
+	}
 
-    public override void OnJoinedLobby()
-    {
-        BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
-        roomMenu.gameObject.SetActive(true);
-        userInfo.gameObject.SetActive(true);
-        userInfo.SetUserInfo(Core.networkManager.userNickName);
-        m_Exit.gameObject.SetActive(true);
-    }
+	void JoinLobby()
+	{
+		if (!Core.networkManager.isLogined)
+		{
+			Core.networkManager.SetPlayerName(testname);
+		}
 
-    IEnumerator WaitingForNetworkConnection(UnityAction done)
-    {
-        while (PhotonNetwork.NetworkClientState != Photon.Realtime.ClientState.ConnectedToMasterServer)
-        {
-            yield return null;
-        }
+		PhotonNetwork.JoinLobby();
+	}
 
-        done?.Invoke();
-    }
+	public void OnScenarioStop(UnityAction done)
+	{
+		StopAllCoroutines();
+		done?.Invoke();
+	}
 
-    private void Start()
-    {
-        Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
-    }
+	public override void OnJoinedLobby()
+	{
+		Core.networkManager.isLogined = true;
+		BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
+		roomMenu.gameObject.SetActive(true);
+		userInfo.SetUserInfo(Core.networkManager.userNickName);
+		userInfo.gameObject.SetActive(true);
+		m_Exit.gameObject.SetActive(true);
+	}
 
-    private void Awake()
-    {
-        Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
-        m_Exit.onClick.AddListener(() => Application.Quit());
-    }
+	IEnumerator WaitingForNetworkConnection(UnityAction done)
+	{
+		while (PhotonNetwork.NetworkClientState != Photon.Realtime.ClientState.ConnectedToMasterServer)
+		{
+			yield return null;
+		}
+
+		done?.Invoke();
+	}
+
+	private void Start()
+	{
+		Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
+	}
+
+	private void Awake()
+	{
+		Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
+		m_Exit.onClick.AddListener(() => Application.Quit());
+	}
 
 }

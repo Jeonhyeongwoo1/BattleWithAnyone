@@ -9,6 +9,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public bool isLogined = false;
     public string userNickName;
+    public string roomName;
 
     float m_NetworkMaxWaitTime = 10f;
     bool m_IsConnectSuccessed = false;
@@ -151,23 +152,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         m_IsConnectSuccessed = true;
         Log("OnConnectedToMaster");
         //        m_UserName.text = PhotonNetwork.LocalPlayer.NickName;
-    }
-
-    public override void OnJoinedRoom()
-    {
-        Log("Joined Room " + PhotonNetwork.CurrentRoom.Players);
-        //        GameObject go = PhotonNetwork.Instantiate("player", Vector3.zero, Quaternion.identity);
-        //        go.name = PhotonNetwork.LocalPlayer.NickName;
-    }
-
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        Log("On JoinRoom Failed");
-    }
-
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        Log("Failed Create Room. Return Code : " + returnCode + ", Message : " + message);
     }
 
     void OnApplicationQuit()

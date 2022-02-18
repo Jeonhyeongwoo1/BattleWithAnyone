@@ -13,5 +13,6 @@
     "signup.signupfailed":"회원가입을 실패했습니다.",
     "signup.signupsucceesd":"회원가입에 성공하였습니다.",
     "room.inputroomname":"방 이름을 입력해주세요.",
-    "room.selectcharacter":"캐릭터를 선택해주세요."
+    "room.selectcharacter":"캐릭터를 선택해주세요.",
+    "room.joinroomfailed":"방 접속에 실패했습니다."
 }
