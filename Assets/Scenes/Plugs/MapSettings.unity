@@ -2049,58 +2049,54 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapInfos:
-  - mapTitle: scifi
+  - mapTitle: Scifi
     mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
     check: {fileID: 6112153477292812834}
     title: {fileID: 8550698471673075582}
     info: {fileID: 8769878587314369547}
     button: {fileID: 6252190437519117758}
-  - mapTitle: japan
+  - mapTitle: Japan
     mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
     check: {fileID: 3023204850443819705}
     title: {fileID: 832041181583599589}
     info: {fileID: 329591681142260880}
     button: {fileID: 3162109597220486437}
-  - mapTitle: mansion
+  - mapTitle: Mansion
     mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
     check: {fileID: 5885152009925475905}
     title: {fileID: 8346532759227908893}
     info: {fileID: 8992043285854888040}
     button: {fileID: 6033354233470228957}
-  - mapTitle: medievalcitiy
+  - mapTitle: Medievalcity
     mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
     check: {fileID: 4924753989956154648}
     title: {fileID: 7359066963047237700}
     info: {fileID: 7583596134336015153}
     button: {fileID: 5066189554006430340}
-  - mapTitle: wildwest
+  - mapTitle: Wildwest
     mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
     check: {fileID: 3070208778225609132}
     title: {fileID: 640363668555699440}
     info: {fileID: 575888686398699397}
     button: {fileID: 2922017821245525552}
-  - mapTitle: battleground
+  - mapTitle: Battleground
     mapInfo: "\uC801\uACFC\uC758 \uC2F8\uC6C0\uC744 \uC9C4\uD589\uD558\uC138\uC694."
     check: {fileID: 4489892550797202239}
     title: {fileID: 2033332060538072675}
     info: {fileID: 1380679106091879702}
     button: {fileID: 4348727210034574499}
-  m_Preferences:
-    roomTitle: 
-    mapTitle: 
-    roundTime: 0
-    roundNumber: 0
   m_Map: {fileID: 696522763}
   m_Confirm: {fileID: 952219212}
   m_Cancel: {fileID: 1937799163}
   m_MapContentView: {fileID: 1808095683}
   m_RoomTitle: {fileID: 1219997551}
+  m_RoomTitleForm: {fileID: 1332840830}
   m_RoundTime120: {fileID: 1843148574}
   m_RoundTime150: {fileID: 664237808}
   m_RoundTime180: {fileID: 728255142}
-  m_RoundNumber1: {fileID: 1773963661}
-  m_RoundNumber3: {fileID: 775128772}
-  m_RoundNumber5: {fileID: 956490262}
+  m_NumberOfRound1: {fileID: 1773963661}
+  m_NumberOfRound3: {fileID: 775128772}
+  m_NumberOfRound5: {fileID: 956490262}
 --- !u!4 &927728477
 Transform:
   m_ObjectHideFlags: 0
@@ -3024,7 +3020,7 @@ GameObject:
   - component: {fileID: 1451063373}
   - component: {fileID: 1451063372}
   m_Layer: 5
-  m_Name: RoundNumber
+  m_Name: NumberOfRound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6373,7 +6369,7 @@ GameObject:
   - component: {fileID: 1787417266765145624}
   - component: {fileID: 5066189554006430340}
   m_Layer: 5
-  m_Name: MedievalCitiy
+  m_Name: MedievalCity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

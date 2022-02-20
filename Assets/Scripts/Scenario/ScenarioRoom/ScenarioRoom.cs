@@ -1,176 +1,220 @@
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
 public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 {
-	public string scenarioName => typeof(ScenarioRoom).Name;
+    public string scenarioName => typeof(ScenarioRoom).Name;
 
-	public RoomUI roomUI;
-	public RoomChat roomChat;
-	public string testname = "전형우";
+    public RoomUI roomUI;
+    public RoomChat roomChat;
+    public string testname = "전형우";
 
-	public void OnScenarioPrepare(UnityAction done)
-	{
-		BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
-		BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
-		Core.plugs.DefaultEnsure();
-		done?.Invoke();
-	}
+    public void OnScenarioPrepare(UnityAction done)
+    {
+        BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
+        BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
+        Core.plugs.DefaultEnsure();
+        done?.Invoke();
+    }
 
-	public void OnScenarioStandbyCamera(UnityAction done)
-	{
-		done?.Invoke();
-	}
+    public void OnScenarioStandbyCamera(UnityAction done)
+    {
+        done?.Invoke();
+    }
 
-	public void OnScenarioStart(UnityAction done)
-	{
-		if (!PhotonNetwork.IsConnectedAndReady && !Core.networkManager.isLogined)
-		{
-			//Room에 바로 진입시(DEV)
-			Core.networkManager.ConnectPhotonNetwork(() => PhotonNetwork.JoinLobby());
-			done?.Invoke();
-			return;
-		}
+    public void OnScenarioStart(UnityAction done)
+    {
+        if (!PhotonNetwork.IsConnectedAndReady && !Core.networkManager.isLogined)
+        {
+            //Room에 바로 진입시(DEV)
+            Core.networkManager.ConnectPhotonNetwork(() => PhotonNetwork.JoinLobby());
+            done?.Invoke();
+            return;
+        }
 
-		if (PhotonNetwork.InRoom)
-		{
-			SetRoomCustomInfo();
-			ConnectRoomChat();
-			done?.Invoke();
-			return;
-		}
+        if (PhotonNetwork.InRoom)
+        {
+            SetRoomCustomInfo();
+            ConnectRoomChat();
+            done?.Invoke();
+            return;
+        }
 
-		PhotonNetwork.JoinRoom(Core.networkManager.roomName);
-		done?.Invoke();
-	}
+        string roomName = Core.gameManager.roomName;
+        if (string.IsNullOrEmpty(roomName))
+        {
+            NoticePopup.content = MessageCommon.Get("room.joinroomfailed");
+            Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+            Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+            return;
+        }
 
-	public void OnScenarioStop(UnityAction done)
-	{
-		PhotonNetwork.EnableCloseConnection = false;
-		done?.Invoke();
-	}
+        PhotonNetwork.JoinRoom(Core.gameManager.roomName);
+        done?.Invoke();
+    }
 
-	public override void OnJoinedRoom()
-	{
-		SetRoomCustomInfo();
-		ConnectRoomChat();
-	}
+    public void OnScenarioStop(UnityAction done)
+    {
+        PhotonNetwork.EnableCloseConnection = false;
+        done?.Invoke();
+    }
 
-	public override void OnJoinRoomFailed(short returnCode, string message)
-	{
-		Debug.LogError("On JoinRoom Failed. Return Code :" + returnCode + ", Message : " + message);
+    public override void OnJoinedRoom()
+    {
+        SetRoomCustomInfo();
+        ConnectRoomChat();
+    }
 
-		NoticePopup.content = MessageCommon.Get("room.joinroomfailed");
-		Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-		Core.scenario.OnLoadScenario(nameof(ScenarioHome));
-	}
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError("On JoinRoom Failed. Return Code :" + returnCode + ", Message : " + message);
 
-	public override void OnCreateRoomFailed(short returnCode, string message)
-	{
-		Debug.LogError("Failed Create Room. Return Code : " + returnCode + ", Message : " + message);
-	}
+        switch (returnCode)
+        {
+            case (int)PhotonCode.GAME_FULL:
+                NoticePopup.content = MessageCommon.Get("room.gamefull");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                break;
+            default:
+                NoticePopup.content = MessageCommon.Get("room.joinroomfailed");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                break;
+        }
 
-	public override void OnJoinedLobby()
-	{
+        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError("Failed Create Room. Return Code : " + returnCode + ", Message : " + message);
+
+        switch (returnCode)
+        {
+            case (int)PhotonCode.EXIST_ROOM:
+                Core.gameManager.SetMapPreference(null, 0, 0);
+                NoticePopup.content = MessageCommon.Get("room.existroom");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                break;
+            case (int)PhotonCode.OPERATION_NOTALLOWED_INCURRENT_STATE:
+                ConfirmPopup.content = MessageCommon.Get("pun.states.waiting");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>();
+                break;
+            default:
+                Core.gameManager.SetMapPreference(null, 0, 0);
+                NoticePopup.content = MessageCommon.Get("room.createfailed");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                break;
+        }
+
+        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+    }
+
+    public override void OnJoinedLobby()
+    {
         Debug.Log("On Joined Lobby");
-		string[] LobbyOptions = new string[2];
-		LobbyOptions[0] = "RoomManager";
-		LobbyOptions[1] = "Map";
-		ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
-											{ "RoomManager", "Name" },
-											{ "Map", "Battleground" }};
+        string[] LobbyOptions = new string[4];
+        LobbyOptions[0] = "RoomManager";
+        LobbyOptions[1] = "Map";
+        LobbyOptions[2] = "NumberOfRound";
+        LobbyOptions[3] = "RoundTime";
 
-		RoomOptions roomOptions = new RoomOptions();
-		roomOptions.IsVisible = true;
-		roomOptions.IsOpen = true;
-		roomOptions.MaxPlayers = (byte)2;
-		roomOptions.CustomRoomPropertiesForLobby = LobbyOptions;
-		roomOptions.CustomRoomProperties = customProperties;
-		PhotonNetwork.CreateRoom("TestRoom", roomOptions, TypedLobby.Default);
-	}
+        ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
+                                            { "RoomManager", "Name" },
+                                            { "Map", "Battleground" },
+                                            { "NumberOfRound", 3},
+                                            { "RoundTime", 150 }};
 
-	public override void OnCreatedRoom()
-	{
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.IsVisible = true;
+        roomOptions.IsOpen = true;
+        roomOptions.MaxPlayers = (byte)2;
+        roomOptions.CustomRoomPropertiesForLobby = LobbyOptions;
+        roomOptions.CustomRoomProperties = customProperties;
+        PhotonNetwork.CreateRoom("TestRoom", roomOptions, TypedLobby.Default);
+        Core.gameManager.SetMapPreference("Battleground", 3, 150);
+    }
+
+    public override void OnCreatedRoom()
+    {
         Debug.Log("On Created Room");
-		roomUI.Init();
-		roomChat.Connect(testname, "TestRoom");
-		roomChat.connectCompleted = ConnectCompleted;
-		PhotonNetwork.EnableCloseConnection = true;
-		Core.networkManager.isLogined = true;
-		Core.networkManager.SetPlayerName(testname);
-	}
+        roomUI.Init();
+        roomChat.Connect(testname, "TestRoom");
+        roomChat.connectCompleted = ConnectCompleted;
+        PhotonNetwork.EnableCloseConnection = true;
+        Core.networkManager.isLogined = true;
+        Core.networkManager.SetPlayerName(testname);
+    }
 
-	public override void OnPlayerLeftRoom(Player otherPlayer)
-	{
-		if (roomChat.IsConnect())
-		{
-			roomChat.OnSendMessage(otherPlayer.NickName + " Left Room..");
-		}
-		roomUI.OnPlayerLeft();
-	}
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        if (roomChat.IsConnect())
+        {
+            roomChat.OnSendMessage(otherPlayer.NickName + " Left Room..");
+        }
+        roomUI.OnPlayerLeft();
+    }
 
-	public override void OnPlayerEnteredRoom(Player newPlayer)
-	{
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
         roomUI.OnPlayerEnter(newPlayer.NickName);
-	}
+    }
 
-	public override void OnDisconnected(DisconnectCause cause)
-	{
-		Debug.LogError("Disconnected : " + cause);
+    public override void OnLeftRoom()
+    {
+        if (PhotonNetwork.IsConnected && PhotonNetwork.NetworkClientState == Photon.Realtime.ClientState.DisconnectingFromGameServer)
+        {
+            roomChat.DisConnect();
+            Core.scenario?.OnLoadScenario(nameof(ScenarioHome));
+        }
+    }
 
-		NoticePopup.content = MessageCommon.Get("network.disconnect");
-		Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-		Core.scenario.OnLoadScenario(nameof(ScenarioLogin));
-	}
+    //Photon Network, Chat Connect Completed
+    void ConnectCompleted()
+    {
+        BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
+    }
 
-	public override void OnLeftRoom()
-	{
-		roomChat.DisConnect();
-		Core.scenario?.OnLoadScenario(nameof(ScenarioHome));
-	}
+    void SetRoomCustomInfo()
+    {
+        ExitGames.Client.Photon.Hashtable custom = PhotonNetwork.CurrentRoom?.CustomProperties;
+        if (custom != null)
+        {
+            string map = (string)custom["Map"];
+            string master = (string)custom["RoomManager"];
+            string title = PhotonNetwork.CurrentRoom.Name;
+            int numberOfRound = (int)custom["NumberOfRound"];
+            int roundTime = (int)custom["RoundTime"];
 
-	//Photon Network, Chat Connect Completed
-	void ConnectCompleted()
-	{
-		BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
-	}
+            roomUI.SetInfo(title);
+            roomUI.SetMasterName(master);
+            roomUI.RoomMapSetInfo(map, numberOfRound, roundTime);
+            Core.gameManager.SetMapPreference(map, numberOfRound, roundTime);
 
-	void SetRoomCustomInfo()
-	{
-		ExitGames.Client.Photon.Hashtable custom = PhotonNetwork.CurrentRoom?.CustomProperties;
-		if (custom != null)
-		{
-			string map = (string)custom["Map"];
-			string title = PhotonNetwork.CurrentRoom.Name;
-			roomUI.SetInfo(title);
-			roomUI.SetMasterName(PhotonNetwork.MasterClient.NickName);
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                roomUI.SetPlayerName(PhotonNetwork.NickName);
+            }
+        }
+    }
 
-			if (!PhotonNetwork.IsMasterClient)
-			{
-				roomUI.SetPlayerName(PhotonNetwork.NickName);
-			}
-		}
-	}
+    void ConnectRoomChat()
+    {
+        roomChat.Connect(Core.networkManager.userNickName, PhotonNetwork.CurrentRoom.Name);
+        roomChat.connectCompleted = ConnectCompleted;
+        PhotonNetwork.EnableCloseConnection = true;
+    }
 
-	void ConnectRoomChat()
-	{
-		roomChat.Connect(Core.networkManager.userNickName, PhotonNetwork.CurrentRoom.Name);
-		roomChat.connectCompleted = ConnectCompleted;
-		PhotonNetwork.EnableCloseConnection = true;
-	}
+    // Start is called before the first frame update
+    void Start()
+    {
+        Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
+    }
 
-	// Start is called before the first frame update
-	void Start()
-	{
-		Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
-	}
-
-	private void Awake()
-	{
-		Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
-	}
+    private void Awake()
+    {
+        Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
+    }
 
 }

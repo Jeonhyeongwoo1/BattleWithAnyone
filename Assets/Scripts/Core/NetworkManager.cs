@@ -9,7 +9,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public bool isLogined = false;
     public string userNickName;
-    public string roomName;
 
     float m_NetworkMaxWaitTime = 10f;
     bool m_IsConnectSuccessed = false;
@@ -78,7 +77,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     IEnumerator RequestData(UnityWebRequest request, UnityAction<string> success, UnityAction<string> fail)
     {
-
         if (request == null)
         {
             Debug.LogError("Check Request Method!!");
@@ -139,7 +137,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        Log("DisConnected");
+        Log("DisConnected" + cause);
+
+        NoticePopup.content = MessageCommon.Get("network.disconnect");
+        Core.plugs?.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+        Core.scenario?.OnLoadScenario(nameof(ScenarioLogin));
     }
 
     public override void OnConnected()

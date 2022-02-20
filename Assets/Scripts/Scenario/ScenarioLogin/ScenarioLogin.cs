@@ -12,7 +12,9 @@ public class ScenarioLogin : MonoBehaviour, IScenario
     [SerializeField] Button m_LoginBtn;
     [SerializeField] Signup m_Signup;
     [SerializeField] FindMember m_FindMember;
+#if UNITY_IOS
     [SerializeField] AppleAuthLogin m_AppleLogin;
+#endif
 
     public void OnScenarioPrepare(UnityAction done)
     {
@@ -119,6 +121,8 @@ public class ScenarioLogin : MonoBehaviour, IScenario
     {
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
         m_LoginBtn.onClick.AddListener(OnLogin);
+#if UNITY_IOS
         m_AppleLogin.GetComponent<Button>().onClick.AddListener(() => m_AppleLogin.Login(OnAppleLoginSuccessed));
+#endif
     }
 }

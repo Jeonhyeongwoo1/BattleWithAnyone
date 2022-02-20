@@ -9,12 +9,14 @@ public class Core : Singleton<Core>
     static public ModelDirector models => Core.I?.m_ModelDirector;
     static public NetworkManager networkManager => Core.I.m_NetworkManager;
     static public XSettings settings => Core.I.m_XSettings;
+    static public GamePlayManager gameManager => Core.I.m_GamePlayManager;
 
     [SerializeField] ModelDirector m_ModelDirector = null;
     [SerializeField] ScenarioDirector m_ScenarioDirector = null;
     [SerializeField] PlugDirector m_PlugDirector = null;
     [SerializeField] NetworkManager m_NetworkManager = null;
     [SerializeField] XSettings m_XSettings = null;
+    [SerializeField] GamePlayManager m_GamePlayManager = null;
 
     static UnityEvent m_EnsureDone = new UnityEvent();
 
@@ -28,14 +30,14 @@ public class Core : Singleton<Core>
         }
 
         if (done != null) { m_EnsureDone.AddListener(done); }
-/*
-        Scene coreScene = SceneManager.GetSceneByName(nameof(Core));
-        if (coreScene == null || !coreScene.IsValid())
-        {
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            SceneManager.LoadScene(nameof(Core), LoadSceneMode.Additive);
-        }
-*/
+        /*
+                Scene coreScene = SceneManager.GetSceneByName(nameof(Core));
+                if (coreScene == null || !coreScene.IsValid())
+                {
+                    SceneManager.sceneLoaded += OnSceneLoaded;
+                    SceneManager.LoadScene(nameof(Core), LoadSceneMode.Additive);
+                }
+        */
     }
 
     static void OnSceneLoaded(Scene scene, LoadSceneMode mode)

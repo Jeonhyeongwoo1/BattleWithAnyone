@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 using Photon.Chat;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -62,7 +59,6 @@ public class RoomChat : MonoBehaviour, IChatClientListener
         m_ChatClient.UseBackgroundWorkerForSending = true;
         m_ChatClient.AuthValues = new Photon.Chat.AuthenticationValues(userName);
         m_ChatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, PhotonNetwork.AppVersion, m_ChatClient.AuthValues);
-
         m_ChannelName = roomTitle;
     }
 
@@ -80,7 +76,6 @@ public class RoomChat : MonoBehaviour, IChatClientListener
         Log("Photon Chat OnConnectd");
 
         string[] channels = new string[] { m_ChannelName };
-
         m_ChatClient.Subscribe(channels, 0);
         m_ChatClient.SetOnlineStatus(ChatUserStatus.Online);
     }
@@ -104,11 +99,7 @@ public class RoomChat : MonoBehaviour, IChatClientListener
         if (channelName != m_ChannelName || messages.Length == 0 || senders.Length == 0) { return; }
 
         ChatChannel chatChannel = GetChatChannel(m_ChannelName);
-        if (chatChannel == null)
-        {
-
-            return;
-        }
+        if (chatChannel == null) { return; }
 
         m_ChannelChat.text = chatChannel.ToStringMessages().TrimEnd();
     }
@@ -125,11 +116,9 @@ public class RoomChat : MonoBehaviour, IChatClientListener
         m_ChannelName = channels[0];
         m_ChannelChat.text = null;
         m_InputFieldChat.enabled = true;
-
         ChatChannel chatChannel = GetChatChannel(channels[0]);
         chatChannel.PlayerName = m_ChatClient.AuthValues.UserId;
-
-		connectCompleted?.Invoke();
+        connectCompleted?.Invoke();
     }
 
     public void OnUnsubscribed(string[] channels)
@@ -138,22 +127,18 @@ public class RoomChat : MonoBehaviour, IChatClientListener
         m_InputFieldChat.enabled = false;
     }
 
-    public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
-    {
-        Debug.Log(user + message);
-    }
-
+    public void OnStatusUpdate(string user, int status, bool gotMessage, object message) { }
     public void OnPrivateMessage(string sender, object message, string channelName) { }
     public void OnUserSubscribed(string channel, string user) { Log("User: " + user); }
     public void OnUserUnsubscribed(string channel, string user) { Log("User: " + user); }
 
-	void OnApplicationQuit()
-	{
-		if (m_ChatClient != null)
-		{
-			m_ChatClient.Disconnect();
-		}
-	}
+    void OnApplicationQuit()
+    {
+        if (m_ChatClient != null)
+        {
+            m_ChatClient.Disconnect();
+        }
+    }
 
     void Start()
     {

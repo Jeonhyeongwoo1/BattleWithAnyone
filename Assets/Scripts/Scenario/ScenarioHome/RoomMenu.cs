@@ -49,19 +49,29 @@ public class RoomMenu : MonoBehaviourPunCallbacks
     {
         Debug.LogError("error code : " + returnCode + "On Create Room Failed : " + message);
 
-        if (returnCode == 32766)
+        switch (returnCode)
         {
-            Debug.LogError("There is exist same room");
+            case (int)PhotonCode.EXIST_ROOM:
+                Core.gameManager.SetMapPreference(null, 0, 0);
+                NoticePopup.content = MessageCommon.Get("room.existroom");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                break;
+            case (int)PhotonCode.OPERATION_NOTALLOWED_INCURRENT_STATE:
+                ConfirmPopup.content = MessageCommon.Get("pun.states.waiting");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>();
+                break;
+            default:
+                Core.gameManager.SetMapPreference(null, 0, 0);
+                NoticePopup.content = MessageCommon.Get("room.createfailed");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                break;
         }
     }
 
     public override void OnCreatedRoom()
     {
         Debug.Log("On Created Room");
-
         Core.scenario.OnLoadScenario(nameof(ScenarioRoom));
-        MapSettings settings = Core.plugs.Get<MapSettings>();
-        settings?.Close();
     }
 
     public void SearchRoom(string roomName)
@@ -107,6 +117,13 @@ public class RoomMenu : MonoBehaviourPunCallbacks
         }
     }
 
+    void RemoveRoom(string roomName)
+    {
+        m_CachedRoomList.Remove(roomName);
+        Transform room = m_RoomContent.Find(roomName);
+        if (room) { Destroy(room.gameObject); }
+    }
+
     void RoomListUpdate(List<RoomInfo> roomList)
     {
         int count = roomList.Count;
@@ -115,11 +132,33 @@ public class RoomMenu : MonoBehaviourPunCallbacks
             RoomInfo roomInfo = roomList[i];
             if (m_CachedRoomList.ContainsKey(roomInfo.Name) && roomInfo.RemovedFromList)
             {
-                m_CachedRoomList.Remove(roomInfo.Name);
-                Transform room = m_RoomContent.Find(roomInfo.Name);
-                if (room) { Destroy(room.gameObject); }
+                RemoveRoom(roomInfo.Name);
             }
-            else if (m_CachedRoomList.ContainsKey(roomInfo.Name)) { continue; }
+            else if (m_CachedRoomList.ContainsKey(roomInfo.Name))
+            {
+                string roomName = roomInfo.Name;
+                if (roomInfo.PlayerCount == roomInfo.MaxPlayers)
+                {
+                    RemoveRoom(roomName);
+                    continue;
+                }
+
+                //Update Custom Prerties
+                RoomInfo existRoom = m_CachedRoomList[roomName];
+                string oldRoomManager = (string)existRoom.CustomProperties["RoomManager"];
+                string oldMap = (string)existRoom.CustomProperties["Map"];
+
+                string newRoomManager = (string)roomInfo.CustomProperties["RoomManager"];
+                string newMap = (string)roomInfo.CustomProperties["Map"];
+
+                if (oldRoomManager != newRoomManager || oldMap != newMap)
+                {
+                    Room room = m_RoomContent.Find(roomName).GetComponent<Room>();
+                    room.SetRoomInfo(roomName, newRoomManager, newMap);
+                }
+
+                continue;
+            }
             else
             {
                 if (roomInfo.PlayerCount == 0) { continue; }
@@ -130,9 +169,10 @@ public class RoomMenu : MonoBehaviourPunCallbacks
             }
         }
 
-        m_Refresh.gameObject.SetActive(m_CachedRoomList.Count != 0);
-        m_Search.gameObject.SetActive(m_CachedRoomList.Count != 0);
-        m_NoRoom.gameObject.SetActive(m_CachedRoomList.Count == 0);
+        int c = m_CachedRoomList.Count;
+        m_Refresh.gameObject.SetActive(c != 0);
+        m_Search.gameObject.SetActive(c != 0);
+        m_NoRoom.gameObject.SetActive(c == 0);
 
     }
 
@@ -151,23 +191,28 @@ public class RoomMenu : MonoBehaviourPunCallbacks
         {
             MapSettings settings = Core.plugs.Get<MapSettings>();
             settings.Open();
-            settings.confirm = (a, b, c, d) => UserCreateRoom(a, b, c, d);
+            settings.confirm = (roomName) => UserCreateRoom(roomName);
         }
     }
 
-    void UserCreateRoom(string map, string title, int time, int number)
+    void UserCreateRoom(string roomName)
     {
         string[] LobbyOptions = new string[4];
         LobbyOptions[0] = "RoomManager";
         LobbyOptions[1] = "Map";
-        LobbyOptions[2] = "RoundTime";
-        LobbyOptions[3] = "RoundNumber";
+        LobbyOptions[2] = "NumberOfRound";
+        LobbyOptions[3] = "RoundTime";
+
+        GamePlayManager.MapPreferences preferences = Core.gameManager.GetMapPreference();
+        string map = preferences.mapName;
+        int numberOfRound = preferences.numberOfRound;
+        int roundTime = preferences.roundTime;
 
         ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
                                             { "RoomManager", PhotonNetwork.LocalPlayer.NickName },
                                             { "Map", map },
-                                            { "RoundTime", time},
-                                            { "RoundNumber", number }};
+                                            { "NumberOfRound", numberOfRound},
+                                            { "RoundTime", roundTime }};
 
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.IsVisible = true;
@@ -175,8 +220,7 @@ public class RoomMenu : MonoBehaviourPunCallbacks
         roomOptions.MaxPlayers = (byte)2;
         roomOptions.CustomRoomPropertiesForLobby = LobbyOptions;
         roomOptions.CustomRoomProperties = customProperties;
-        PhotonNetwork.CreateRoom(title, roomOptions, TypedLobby.Default);
-
+        PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
     }
 
     void RefreshRoom()

@@ -42,6 +42,7 @@ MonoBehaviour:
   - ChangeCharacter
   - PlayerGameReadied
   - CreateCharacter
+  - RoomMapSetInfo
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

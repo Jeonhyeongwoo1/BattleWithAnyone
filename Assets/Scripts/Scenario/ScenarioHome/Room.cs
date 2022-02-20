@@ -7,33 +7,34 @@ public class Room : MonoBehaviourPunCallbacks, IPointerClickHandler, IPointerEnt
 {
     [SerializeField] Color m_OnHover;
     [SerializeField] Color m_Normal;
-
     [SerializeField] Text m_Title;
     [SerializeField] Text m_RoomManagerName;
     [SerializeField] Text m_Map;
 
-	private string m_RoomName;
+    private string m_RoomName;
 
-	public void SetRoomInfo(string title, string roomManager, string mapInfo)
+    public string GetRoomName() => m_RoomName;
+
+    public void SetRoomInfo(string title, string roomManager, string map)
     {
         m_Title.text = "방 제목 : " + title;
         m_RoomManagerName.text = "Player : " + roomManager;
-        m_Map.text = "맵 : " + mapInfo;
+        m_Map.text = "맵 : " + map;
         m_RoomName = title;
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!PhotonNetwork.IsConnectedAndReady && !PhotonNetwork.InLobby)
-		{
-			NoticePopup.content = MessageCommon.Get("network.disconnect");
-			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>(() => Core.scenario.OnLoadScenario(nameof(ScenarioLogin)));
+        {
+            NoticePopup.content = MessageCommon.Get("network.disconnect");
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>(() => Core.scenario.OnLoadScenario(nameof(ScenarioLogin)));
             return;
         }
 
-        Core.networkManager.roomName = m_RoomName;
-		Core.scenario.OnLoadScenario(nameof(ScenarioRoom));
-	}
+        Core.gameManager.roomName = m_RoomName;
+        Core.scenario.OnLoadScenario(nameof(ScenarioRoom));
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -44,4 +45,5 @@ public class Room : MonoBehaviourPunCallbacks, IPointerClickHandler, IPointerEnt
     {
         GetComponent<Image>().color = m_Normal;
     }
+
 }

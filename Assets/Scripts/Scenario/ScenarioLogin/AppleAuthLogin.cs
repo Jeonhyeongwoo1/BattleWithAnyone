@@ -1,3 +1,4 @@
+#if UNITY_IOS
 using AppleAuth;
 using AppleAuth.Enums;
 using AppleAuth.Extensions;
@@ -152,3 +153,4 @@ public class AppleAuthLogin : MonoBehaviour
 
 
 }
+#endif
