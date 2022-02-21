@@ -32,12 +32,12 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     {
         if (Core.networkManager.isLogined && PhotonNetwork.IsConnected)
         {
-            StartCoroutine(WaitingForNetworkConnection(() => PhotonNetwork.JoinLobby()));
+            StartCoroutine(WaitingConnectedToMasterServer(() => PhotonNetwork.JoinLobby()));
             done?.Invoke();
             return;
         }
 
-        Core.networkManager.ConnectPhotonNetwork(() => StartCoroutine(WaitingForNetworkConnection(JoinLobby)));
+        Core.networkManager.ConnectPhotonNetwork(() => StartCoroutine(WaitingConnectedToMasterServer(JoinLobby)));
         done?.Invoke();
     }
 
@@ -67,7 +67,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         m_Exit.gameObject.SetActive(true);
     }
 
-    IEnumerator WaitingForNetworkConnection(UnityAction done)
+    IEnumerator WaitingConnectedToMasterServer(UnityAction done)
     {
         float elapsed = 0;
         while (PhotonNetwork.NetworkClientState != Photon.Realtime.ClientState.ConnectedToMasterServer)

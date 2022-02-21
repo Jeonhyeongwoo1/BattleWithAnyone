@@ -15,8 +15,8 @@ public class ScenarioLoading : MonoBehaviour, IScenario
     [SerializeField, Range(0, 4)] float m_MinLoadingTime = 3f;
     [SerializeField] AnimationCurve m_Curve;
 
-    string[] m_Plugables = { nameof(MapSettings), nameof(Popups) };
-    int m_LoadedCount = 0;
+	string[] m_Plugables = { nameof(MapSettings), nameof(Popups), nameof(XTheme) };
+	int m_LoadedCount = 0;
 
     public void OnScenarioPrepare(UnityAction done)
     {

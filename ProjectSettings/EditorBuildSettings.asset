@@ -44,6 +44,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Plugs/Popups.unity
     guid: 8214e1df373702647b11942ad8356718
+  - enabled: 1
+    path: Assets/Scenes/Scenarios/ScenarioPlay.unity
+    guid: b9593359df4382b4fb1aa9ab01c71c1a
+  - enabled: 1
+    path: Assets/Scenes/Plugs/XTheme.unity
+    guid: 6f330cc4d3873422f92aa365d4a03c32
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 7dba8cac8b0114c9592725a8d50feca4,
       type: 2}

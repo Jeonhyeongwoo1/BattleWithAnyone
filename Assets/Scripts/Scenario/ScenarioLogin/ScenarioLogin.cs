@@ -19,6 +19,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
     public void OnScenarioPrepare(UnityAction done)
     {
         BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
+        BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
         Core.plugs.DefaultEnsure();
         done?.Invoke();
     }

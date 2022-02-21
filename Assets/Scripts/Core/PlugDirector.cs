@@ -75,6 +75,7 @@ public class PlugDirector : MonoBehaviour
     {
         Ensure<Popups>();
         Ensure<MapSettings>();
+        Ensure<XTheme>();
     }
 
     public void OnLoadSceneAsync(string name, UnityAction done = null)
