@@ -42,7 +42,7 @@ public class FindMember : MonoBehaviour
 
 		if (string.IsNullOrEmpty(email))
 		{
-			NoticePopup.content = "이메일을 입력해주세요.";
+			NoticePopup.content = MessageCommon.Get("login.inputemail");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			m_FindId_Email.ActivateInputField();
 			return;
@@ -50,7 +50,7 @@ public class FindMember : MonoBehaviour
 
 		if (string.IsNullOrEmpty(userName))
 		{
-			NoticePopup.content = "이름을 입력해주세요.";
+			NoticePopup.content = MessageCommon.Get("login.inputname");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			m_FindId_UserName.ActivateInputField();
 			return;
@@ -66,7 +66,7 @@ public class FindMember : MonoBehaviour
 
 		if (string.IsNullOrEmpty(id))
 		{
-			NoticePopup.content = "아이디를 입력해주세요.";
+			NoticePopup.content = MessageCommon.Get("login.inputid");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			m_FindPw_Id.ActivateInputField();
 			return;
@@ -74,7 +74,7 @@ public class FindMember : MonoBehaviour
 
 		if (string.IsNullOrEmpty(email))
 		{
-			NoticePopup.content = "이메일을 입력해주세요.";
+			NoticePopup.content = MessageCommon.Get("login.inputemail");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			m_FindPw_Email.ActivateInputField();
 			return;
@@ -87,15 +87,14 @@ public class FindMember : MonoBehaviour
 	{
 		if (string.IsNullOrEmpty(data))
 		{
-			NoticePopup.content = "비밀번호를 찾을 수 없습니다.";
+			NoticePopup.content = MessageCommon.Get("find.failedmember");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			return;
 		}
 
 		Member member = JsonUtility.FromJson<Member>(data);
 		string password = member.mbr_pwd;
-
-		ConfirmPopup.content = "회원님의 비밀번호는 : " + password + " 입니다.";
+		ConfirmPopup.content = string.Format(MessageCommon.Get("find.memberpassword"), password);
 		Core.plugs.Get<Popups>().OpenPopupAsync<ConfirmPopup>();
 
 	}
@@ -104,7 +103,7 @@ public class FindMember : MonoBehaviour
 	{
 		Debug.LogError(error);
 
-		NoticePopup.content = "비밀번호를 찾을 수 없습니다.";
+		NoticePopup.content = MessageCommon.Get("find.failedmember");
 		Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 
 		m_FindPw_Email.text = null;
@@ -115,15 +114,14 @@ public class FindMember : MonoBehaviour
 	{
 		if (string.IsNullOrEmpty(data))
 		{
-			NoticePopup.content = "아이디를 찾을 수 없습니다.";
+			NoticePopup.content = MessageCommon.Get("find.failedid");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			return;
 		}
 
 		Member member = JsonUtility.FromJson<Member>(data);
 		string id = member.mbr_id;
-
-		ConfirmPopup.content = "회원님의 Id는 : " + id + " 입니다.";
+		ConfirmPopup.content = string.Format(MessageCommon.Get("find.memberid"), id);
 		Core.plugs.Get<Popups>().OpenPopupAsync<ConfirmPopup>();
 	}
 
@@ -131,7 +129,7 @@ public class FindMember : MonoBehaviour
 	{
 		Debug.LogError(error);
 
-		NoticePopup.content = "아이디를 찾을 수 없습니다.";
+		NoticePopup.content = MessageCommon.Get("find.failedid");
 		Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 
 		m_FindId_Email.text = null;
