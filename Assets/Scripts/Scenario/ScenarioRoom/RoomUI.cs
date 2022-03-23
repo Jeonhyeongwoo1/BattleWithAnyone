@@ -118,13 +118,13 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
         string roomManager = (string)PhotonNetwork.CurrentRoom.CustomProperties["RoomManager"];
         if (roomManager != PhotonNetwork.MasterClient.NickName)
-		{
-			ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
-											{ "RoomManager", PhotonNetwork.MasterClient.NickName }};
-			//Room 정보가 변경되므로 ScearnioHome RoomListUpdate가 호출된다.
-			PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
+        {
+            ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
+                                            { "RoomManager", PhotonNetwork.MasterClient.NickName }};
+            //Room 정보가 변경되므로 ScearnioHome RoomListUpdate가 호출된다.
+            PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
 
-		}
+        }
     }
 
     void OnSelectCharacter(Character character, Transform form)
@@ -272,30 +272,32 @@ public class RoomUI : MonoBehaviourPunCallbacks
     }
 
     void GameStart()
-	{
-		if (!PhotonNetwork.IsMasterClient) { return; }
-     
-        if(!m_IsGameReady)
-        {
-			NoticePopup.content = MessageCommon.Get("room.playerisnotready");
-			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-			return;
-        }
-        
-        if (m_SelectedCharacter == null)
-		{
-			NoticePopup.content = MessageCommon.Get("room.selectcharacter");
-			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-			return;
-		}
+    {
+        if (!PhotonNetwork.IsMasterClient) { return; }
 
-        if(!Core.gameManager.HasMapPreference())
+        if (!m_IsGameReady)
+        {
+            NoticePopup.content = MessageCommon.Get("room.playerisnotready");
+            Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+            return;
+        }
+
+        if (m_SelectedCharacter == null)
+        {
+            NoticePopup.content = MessageCommon.Get("room.selectcharacter");
+            Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+            return;
+        }
+
+        if (!Core.gameManager.HasMapPreference())
         {
             NoticePopup.content = MessageCommon.Get("map.selectmap");
-			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-			return;
+            Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+            return;
         }
 
+        Core.gameManager.playerName = m_PlayerName.text;
+        Core.gameManager.SetPlayersCharacter(m_SelectedCharacter.model, null);
         photonView.RPC("OnLoadScenarioPlay", RpcTarget.All);
     }
 
@@ -313,19 +315,19 @@ public class RoomUI : MonoBehaviourPunCallbacks
         int roundTime = preferences.roundTime;
 
         photonView.RPC("RoomMapSetInfo", RpcTarget.All, mapName, numberOfRound, roundTime);
-		
+
         string[] LobbyOptions = new string[4];
-		LobbyOptions[0] = "RoomManager";
-		LobbyOptions[1] = "Map";
-		LobbyOptions[2] = "NumberOfRound";
-		LobbyOptions[3] = "RoundTime";
-		ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
-											{ "RoomManager", PhotonNetwork.MasterClient.NickName },
-											{ "Map", mapName },
-											{ "NumberOfRound", numberOfRound},
-											{ "RoundTime", roundTime }};
-		//Room 정보가 변경되므로 ScearnioHome RoomListUpdate가 호출된다.
-		PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
+        LobbyOptions[0] = "RoomManager";
+        LobbyOptions[1] = "Map";
+        LobbyOptions[2] = "NumberOfRound";
+        LobbyOptions[3] = "RoundTime";
+        ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
+                                            { "RoomManager", PhotonNetwork.MasterClient.NickName },
+                                            { "Map", mapName },
+                                            { "NumberOfRound", numberOfRound},
+                                            { "RoundTime", roundTime }};
+        //Room 정보가 변경되므로 ScearnioHome RoomListUpdate가 호출된다.
+        PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
     }
 
     [PunRPC]

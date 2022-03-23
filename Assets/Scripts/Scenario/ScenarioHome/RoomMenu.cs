@@ -45,29 +45,6 @@ public class RoomMenu : MonoBehaviourPunCallbacks
         RoomListUpdate(roomList);
     }
 
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        Debug.LogError("error code : " + returnCode + "On Create Room Failed : " + message);
-
-        switch (returnCode)
-        {
-            case (int)PhotonCode.EXIST_ROOM:
-                Core.gameManager.SetMapPreference(null, 0, 0);
-                NoticePopup.content = MessageCommon.Get("room.existroom");
-                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-                break;
-            case (int)PhotonCode.OPERATION_NOTALLOWED_INCURRENT_STATE:
-                ConfirmPopup.content = MessageCommon.Get("pun.states.waiting");
-                Core.plugs.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>();
-                break;
-            default:
-                Core.gameManager.SetMapPreference(null, 0, 0);
-                NoticePopup.content = MessageCommon.Get("room.createfailed");
-                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-                break;
-        }
-    }
-
     public override void OnCreatedRoom()
     {
         Debug.Log("On Created Room");

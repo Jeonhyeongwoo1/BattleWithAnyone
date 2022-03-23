@@ -19,7 +19,7 @@ public class Core : Singleton<Core>
     [SerializeField] GamePlayManager m_GamePlayManager = null;
 
     static UnityEvent m_EnsureDone = new UnityEvent();
-
+    
     // static methods
     static public void Ensure(UnityAction done = null)
     {

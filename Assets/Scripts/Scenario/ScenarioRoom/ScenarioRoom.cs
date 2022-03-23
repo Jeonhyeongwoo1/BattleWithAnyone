@@ -69,71 +69,18 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        Debug.LogError("On JoinRoom Failed. Return Code :" + returnCode + ", Message : " + message);
-
-        switch (returnCode)
-        {
-            case (int)PhotonCode.GAME_FULL:
-                NoticePopup.content = MessageCommon.Get("room.gamefull");
-                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-                break;
-            default:
-                NoticePopup.content = MessageCommon.Get("room.joinroomfailed");
-                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-                break;
-        }
-
         Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        Debug.LogError("Failed Create Room. Return Code : " + returnCode + ", Message : " + message);
-
-        switch (returnCode)
-        {
-            case (int)PhotonCode.EXIST_ROOM:
-                Core.gameManager.SetMapPreference(null, 0, 0);
-                NoticePopup.content = MessageCommon.Get("room.existroom");
-                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-                break;
-            case (int)PhotonCode.OPERATION_NOTALLOWED_INCURRENT_STATE:
-                ConfirmPopup.content = MessageCommon.Get("pun.states.waiting");
-                Core.plugs.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>();
-                break;
-            default:
-                Core.gameManager.SetMapPreference(null, 0, 0);
-                NoticePopup.content = MessageCommon.Get("room.createfailed");
-                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-                break;
-        }
-
         Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }
 
     public override void OnJoinedLobby()
     {
-        Debug.Log("On Joined Lobby");
-        string[] LobbyOptions = new string[4];
-        LobbyOptions[0] = "RoomManager";
-        LobbyOptions[1] = "Map";
-        LobbyOptions[2] = "NumberOfRound";
-        LobbyOptions[3] = "RoundTime";
-
-        ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
-                                            { "RoomManager", "Name" },
-                                            { "Map", "Battleground" },
-                                            { "NumberOfRound", 3},
-                                            { "RoundTime", 150 }};
-
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.IsVisible = true;
-        roomOptions.IsOpen = true;
-        roomOptions.MaxPlayers = (byte)2;
-        roomOptions.CustomRoomPropertiesForLobby = LobbyOptions;
-        roomOptions.CustomRoomProperties = customProperties;
-        PhotonNetwork.CreateRoom("TestRoom", roomOptions, TypedLobby.Default);
-        Core.gameManager.SetMapPreference("Battleground", 3, 150);
+        DevPhotonNetwork dev = new DevPhotonNetwork();
+        dev.CreateRoom();
     }
 
     public override void OnCreatedRoom()

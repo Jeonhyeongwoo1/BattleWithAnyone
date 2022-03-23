@@ -21,6 +21,7 @@ public class PlugDirector : MonoBehaviour
         Scene scene = SceneManager.GetSceneByName(name);
         if (scene.name != null || scene.isLoaded)
         {
+            done?.Invoke();
             return;
         }
 
@@ -30,7 +31,8 @@ public class PlugDirector : MonoBehaviour
     public void Load<T>(UnityAction done = null) where T : IPlugable
     {
         string name = typeof(T).Name;
-        if (Has(name))
+        Scene scene = SceneManager.GetSceneByName(name);
+        if (Has(name) || scene.isLoaded)
         {
             done?.Invoke();
             return;

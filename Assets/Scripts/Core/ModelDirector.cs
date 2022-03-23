@@ -1,13 +1,24 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public abstract class BaseModel : MonoBehaviour
 {
-    public abstract void LoadModel(UnityAction done = null);
+
+    [SerializeField] protected Transform[] playerCreatePoints;
+    [SerializeField] protected Transform playersParent;
+
+    public abstract void LoadedModel(UnityAction done = null);
     public abstract void UnLoadModel(UnityAction done = null);
+
+    public void CreateCharacter(Transform master, Transform player, UnityAction done = null)
+    {
+        Transform cMaster = Instantiate<Transform>(playerCreatePoints[0], Vector3.zero, Quaternion.identity, playersParent);
+        
+
+        done?.Invoke();
+    }
 }
 
 public class ModelDirector : MonoBehaviour
@@ -35,13 +46,14 @@ public class ModelDirector : MonoBehaviour
         Debug.Log("Model : " + baseModel + "loaded");
         SceneManager.sceneLoaded -= m_SceneLoaded;
         m_LoadedModel = baseModel;
-        m_LoadedModel.LoadModel();
+        baseModel.LoadedModel();
     }
 
     public void Unloaded(BaseModel baseModel)
     {
         Debug.Log("Model : " + baseModel + "Unloaded");
         m_LoadedModel = null;
+        baseModel.UnLoadModel();
     }
 
     public void Load<T>(UnityAction done = null) where T : BaseModel
@@ -53,20 +65,35 @@ public class ModelDirector : MonoBehaviour
             UnloadScene(m_LoadedModel.name);
         }
 
-        Scene scene = SceneManager.GetSceneByName(name);
-        if (scene.isLoaded)
-        {
-            Debug.Log("Model :" + name + " Is Loaded");
-            return;
-        }
-
         OnLoadScene(name, done);
     }
 
     public void Unload<T>(UnityAction done = null) where T : BaseModel
     {
         string name = typeof(T).Name;
+        Scene scene = SceneManager.GetSceneByName(name);
+        if (!scene.isLoaded)
+        {
+            Debug.Log("Model :" + name + " Is Unloaded");
+            return;
+        }
 
+        UnloadScene(name, done);
+    }
+
+    public void Load(string name, UnityAction done = null)
+    {
+        if (m_LoadedModel != null || m_LoadedModel?.name == name)
+        {
+            Debug.LogError("Already Loaded Model.. Close previous Loaded Model");
+            UnloadScene(m_LoadedModel.name);
+        }
+
+        OnLoadScene(name, done);
+    }
+
+    public void Unload(string name, UnityAction done = null)
+    {
         Scene scene = SceneManager.GetSceneByName(name);
         if (!scene.isLoaded)
         {
@@ -82,7 +109,7 @@ public class ModelDirector : MonoBehaviour
         return typeof(T).Name == m_LoadedModel.name;
     }
 
-    public BaseModel GetLoaded() => m_LoadedModel;
+    public BaseModel Get() => m_LoadedModel;
 
     void UnloadScene(string name, UnityAction done = null)
     {

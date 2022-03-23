@@ -116,25 +116,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(ConnectingNetwork(done));
     }
 
-    public void StartCheckingNetwork()
-    {
-        StartCoroutine(CheckingNetwork());
-    }
-
-    public void LeaveRoom()
-    {
-        if (!PhotonNetwork.IsConnected) { return; }
-        PhotonNetwork.LeaveRoom();
-    }
-
-    public void JoinRoom()
-    {
-        if (PhotonNetwork.IsConnected)
-        {
-            Log("Join Room");
-        }
-    }
-
     public override void OnDisconnected(DisconnectCause cause)
     {
         Log("DisConnected" + cause);
@@ -153,7 +134,46 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         m_IsConnectSuccessed = true;
         Log("OnConnectedToMaster");
-        //        m_UserName.text = PhotonNetwork.LocalPlayer.NickName;
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError("error code : " + returnCode + "On Create Room Failed : " + message);
+
+        switch (returnCode)
+        {
+            case (int)PhotonCode.EXIST_ROOM:
+                Core.gameManager.SetMapPreference(null, 0, 0);
+                NoticePopup.content = MessageCommon.Get("room.existroom");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                break;
+            case (int)PhotonCode.OPERATION_NOTALLOWED_INCURRENT_STATE:
+                ConfirmPopup.content = MessageCommon.Get("pun.states.waiting");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>();
+                break;
+            default:
+                Core.gameManager.SetMapPreference(null, 0, 0);
+                NoticePopup.content = MessageCommon.Get("room.createfailed");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                break;
+        }
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError("On JoinRoom Failed. Return Code :" + returnCode + ", Message : " + message);
+
+        switch (returnCode)
+        {
+            case (int)PhotonCode.GAME_FULL:
+                NoticePopup.content = MessageCommon.Get("room.gamefull");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                break;
+            default:
+                NoticePopup.content = MessageCommon.Get("room.joinroomfailed");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                break;
+        }
     }
 
     void OnApplicationQuit()
@@ -162,14 +182,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.Disconnect();
         }
-    }
-
-    //네트워크 상태를 체크한다.///
-    IEnumerator CheckingNetwork()
-    {
-        while (!PhotonNetwork.IsConnected) { yield return new WaitForSeconds(1f); }
-
-        Core.scenario.OnLoadScenario(nameof(ScenarioLogin));
     }
 
     IEnumerator ConnectingNetwork(UnityAction done)

@@ -458,14 +458,13 @@ GameObject:
   - component: {fileID: 1840887050}
   - component: {fileID: 1840887049}
   - component: {fileID: 1840887048}
-  - component: {fileID: 1840887051}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1840887048
 AudioListener:
   m_ObjectHideFlags: 0
@@ -532,18 +531,6 @@ Transform:
   m_Father: {fileID: 3353612831987139297}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1840887051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1840887047}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4609f41911270774ab0777168d45c2db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1868736859 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2196376887940251523, guid: 79cfad6d28604f54a97b32d45af9d2b2,
@@ -2236,6 +2223,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: e7d60109-6f23-4db6-91f1-c9cc3e32573d
     m_ActionName: Player/Rolling[/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 08a1f78e-781b-4ffd-88c2-41c54886e159
+    m_ActionName: Player/MousePosition[/Mouse/rightButton]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

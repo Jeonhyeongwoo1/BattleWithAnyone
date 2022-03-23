@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class Japan : BaseModel
 {
 
-	public override void LoadModel(UnityAction done = null) { }
+	public override void LoadedModel(UnityAction done = null) { }
 	public override void UnLoadModel(UnityAction done = null) { }
 
 	// Start is called before the first frame update

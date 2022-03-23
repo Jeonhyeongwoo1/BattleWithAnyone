@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class Mansion : BaseModel
 {
-	public override void LoadModel(UnityAction done = null)
+	public override void LoadedModel(UnityAction done = null)
 	{
 
 	}

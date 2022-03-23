@@ -5,7 +5,8 @@ using UnityEngine.Events;
 
 public class Battleground : BaseModel
 {
-    public override void LoadModel(UnityAction done = null)
+    
+    public override void LoadedModel(UnityAction done = null)
     {
 
     }
@@ -15,15 +16,14 @@ public class Battleground : BaseModel
 
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-
+        Core.Ensure(() => Core.models.OnLoaded(this));
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-
+        Core.Ensure(() => Core.models.Unloaded(this));
     }
+
 }

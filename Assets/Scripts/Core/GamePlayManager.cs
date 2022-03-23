@@ -32,7 +32,20 @@ public class GamePlayManager : MonoBehaviour
         }
     }
 
-    private MapPreferences mapPreferences = new MapPreferences();
+    public string playerName { get; set; }
+
+    [SerializeField] private MapPreferences mapPreferences = new MapPreferences();
+    
+    Transform m_MasterCharacter;
+    Transform m_PlayerCharacter;
+
+    public void SetPlayersCharacter(Transform master, Transform player)
+    {
+        m_MasterCharacter = master;
+        m_PlayerCharacter = player;
+    }
+
+    public (Transform, Transform) GetPlayersCharacter() => (m_MasterCharacter, m_PlayerCharacter);
 
     public void SetMapPreference(string mapName, int numberOfround, int roundTime)
     {
