@@ -77,7 +77,7 @@ public class ScenarioLoading : MonoBehaviour, IScenario
         float elapsed = 0;
         float duration = 0, ensureMinTime = 0;
 
-        while (elapsed < m_MinLoadingTime)
+        while (duration < 100)
         {
             elapsed += Time.deltaTime;
             ensureMinTime = m_Curve.Evaluate(elapsed / m_MinLoadingTime);

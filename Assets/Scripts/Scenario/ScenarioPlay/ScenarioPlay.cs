@@ -4,109 +4,100 @@ using UnityEngine;
 
 public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
 {
-	public string scenarioName => typeof(ScenarioPlay).Name;
+    public string scenarioName => typeof(ScenarioPlay).Name;
 
-	[SerializeField] GamePlayLoading m_GamePlayLoading;
+    [SerializeField] GamePlayLoading m_GamePlayLoading;
 
-	UnityAction ScenarioPrepared;
+    UnityAction ScenarioPrepared;
 
-	public void OnScenarioPrepare(UnityAction done)
-	{
-		Core.plugs.DefaultEnsure();
+    public void OnScenarioPrepare(UnityAction done)
+    {
+        Core.plugs.DefaultEnsure();
 
-		if (!PhotonNetwork.IsConnectedAndReady && !Core.networkManager.isLogined) //DEV
-		{
-			BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
-			Core.networkManager.ConnectPhotonNetwork(() => PhotonNetwork.JoinLobby());
-			ScenarioPrepared = done;
-			return;
-		}
+        if (!PhotonNetwork.IsConnectedAndReady && !Core.networkManager.isLogined) //DEV
+        {
+            BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
+            Core.networkManager.ConnectPhotonNetwork(() => PhotonNetwork.JoinLobby());
+            ScenarioPrepared = done;
+            return;
+        }
 
+        done?.Invoke();
+    }
+
+    public void OnScenarioStandbyCamera(UnityAction done)
+    {
+        IModel model = Core.models.Get();
+        if (model == null)
+        {
+            Debug.LogError("Un loaded Map!!");
+            done?.Invoke();
+            return;
+        }
+
+        StartCoroutine(model.ShootingCamera(PhotonNetwork.IsMasterClient, done));
+    }
+
+    public void OnScenarioStart(UnityAction done)
+    {
+        Core.gameManager.GamePrepare();
 		done?.Invoke();
-	}
+    }
 
-	public void OnScenarioStandbyCamera(UnityAction done)
-	{
-		IModel model = Core.models.Get();
-		if (model == null)
-		{
-			Debug.LogError("Un loaded Map!!");
-			done?.Invoke();
-			return;
-		}
+    public void OnScenarioStop(UnityAction done)
+    {
+        done?.Invoke();
+    }
 
-		StartCoroutine(model.ShootingCamera(PhotonNetwork.IsMasterClient, done));
-	}
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+    }
 
-	public void OnScenarioStart(UnityAction done)
-	{
-		Popups popups = Core.plugs.Get<Popups>();
-		Round round = popups?.Get<Round>();
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+    }
 
-		if (round == null)
-		{
-			Debug.LogError("Round Popup isn't Loaded");
-			done?.Invoke();
-			return;
-		}
+    public override void OnJoinedLobby()
+    {
+        DevPhotonNetwork dev = new DevPhotonNetwork();
+        dev.CreateRoom();
+    }
 
-		round.OpenAsync(done);
-	}
+    public override void OnCreatedRoom()
+    {
+        BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
 
-	public void OnScenarioStop(UnityAction done)
-	{
-		done?.Invoke();
-	}
+        string title = Core.gameManager.GetMapPreference().mapName;
+        string playerName = Core.gameManager.playerName;
+        string masterName = Core.networkManager.userNickName;
 
-	public override void OnJoinRoomFailed(short returnCode, string message)
-	{
-		Core.scenario.OnLoadScenario(nameof(ScenarioHome));
-	}
+        if (!m_GamePlayLoading.gameObject.activeSelf)
+        {
+            m_GamePlayLoading.gameObject.SetActive(true);
+        }
 
-	public override void OnCreateRoomFailed(short returnCode, string message)
-	{
-		Core.scenario.OnLoadScenario(nameof(ScenarioHome));
-	}
+        m_GamePlayLoading.SetInfo(title, masterName, playerName);
+        m_GamePlayLoading.StartGameLoading(OnLoadedGame);
+    }
 
-	public override void OnJoinedLobby()
-	{
-		DevPhotonNetwork dev = new DevPhotonNetwork();
-		dev.CreateRoom();
-	}
+    void OnLoadedGame()
+    {
+        Debug.Log("OnLoaded Game");
+        m_GamePlayLoading.StopGameLoading();
+        ScenarioPrepared?.Invoke();
 
-	public override void OnCreatedRoom()
-	{
-		BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
+    }
 
-		string title = Core.gameManager.GetMapPreference().mapName;
-		string playerName = Core.gameManager.playerName;
-		string masterName = Core.networkManager.userNickName;
+    private void Start()
+    {
+        Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
+    }
 
-		if (!m_GamePlayLoading.gameObject.activeSelf)
-		{
-			m_GamePlayLoading.gameObject.SetActive(true);
-		}
-
-		m_GamePlayLoading.SetInfo(title, masterName, playerName);
-		m_GamePlayLoading.StartGameLoading(OnLoadedGame);
-	}
-
-	void OnLoadedGame()
-	{
-		Debug.Log("OnLoaded Game");
-		m_GamePlayLoading.StopGameLoading();
-		ScenarioPrepared?.Invoke();
-
-	}
-
-	private void Start()
-	{
-		Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
-	}
-
-	private void Awake()
-	{
-		Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
-	}
+    private void Awake()
+    {
+        Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
+    }
 
 }

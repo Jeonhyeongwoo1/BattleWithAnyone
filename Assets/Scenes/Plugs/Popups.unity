@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Popups:
   - {fileID: 1328714399}
   - {fileID: 1881053197}
-  - {fileID: 1881053197}
+  - {fileID: 332145977}
   m_IsOpenedPopups: []
 --- !u!1 &332145973
 GameObject:
@@ -192,7 +192,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &332145974
 RectTransform:
   m_ObjectHideFlags: 0
@@ -264,8 +264,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffe0a42c1c681e748971658515f23a2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Background: {fileID: 0}
-  m_Text: {fileID: 0}
+  m_RoundTxts:
+  - READY
+  - 3
+  - 2
+  - 1
+  - START
+  m_CanvasGroup: {fileID: 332145978}
+  m_Text: {fileID: 1496009491}
+  m_OpenCloseDuration: 0.3
+  m_Curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!225 &332145978
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -864,7 +895,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animatorData:
-    textmesh: {fileID: 0}
+    textmesh: {fileID: 1496009489}
     progress: 0
     colorInfo:
       use: 0
@@ -915,16 +946,34 @@ MonoBehaviour:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
     scaleInfo:
-      use: 0
+      use: 1
       curve:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      duration: 0
-      from: {x: 0, y: 0, z: 0}
-      to: {x: 0, y: 0, z: 0}
+      duration: 1
+      from: {x: 2, y: 2, z: 0}
+      to: {x: 1, y: 1, z: 0}
     positionInfo:
       use: 0
       curve:

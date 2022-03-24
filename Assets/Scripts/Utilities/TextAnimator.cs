@@ -14,7 +14,7 @@ public class TextAnimator : MonoBehaviour
     private int m_TextCharacterCount = 0;
     private float ratio = 0;
 
-    public void StartAnimation()
+    public void StartAnimation(UnityAction done = null)
     {
         if(!gameObject.activeSelf)
         {
@@ -27,7 +27,7 @@ public class TextAnimator : MonoBehaviour
         }
         else
         {
-            StartCoroutine(Proceeding());
+            StartCoroutine(Proceeding(done));
         }
     }
 
@@ -240,9 +240,10 @@ public class TextAnimator : MonoBehaviour
 
         } while (animatorData.isLooping);
 
+        done?.Invoke();
     }
 
-    void Start()
+    void Awake()
     {
         if (animatorData != null)
         {

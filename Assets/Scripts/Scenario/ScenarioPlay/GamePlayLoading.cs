@@ -67,17 +67,13 @@ public class GamePlayLoading : MonoBehaviour
 			b.ReadyCamera(PhotonNetwork.IsMasterClient, () => loadedCount++);
 		});
 
-		XTheme theme = Core.plugs.Get<XTheme>();
-		theme?.Open(() =>
-		{
-			theme.SetGameInfo(map.roundTime.ToString(), map.numberOfRound.ToString(), m_Master.text, m_Player.text);
-			loadedCount++;
-		});
+        Core.plugs.Load<XTheme>(() => loadedCount++);
 
-		while (elapsed < m_MinLoadingDuration)
+        float value = 0;
+		while (value < 1)
 		{
 			elapsed += Time.deltaTime;
-            float value = MathF.Min((elapsed / m_MinLoadingDuration), (loadedCount / m_TotalCompletedCount));
+            value = MathF.Min((elapsed / m_MinLoadingDuration), (loadedCount / m_TotalCompletedCount));
 			m_MasterBar.value = Mathf.Lerp(0, 1, value);
 			yield return null;
 		}
