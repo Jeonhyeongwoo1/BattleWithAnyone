@@ -3,33 +3,25 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public abstract class BaseModel : MonoBehaviour
+public interface IModel
 {
-
-    [SerializeField] protected Transform[] playerCreatePoints;
-    [SerializeField] protected Transform playersParent;
-
-    public abstract void LoadedModel(UnityAction done = null);
-    public abstract void UnLoadModel(UnityAction done = null);
-
-    public void CreateCharacter(Transform master, Transform player, UnityAction done = null)
-    {
-        Transform cMaster = Instantiate<Transform>(playerCreatePoints[0], Vector3.zero, Quaternion.identity, playersParent);
-        
-
-        done?.Invoke();
-    }
+    public string Name { get; }
+    public void LoadedModel(UnityAction done = null);
+    public void UnLoadModel(UnityAction done = null);
+    public void ReadyCamera(bool isMaster, UnityAction done = null);
+    public void CreateCharacter(Transform master, Transform player, UnityAction done = null);
+    IEnumerator ShootingCamera(bool isMaster, UnityAction done);
 }
 
 public class ModelDirector : MonoBehaviour
 {
     //Model은 한가지만 로드가 가능하다.
-    BaseModel m_LoadedModel = null;
+    IModel m_LoadedModel = null;
     UnityAction<Scene, LoadSceneMode> m_SceneLoaded;
 
-    public void Ensure(BaseModel baseModel, UnityAction done = null)
+    public void Ensure(IModel model, UnityAction done = null)
     {
-        string name = nameof(baseModel);
+        string name = nameof(model);
 
         Scene scene = SceneManager.GetSceneByName(name);
         if (scene.isLoaded)
@@ -41,55 +33,56 @@ public class ModelDirector : MonoBehaviour
         OnLoadSceneAsync(name, done);
     }
 
-    public void OnLoaded(BaseModel baseModel)
+    public void OnLoaded(IModel model)
     {
-        Debug.Log("Model : " + baseModel + "loaded");
+        Debug.Log("Model : " + model + "loaded");
         SceneManager.sceneLoaded -= m_SceneLoaded;
-        m_LoadedModel = baseModel;
-        baseModel.LoadedModel();
+        m_LoadedModel = model;
+        model.LoadedModel();
     }
 
-    public void Unloaded(BaseModel baseModel)
+    public void Unloaded(IModel model)
     {
-        Debug.Log("Model : " + baseModel + "Unloaded");
+        Debug.Log("Model : " + model + "Unloaded");
         m_LoadedModel = null;
-        baseModel.UnLoadModel();
+        model.UnLoadModel();
     }
 
-    public void Load<T>(UnityAction done = null) where T : BaseModel
+    public void Load<T>(UnityAction done = null) where T : IModel
     {
         string name = typeof(T).Name;
-        if (m_LoadedModel != null || m_LoadedModel?.name == name)
+        if (m_LoadedModel != null || m_LoadedModel?.Name == name)
         {
             Debug.LogError("Already Loaded Model.. Close previous Loaded Model");
-            UnloadScene(m_LoadedModel.name);
+            UnloadScene(m_LoadedModel.Name);
         }
 
-        OnLoadScene(name, done);
+		OnLoadSceneAsync(name, done);
     }
 
-    public void Unload<T>(UnityAction done = null) where T : BaseModel
+    public void Unload<T>(UnityAction done = null) where T : IModel
     {
         string name = typeof(T).Name;
         Scene scene = SceneManager.GetSceneByName(name);
         if (!scene.isLoaded)
         {
             Debug.Log("Model :" + name + " Is Unloaded");
+            done?.Invoke();
             return;
         }
 
-        UnloadScene(name, done);
+		UnloadSceneAsync(name, done);
     }
 
     public void Load(string name, UnityAction done = null)
     {
-        if (m_LoadedModel != null || m_LoadedModel?.name == name)
+        if (m_LoadedModel != null || m_LoadedModel?.Name == name)
         {
-            Debug.LogError("Already Loaded Model.. Close previous Loaded Model");
-            UnloadScene(m_LoadedModel.name);
+            Debug.LogWarning("Already Loaded Model.. Close previous Loaded Model");
+            UnloadScene(m_LoadedModel.Name);
         }
 
-        OnLoadScene(name, done);
+		OnLoadSceneAsync(name, done);
     }
 
     public void Unload(string name, UnityAction done = null)
@@ -101,15 +94,15 @@ public class ModelDirector : MonoBehaviour
             return;
         }
 
-        UnloadScene(name, done);
+		UnloadSceneAsync(name, done);
     }
 
-    public bool HasModel<T>() where T : BaseModel
+    public bool HasModel<T>() where T : IModel
     {
-        return typeof(T).Name == m_LoadedModel.name;
+        return typeof(T).Name == m_LoadedModel.Name;
     }
 
-    public BaseModel Get() => m_LoadedModel;
+    public IModel Get() => m_LoadedModel;
 
     void UnloadScene(string name, UnityAction done = null)
     {

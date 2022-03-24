@@ -41,6 +41,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
     [SerializeField] Text m_MasterName;
 
     Character m_SelectedCharacter;
+    Transform m_OtherPlayerCharcter;
     Transform m_SelectedForm;
     bool m_IsGameReady = false;
 
@@ -297,7 +298,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
         }
 
         Core.gameManager.playerName = m_PlayerName.text;
-        Core.gameManager.SetPlayersCharacter(m_SelectedCharacter.model, null);
+        Core.gameManager.SetPlayersCharacter(m_SelectedCharacter.model, m_OtherPlayerCharcter);
         photonView.RPC("OnLoadScenarioPlay", RpcTarget.All);
     }
 
@@ -373,6 +374,8 @@ public class RoomUI : MonoBehaviourPunCallbacks
                 }
             }
         }
+
+		m_OtherPlayerCharcter = c;
     }
 
     [PunRPC]

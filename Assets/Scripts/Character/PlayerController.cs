@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour
     }
 
     [SerializeField] State m_State;
+    [SerializeField] CinemachineVirtualCamera m_Camera;
     [SerializeField] CharacterController m_Character;
     [SerializeField] Animator m_Animator;
     [SerializeField] float m_JumpForce;
@@ -35,6 +37,8 @@ public class PlayerController : MonoBehaviour
 
     public State GetState() => m_State;
     public void SetState(State state) => m_State = state;
+
+    public CinemachineVirtualCamera GetCamera() => m_Camera;
 
     void DoAttack(InputAction.CallbackContext obj)
     {

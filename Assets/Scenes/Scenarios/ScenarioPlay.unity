@@ -848,7 +848,9 @@ MonoBehaviour:
   m_PlayerBar: {fileID: 1884371563}
   m_TextAnimator: {fileID: 1387564606}
   m_MinLoadingDuration: 4
-  testCharacter: {fileID: 2984482802974842690, guid: d4dda876ae8f04aff93518b7411564f5,
+  masterTestCharacter: {fileID: 2984482802974842690, guid: d4dda876ae8f04aff93518b7411564f5,
+    type: 3}
+  playerTestCharacter: {fileID: 2984482802974842690, guid: d4dda876ae8f04aff93518b7411564f5,
     type: 3}
 --- !u!1 &1547273396
 GameObject:
