@@ -57,8 +57,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
 
         if (Core.settings.profile == XSettings.Profile.local)
         {
-            Core.networkManager.SetPlayerName(Core.settings.user.Get().id);
-            Core.networkManager.isLogined = true;
+			Core.networkManager.member = MemberFactory.Get();
             Core.scenario.OnLoadScenario(nameof(ScenarioHome));
             return;
         }
@@ -94,8 +93,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         }
 
         Member member = JsonUtility.FromJson<Member>(data);
-        Core.networkManager.SetPlayerName(member.mbr_id);
-        Core.networkManager.isLogined = true;
+        Core.networkManager.member = member;
         Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }
 
@@ -108,9 +106,8 @@ public class ScenarioLogin : MonoBehaviour, IScenario
 
     void OnAppleLoginSuccessed()
     {
-        Core.networkManager.SetPlayerName(null);
-        Core.networkManager.isLogined = true;
-        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+		Core.networkManager.member = MemberFactory.Get(); //우선은 더미데이터로 설정
+		Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }
 
     private void Start()

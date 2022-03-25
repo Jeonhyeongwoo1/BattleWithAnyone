@@ -1,20 +1,21 @@
 using UnityEngine.Events;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
 {
     public string scenarioName => typeof(ScenarioPlay).Name;
 
     [SerializeField] GamePlayLoading m_GamePlayLoading;
+    [SerializeField] Button m_GoHome;
 
     UnityAction ScenarioPrepared;
-
+    
     public void OnScenarioPrepare(UnityAction done)
     {
         Core.plugs.DefaultEnsure();
-
-        if (!PhotonNetwork.IsConnectedAndReady && !Core.networkManager.isLogined) //DEV
+        if (!PhotonNetwork.IsConnectedAndReady && Core.networkManager.member == null) //DEV
         {
             BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
             Core.networkManager.ConnectPhotonNetwork(() => PhotonNetwork.JoinLobby());
@@ -22,7 +23,19 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
             return;
         }
 
-        done?.Invoke();
+		string title = Core.gameManager.GetMapPreference().mapName;
+		string playerName = PhotonNetwork.IsMasterClient ? Core.gameManager.playerName : Core.networkManager.member.mbr_id;
+		string masterName = PhotonNetwork.IsMasterClient ? Core.networkManager.member.mbr_id : PhotonNetwork.MasterClient.NickName;
+
+		if (!m_GamePlayLoading.gameObject.activeSelf)
+		{
+			m_GamePlayLoading.gameObject.SetActive(true);
+		}
+
+		m_GamePlayLoading.SetInfo(title, masterName, playerName);
+		m_GamePlayLoading.StartGameLoading(OnLoadedGame);
+		ScenarioPrepared = done;
+
     }
 
     public void OnScenarioStandbyCamera(UnityAction done)
@@ -70,10 +83,10 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
         BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
 
         string title = Core.gameManager.GetMapPreference().mapName;
-        string playerName = Core.gameManager.playerName;
-        string masterName = Core.networkManager.userNickName;
+		string playerName = PhotonNetwork.IsMasterClient ? Core.gameManager.playerName : Core.networkManager.member.mbr_id;
+		string masterName = PhotonNetwork.IsMasterClient ? Core.networkManager.member.mbr_id : Core.gameManager.playerName;
 
-        if (!m_GamePlayLoading.gameObject.activeSelf)
+		if (!m_GamePlayLoading.gameObject.activeSelf)
         {
             m_GamePlayLoading.gameObject.SetActive(true);
         }
@@ -90,6 +103,12 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
 
     }
 
+    void GoHome()
+    {
+        PhotonNetwork.Disconnect();
+        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+    }
+
     private void Start()
     {
         Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
@@ -98,6 +117,7 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
     private void Awake()
     {
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
+        m_GoHome.onClick.AddListener(GoHome);
     }
 
 }

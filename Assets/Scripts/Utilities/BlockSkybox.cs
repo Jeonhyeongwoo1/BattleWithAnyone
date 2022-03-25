@@ -17,8 +17,8 @@ public class BlockSkybox : MonoBehaviour
 	public void UseBlockSkybox(bool block, UnityAction done = null)
     {
         if (!gameObject.activeSelf) { gameObject.SetActive(true); }
-		if (block && m_CanvasGroup.alpha == 1) { return; }
-		if (!block && m_CanvasGroup.alpha == 0) { return; }
+		if (block && m_CanvasGroup.alpha == 1) { done?.Invoke(); return; }
+		if (!block && m_CanvasGroup.alpha == 0) { done?.Invoke(); return; }
 
 		int s = 0, e = 1;
 		s = block ? 0 : 1;

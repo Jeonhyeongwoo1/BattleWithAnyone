@@ -33,7 +33,7 @@ public class Room : MonoBehaviourPunCallbacks, IPointerClickHandler, IPointerEnt
         }
 
         Core.gameManager.roomName = m_RoomName;
-        Core.scenario.OnLoadScenario(nameof(ScenarioRoom));
+		Core.scenario.OnLoadScenario(nameof(ScenarioRoom));
     }
 
     public void OnPointerEnter(PointerEventData eventData)

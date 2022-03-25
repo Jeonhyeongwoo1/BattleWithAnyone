@@ -7,24 +7,27 @@ using UnityEngine.Networking;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    public bool isLogined = false;
-    public string userNickName;
 
-    float m_NetworkMaxWaitTime = 10f;
-    bool m_IsConnectSuccessed = false;
+    private Member m_Member;
+	public Member member
+	{
+		get => m_Member;
+		set
+		{
+            m_Member = value;
+			PhotonNetwork.NickName = member.mbr_id;
+		}
+	}
 
-    public void Log(string message)
-    {
-        Debug.Log(message);
-    }
+	float m_NetworkMaxWaitTime = 10f;
+	bool m_IsConnectSuccessed = false;
 
-    public void SetPlayerName(string name)
-    {
-        PhotonNetwork.LocalPlayer.NickName = name;
-        userNickName = PhotonNetwork.LocalPlayer.NickName;
-    }
+	public void Log(string message)
+	{
+		Debug.Log(message);
+	}
 
-    public void ReqFindId(string email, string userName, UnityAction<string> success, UnityAction<string> fail)
+	public void ReqFindId(string email, string userName, UnityAction<string> success, UnityAction<string> fail)
     {
         string url = Core.settings.url + "/findId/" + email + "/" + userName;
 

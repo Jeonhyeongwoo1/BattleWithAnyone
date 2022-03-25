@@ -13,8 +13,6 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     [SerializeField, Range(0, 10)] float m_NetworkWaitTime = 10;
     [SerializeField] Button m_Exit;
 
-    public string testname = "전형우";
-
     public void OnScenarioPrepare(UnityAction done)
     {
         BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
@@ -30,7 +28,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
 
     public void OnScenarioStart(UnityAction done)
     {
-        if (Core.networkManager.isLogined && PhotonNetwork.IsConnected)
+        if (Core.networkManager.member != null && PhotonNetwork.IsConnected)
         {
             StartCoroutine(WaitingConnectedToMasterServer(() => PhotonNetwork.JoinLobby()));
             done?.Invoke();
@@ -41,13 +39,10 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         done?.Invoke();
     }
 
+    //Local 
     void JoinLobby()
     {
-        if (!Core.networkManager.isLogined)
-        {
-            Core.networkManager.SetPlayerName(testname);
-        }
-
+        Core.networkManager.member = MemberFactory.Get();
         PhotonNetwork.JoinLobby();
     }
 
@@ -59,10 +54,9 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
 
     public override void OnJoinedLobby()
     {
-        Core.networkManager.isLogined = true;
         BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
         roomMenu.gameObject.SetActive(true);
-        userInfo.SetUserInfo(Core.networkManager.userNickName);
+        userInfo.SetUserInfo(Core.networkManager.member.mbr_id);
         userInfo.gameObject.SetActive(true);
         m_Exit.gameObject.SetActive(true);
     }

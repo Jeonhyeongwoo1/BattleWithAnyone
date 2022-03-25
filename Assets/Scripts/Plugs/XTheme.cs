@@ -95,6 +95,14 @@ public class XTheme : MonoBehaviour, IPlugable
         }));
     }
 
+    /// <summary>
+    /// Awake is called when the script instance is being loaded.
+    /// </summary>
+    void Awake()
+    {
+        transform.GetChild(0).gameObject.SetActive(false);
+    }
+
     // Start is called before the first frame update
     void Start()
     {

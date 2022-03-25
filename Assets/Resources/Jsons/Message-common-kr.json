@@ -26,6 +26,7 @@
     "room.gamefull": "방 인원이 꽉 찼습니다.",
     "room.createfailed": "방 생성을 실패하였습니다.",
     "room.playerisnotready":"상대방이 준비완료 상태이여야 시작할 수 있습니다.",
+    "room.playerLeft": "{0}님이 방에서 나갔습니다.",
     "pun.states.waiting": "네트워크 통신이 연결될 때까지 기다립니다.",
     "chat.disconnected": "채팅 연결이 끊겼습니다.",
     "chat.failed": "채팅 연결을 실패했습니다.",
