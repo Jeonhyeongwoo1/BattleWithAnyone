@@ -5,11 +5,11 @@ using UnityEngine.SceneManagement;
 
 public interface IModel
 {
-    public string Name { get; }
-    public void LoadedModel(UnityAction done = null);
-    public void UnLoadModel(UnityAction done = null);
-    public void ReadyCamera(bool isMaster, UnityAction done = null);
-    public void CreateCharacter(Transform master, Transform player, UnityAction done = null);
+    string Name { get; }
+    Transform[] playerCreatePoints { get; }
+    void LoadedModel(UnityAction done = null);
+    void UnLoadModel(UnityAction done = null);
+    void ReadyCamera(bool isMaster, UnityAction done = null);
     IEnumerator ShootingCamera(bool isMaster, UnityAction done);
 }
 

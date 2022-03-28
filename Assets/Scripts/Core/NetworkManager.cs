@@ -146,7 +146,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         switch (returnCode)
         {
             case (int)PhotonCode.EXIST_ROOM:
-                Core.gameManager.SetMapPreference(null, 0, 0);
+                Core.state.mapPreferences = null;
                 NoticePopup.content = MessageCommon.Get("room.existroom");
                 Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
                 break;
@@ -155,7 +155,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 Core.plugs.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>();
                 break;
             default:
-                Core.gameManager.SetMapPreference(null, 0, 0);
+                Core.state.mapPreferences = null;
                 NoticePopup.content = MessageCommon.Get("room.createfailed");
                 Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
                 break;

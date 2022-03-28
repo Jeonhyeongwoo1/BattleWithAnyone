@@ -30,7 +30,7 @@ public class MemberFactory
 		switch (Core.settings.profile)
 		{
 			case XSettings.Profile.local:
-				LocalMember member = new LocalMember("master", "1234", "010-1234-1234", "guddn1234k@naver.com", "testPlayer");
+				LocalMember member = new LocalMember("testMaster12", "1234", "010-1234-1234", "guddn1234k@naver.com", "testPlayer");
 				return member.Get();
 			default:
 				return null;

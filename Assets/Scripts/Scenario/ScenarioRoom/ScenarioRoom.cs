@@ -140,7 +140,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 			roomUI.SetInfo(title);
 			roomUI.SetMasterName(master);
 			roomUI.RoomMapSetInfo(map, numberOfRound, roundTime);
-			Core.gameManager.SetMapPreference(map, numberOfRound, roundTime);
+			Core.state.mapPreferences = new XState.MapPreferences(map, numberOfRound, roundTime);
 
 			if (!PhotonNetwork.IsMasterClient)
 			{

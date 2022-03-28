@@ -513,7 +513,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomUI: {fileID: 1360540665}
   roomChat: {fileID: 896787806}
-  testname: "\uC804\uD615\uC6B0"
 --- !u!1 &165653928
 GameObject:
   m_ObjectHideFlags: 0
@@ -7663,7 +7662,7 @@ GameObject:
   - component: {fileID: 327302907423847742}
   - component: {fileID: 327302907423847713}
   m_Layer: 15
-  m_Name: ChickenDefault
+  m_Name: Chicken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13060,7 +13059,7 @@ GameObject:
   - component: {fileID: 1762018171523705972}
   - component: {fileID: 1762018171523705963}
   m_Layer: 15
-  m_Name: BasicMaleDefault
+  m_Name: BasicMale
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15598,7 +15597,7 @@ GameObject:
   - component: {fileID: 1906294739596008811}
   - component: {fileID: 1906294739596008820}
   m_Layer: 15
-  m_Name: HoodieDefault
+  m_Name: Hoodie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19410,7 +19409,7 @@ GameObject:
   - component: {fileID: 2869432941798774385}
   - component: {fileID: 2869432941798774382}
   m_Layer: 15
-  m_Name: KnightDefault
+  m_Name: Knight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23243,7 +23242,7 @@ GameObject:
   - component: {fileID: 3743438879178398072}
   - component: {fileID: 3743438879178398055}
   m_Layer: 15
-  m_Name: SoldierDefault
+  m_Name: Soldier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27561,7 +27560,7 @@ GameObject:
   - component: {fileID: 5378175835890847275}
   - component: {fileID: 5378175835890847272}
   m_Layer: 15
-  m_Name: CowboyDefault
+  m_Name: Cowboy
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

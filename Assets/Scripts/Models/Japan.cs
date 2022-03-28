@@ -6,8 +6,9 @@ using UnityEngine.Events;
 public class Japan : MonoBehaviour, IModel
 {
 	public string Name => nameof(Battleground);
+    public Transform[] playerCreatePoints { get; set; }
 
-	public void LoadedModel(UnityAction done = null)
+    public void LoadedModel(UnityAction done = null)
 	{
 
 	}
@@ -18,8 +19,7 @@ public class Japan : MonoBehaviour, IModel
 	}
 
 	public void ReadyCamera(bool isMaster, UnityAction done = null) { }
-	public void CreateCharacter(Transform master, Transform player, UnityAction done = null) { }
-
+	
 	public IEnumerator ShootingCamera(bool isMaster, UnityAction done)
 	{
 		yield return null;

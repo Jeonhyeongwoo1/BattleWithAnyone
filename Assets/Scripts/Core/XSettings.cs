@@ -14,7 +14,18 @@ public class XSettings : MonoBehaviour
 	public string url => profile == Profile.dev ? m_DevUrl : m_LocalUrl;
 	public Profile profile;
 
-	private	readonly string m_DevUrl = "http://battlewithanyoneview.cafe24app.com";
+    /*
+	*   ---------------------------- ---------------------------
+	*	PhotonNetwork Resource Path
+	*   ---------------------------- ---------------------------
+	*/
+    public static readonly string chracterPath = "Prefabs/";
+    /*
+	*   ---------------------------- ---------------------------
+	*/
+
+    private	readonly string m_DevUrl = "http://battlewithanyoneview.cafe24app.com";
 	private	readonly string m_LocalUrl = "localhost:8001";
+
 
 }

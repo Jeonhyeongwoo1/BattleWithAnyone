@@ -53,9 +53,9 @@ public class MapSettings : MonoBehaviour, IPlugable
     [SerializeField] Toggle m_NumberOfRound5;
 
     MapInfo m_SelectedMap;
+    XState.MapPreferences m_Preferences = new XState.MapPreferences(null, 0 ,0);
     string m_NotContainSpecial = @"[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]";
-    GamePlayManager.MapPreferences m_Preferences = new GamePlayManager.MapPreferences();
-
+    
     public void Open(UnityAction done = null)
     {
         m_Map.SetActive(true);
@@ -67,9 +67,9 @@ public class MapSettings : MonoBehaviour, IPlugable
         }
         else if (scenario == nameof(ScenarioRoom))
         {
-            if (Core.gameManager.HasMapPreference())
+            if (Core.state.mapPreferences != null)
             {
-                GamePlayManager.MapPreferences preferences = Core.gameManager.GetMapPreference();
+                XState.MapPreferences preferences = Core.state.mapPreferences;
                 string mapName = preferences.mapName;
                 int numberOfRound = preferences.numberOfRound;
                 int roundTime = preferences.roundTime;
@@ -142,7 +142,7 @@ public class MapSettings : MonoBehaviour, IPlugable
             }
         }
 
-        Core.gameManager.SetMapPreference(m_Preferences.mapName, m_Preferences.numberOfRound, m_Preferences.roundTime);
+        Core.state.mapPreferences = new XState.MapPreferences(m_Preferences.mapName, m_Preferences.numberOfRound, m_Preferences.roundTime);
         confirm?.Invoke(roomName);
         Close();
     }

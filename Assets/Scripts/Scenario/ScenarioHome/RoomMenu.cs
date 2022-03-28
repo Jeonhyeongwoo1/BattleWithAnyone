@@ -180,7 +180,7 @@ public class RoomMenu : MonoBehaviourPunCallbacks
         LobbyOptions[2] = "NumberOfRound";
         LobbyOptions[3] = "RoundTime";
 
-        GamePlayManager.MapPreferences preferences = Core.gameManager.GetMapPreference();
+        XState.MapPreferences preferences = Core.state.mapPreferences;
         string map = preferences.mapName;
         int numberOfRound = preferences.numberOfRound;
         int roundTime = preferences.roundTime;

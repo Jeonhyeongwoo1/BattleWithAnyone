@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class XTheme : MonoBehaviour, IPlugable
 {
     public string plugName => nameof(XTheme);
+    public GameTimer gameTimer;
 
     [SerializeField] RectTransform m_StageInfo;
     [SerializeField] RectTransform m_CharacterInfo;
@@ -100,7 +101,7 @@ public class XTheme : MonoBehaviour, IPlugable
     /// </summary>
     void Awake()
     {
-        transform.GetChild(0).gameObject.SetActive(false);
+       // transform.GetChild(0).gameObject.SetActive(false);
     }
 
     // Start is called before the first frame update

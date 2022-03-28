@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using Photon.Pun;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPunCallbacks
 {
     public enum State
     {
@@ -195,6 +196,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (!photonView.IsMine) { return; }
 
         switch (m_State)
         {
@@ -239,6 +241,14 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         m_PlayerActions = new PlayerActionsScript();
+    }
+
+    private void Start()
+    {
+        if (!transform.TryGetComponent<PhotonView>(out var view))
+        {
+            gameObject.AddComponent<PhotonView>();
+        }
     }
 
     void OnEnable()

@@ -812,6 +812,7 @@ GameObject:
   m_Component:
   - component: {fileID: 932858868}
   - component: {fileID: 932858869}
+  - component: {fileID: 932858870}
   m_Layer: 0
   m_Name: XTheme
   m_TagString: Untagged
@@ -847,6 +848,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cd8373a329224910b6da2cb341232b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameTimer: {fileID: 1412382624}
   m_StageInfo: {fileID: 1121746685810625462}
   m_CharacterInfo: {fileID: 674581531}
   m_Master: {fileID: 2046930386}
@@ -921,6 +923,28 @@ MonoBehaviour:
   m_StageInfo_Close_Pos: {x: 0, y: 43, z: 0}
   m_CharacterInfo_Open_Pos: {x: 0, y: -165, z: 0}
   m_CharacterInfo_Close_Pos: {x: 0, y: -300, z: 0}
+--- !u!114 &932858870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932858867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1268569702
 GameObject:
   m_ObjectHideFlags: 0
@@ -1068,6 +1092,7 @@ GameObject:
   - component: {fileID: 1412382621}
   - component: {fileID: 1412382623}
   - component: {fileID: 1412382622}
+  - component: {fileID: 1412382624}
   m_Layer: 5
   m_Name: Time
   m_TagString: Untagged
@@ -1137,6 +1162,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1412382620}
   m_CullTransparentMesh: 1
+--- !u!114 &1412382624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412382620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12b334e049e054f9e91cbe322d2dfbd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Timer: {fileID: 0}
 --- !u!1 &1660831267
 GameObject:
   m_ObjectHideFlags: 0
@@ -1203,7 +1241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1735508317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2632,7 +2670,7 @@ RectTransform:
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0.30999756, y: 0}
   m_SizeDelta: {x: -26.078491, y: -14.998047}
   m_Pivot: {x: 0.5, y: 0.5}

@@ -10,6 +10,7 @@ public class Core : Singleton<Core>
     static public NetworkManager networkManager => Core.I.m_NetworkManager;
     static public XSettings settings => Core.I.m_XSettings;
     static public GamePlayManager gameManager => Core.I.m_GamePlayManager;
+    static public XState state => Core.I.m_XState;
 
     [SerializeField] ModelDirector m_ModelDirector = null;
     [SerializeField] ScenarioDirector m_ScenarioDirector = null;
@@ -17,9 +18,10 @@ public class Core : Singleton<Core>
     [SerializeField] NetworkManager m_NetworkManager = null;
     [SerializeField] XSettings m_XSettings = null;
     [SerializeField] GamePlayManager m_GamePlayManager = null;
+    [SerializeField] XState m_XState = null;
 
     static UnityEvent m_EnsureDone = new UnityEvent();
-    
+
     // static methods
     static public void Ensure(UnityAction done = null)
     {
@@ -70,6 +72,7 @@ public class Core : Singleton<Core>
         EnsureCore<NetworkManager>(ref m_NetworkManager);
         EnsureCore<ModelDirector>(ref m_ModelDirector);
         EnsureCore<XSettings>(ref m_XSettings);
+        EnsureCore<XState>(ref m_XState);
 
         Debug.Log("Core Initialized.");
     }

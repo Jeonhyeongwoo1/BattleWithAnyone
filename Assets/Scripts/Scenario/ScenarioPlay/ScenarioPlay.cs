@@ -7,7 +7,7 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
 {
     public string scenarioName => typeof(ScenarioPlay).Name;
 
-    [SerializeField] GamePlayLoading m_GamePlayLoading;
+    [SerializeField] GamePlayLoading m_GameLoading;
     [SerializeField] Button m_GoHome;
 
     UnityAction ScenarioPrepared;
@@ -23,19 +23,9 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
             return;
         }
 
-		string title = Core.gameManager.GetMapPreference().mapName;
-		string playerName = PhotonNetwork.IsMasterClient ? Core.gameManager.playerName : Core.networkManager.member.mbr_id;
-		string masterName = PhotonNetwork.IsMasterClient ? Core.networkManager.member.mbr_id : PhotonNetwork.MasterClient.NickName;
-
-		if (!m_GamePlayLoading.gameObject.activeSelf)
-		{
-			m_GamePlayLoading.gameObject.SetActive(true);
-		}
-
-		m_GamePlayLoading.SetInfo(title, masterName, playerName);
-		m_GamePlayLoading.StartGameLoading(OnLoadedGame);
+        m_GameLoading.Prepare();
+		m_GameLoading.StartLoading(OnLoadedGame);
 		ScenarioPrepared = done;
-
     }
 
     public void OnScenarioStandbyCamera(UnityAction done)
@@ -53,7 +43,7 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
 
     public void OnScenarioStart(UnityAction done)
     {
-        Core.gameManager.GamePrepare();
+        Core.gameManager.OnGamePrepare();
 		done?.Invoke();
     }
 
@@ -81,26 +71,16 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
     public override void OnCreatedRoom()
     {
         BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
-
-        string title = Core.gameManager.GetMapPreference().mapName;
-		string playerName = PhotonNetwork.IsMasterClient ? Core.gameManager.playerName : Core.networkManager.member.mbr_id;
-		string masterName = PhotonNetwork.IsMasterClient ? Core.networkManager.member.mbr_id : Core.gameManager.playerName;
-
-		if (!m_GamePlayLoading.gameObject.activeSelf)
-        {
-            m_GamePlayLoading.gameObject.SetActive(true);
-        }
-
-        m_GamePlayLoading.SetInfo(title, masterName, playerName);
-        m_GamePlayLoading.StartGameLoading(OnLoadedGame);
+        m_GameLoading.Prepare();
+        m_GameLoading.StartLoading(OnLoadedGame);
     }
 
     void OnLoadedGame()
     {
         Debug.Log("OnLoaded Game");
-        m_GamePlayLoading.StopGameLoading();
+        m_GameLoading.EndLoading();
         ScenarioPrepared?.Invoke();
-
+        
     }
 
     void GoHome()

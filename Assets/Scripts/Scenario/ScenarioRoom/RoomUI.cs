@@ -74,7 +74,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	{
 		m_KickPlayer.gameObject.SetActive(true);
 		m_PlayerName.text = playerName;
-		Core.gameManager.playerName = playerName;
+		Core.state.playerName = playerName;
 
 		if (m_SelectedCharacter != null)
 		{
@@ -291,23 +291,22 @@ public class RoomUI : MonoBehaviourPunCallbacks
 			return;
 		}
 
-		if (!Core.gameManager.HasMapPreference())
+		if (Core.state.mapPreferences == null)
 		{
 			NoticePopup.content = MessageCommon.Get("map.selectmap");
 			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
 			return;
 		}
 
-        photonView.RPC("SetPlayersCharacter", RpcTarget.All);
+        photonView.RPC("SetPlayersCharacter", RpcTarget.All, PhotonNetwork.IsMasterClient);
 		photonView.RPC("OnLoadScenarioPlay", RpcTarget.All);
 	}
 
 	[PunRPC]
-	void SetPlayersCharacter()
+	void SetPlayersCharacter(bool isMaster)
 	{
-		Transform master = PhotonNetwork.IsMasterClient ? m_SelectedCharacter.model : m_OtherPlayerCharcter;
-		Transform player = PhotonNetwork.IsMasterClient ? m_SelectedCharacter.model : m_OtherPlayerCharcter;
-		Core.gameManager.SetPlayersCharacter(master, player);
+		Core.state.masterCharacter = isMaster ? m_SelectedCharacter.model : m_OtherPlayerCharcter;
+		Core.state.playerCharacter = isMaster ? m_OtherPlayerCharcter : m_SelectedCharacter.model;
 	}
 
 	[PunRPC]
@@ -319,7 +318,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 	void UpdateMapSetting()
 	{
-		GamePlayManager.MapPreferences preferences = Core.gameManager.GetMapPreference();
+		XState.MapPreferences preferences = Core.state.mapPreferences;
 		string mapName = preferences.mapName;
 		int numberOfRound = preferences.numberOfRound;
 		int roundTime = preferences.roundTime;
@@ -371,20 +370,19 @@ public class RoomUI : MonoBehaviourPunCallbacks
 			}
 		}
 
-		Transform c = null;
 		foreach (var v in characters)
 		{
 			if (v.name == character)
 			{
-				c = Instantiate<Transform>(v.model, target.position, Quaternion.Euler(new Vector3(0, -180, 0)), target);
+				Transform c = Instantiate<Transform>(v.model, target.position, Quaternion.Euler(new Vector3(0, -180, 0)), target);
 				if (!c.gameObject.activeSelf)
 				{
 					c.gameObject.SetActive(true);
 				}
+				m_OtherPlayerCharcter = v.model;
 			}
 		}
-
-		m_OtherPlayerCharcter = c;
+		
 	}
 
 	[PunRPC]

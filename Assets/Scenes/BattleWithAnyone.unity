@@ -564,8 +564,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7190cdf493954552b2c6825f9c29733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLogined: 0
-  userNickName: 
 --- !u!4 &810653591
 Transform:
   m_ObjectHideFlags: 0
@@ -734,6 +732,50 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1517463749
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1517463750}
+  - component: {fileID: 1517463751}
+  m_Layer: 0
+  m_Name: XState
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1517463750
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517463749}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1762689803}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1517463751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517463749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0271875bedbcb4ed2bba6cd2b6d14fff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1553267688
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,6 +996,7 @@ Transform:
   - {fileID: 810653591}
   - {fileID: 784403390}
   - {fileID: 437000291}
+  - {fileID: 1517463750}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -975,6 +1018,7 @@ MonoBehaviour:
   m_NetworkManager: {fileID: 810653590}
   m_XSettings: {fileID: 784403389}
   m_GamePlayManager: {fileID: 437000292}
+  m_XState: {fileID: 1517463751}
 --- !u!1 &1789897469
 GameObject:
   m_ObjectHideFlags: 0

@@ -96,7 +96,7 @@ public class AppleAuthLogin : MonoBehaviour
 
         if (isSuccessed)
         {
-            Core.networkManager.isLogined = true;
+            Core.networkManager.member = MemberFactory.Get();
             done?.Invoke();
             yield break;
         }
@@ -137,7 +137,7 @@ public class AppleAuthLogin : MonoBehaviour
 
         if (isSuccessed)
         {
-            Core.networkManager.isLogined = true;
+            Core.networkManager.member = MemberFactory.Get();
             done?.Invoke();
             yield break;
         }

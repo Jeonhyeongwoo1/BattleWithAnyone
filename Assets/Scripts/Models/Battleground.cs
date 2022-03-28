@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using Cinemachine;
 using System;
+using Photon.Pun;
 
-public class Battleground : MonoBehaviour, IModel
+public class Battleground : MonoBehaviourPunCallbacks, IModel
 {
 	public string Name => nameof(Battleground);
+	public Transform[] playerCreatePoints => m_PlayerCreatePoints;
 
 	[Serializable]
 	public struct DollyCameraComponent
@@ -20,9 +22,6 @@ public class Battleground : MonoBehaviour, IModel
 	[SerializeField] Transform[] m_PlayerCreatePoints;
 	[SerializeField] DollyCameraComponent m_MasterDolly;
 	[SerializeField] DollyCameraComponent m_PlayerDolly;
-
-	public Transform masterCharacter;
-	public Transform playerCharacter;
 
 	public void LoadedModel(UnityAction done = null)
 	{
@@ -38,14 +37,6 @@ public class Battleground : MonoBehaviour, IModel
 	{
 		DollyCameraComponent dolly = isMaster ? m_MasterDolly : m_PlayerDolly;
 		StartCoroutine(SwitchingCamera(dolly.camera, done));
-	}
-
-	public void CreateCharacter(Transform master, Transform player, UnityAction done = null)
-	{
-		masterCharacter = Instantiate<Transform>(master, m_PlayerCreatePoints[0].position, m_PlayerCreatePoints[0].rotation, m_PlayerCreatePoints[0].parent);
-		playerCharacter = Instantiate<Transform>(player, m_PlayerCreatePoints[1].position, m_PlayerCreatePoints[1].rotation, m_PlayerCreatePoints[1].parent);
-
-		done?.Invoke();
 	}
 
 	IEnumerator SwitchingCamera(CinemachineVirtualCamera cam, UnityAction done)
@@ -77,7 +68,7 @@ public class Battleground : MonoBehaviour, IModel
 		dolly.dollyCart.enabled = false;
 		dolly.camera.enabled = false;
 
-		Transform character = isMaster ? masterCharacter : playerCharacter;
+		Transform character = isMaster ? Core.state.masterCharacter : Core.state.playerCharacter;
 		if (character.TryGetComponent<PlayerController>(out var contorller))
 		{
 			CinemachineVirtualCamera camera = contorller.GetCamera();

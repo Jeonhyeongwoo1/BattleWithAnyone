@@ -31,7 +31,7 @@ public class RoomMapInfo : MonoBehaviour
         m_MapGameTime.text = round.ToString();
         m_MapRoundNumber.text = time.ToString();
 
-        Core.gameManager.SetMapPreference(mapTitle, round, time);
+        Core.state.mapPreferences = new XState.MapPreferences(mapTitle, round, time);
     }
 
 }

@@ -18,8 +18,8 @@ public class DevPhotonNetwork
 		LobbyOptions[2] = "NumberOfRound";
 		LobbyOptions[3] = "RoundTime";
 
-		Member member = MemberFactory.Get();
-
+        Member member = MemberFactory.Get();
+        Core.networkManager.member = member;
 		ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
 											{ "RoomManager", member.mbr_id },
 											{ "Map", m_MapTitle },
@@ -33,7 +33,7 @@ public class DevPhotonNetwork
 		roomOptions.CustomRoomPropertiesForLobby = LobbyOptions;
 		roomOptions.CustomRoomProperties = customProperties;
 		PhotonNetwork.CreateRoom(m_RoomTitle, roomOptions, TypedLobby.Default);
-		Core.gameManager.SetMapPreference(m_MapTitle, m_NumberOfRound, m_RoundTime);
+		Core.state.mapPreferences = new XState.MapPreferences(m_MapTitle, m_NumberOfRound, m_RoundTime);
 	}
 
 }
