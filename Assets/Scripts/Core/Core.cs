@@ -11,6 +11,7 @@ public class Core : Singleton<Core>
     static public XSettings settings => Core.I.m_XSettings;
     static public GamePlayManager gameManager => Core.I.m_GamePlayManager;
     static public XState state => Core.I.m_XState;
+    static public XEvent xEvent => Core.I.m_XEvent;
 
     [SerializeField] ModelDirector m_ModelDirector = null;
     [SerializeField] ScenarioDirector m_ScenarioDirector = null;
@@ -19,6 +20,7 @@ public class Core : Singleton<Core>
     [SerializeField] XSettings m_XSettings = null;
     [SerializeField] GamePlayManager m_GamePlayManager = null;
     [SerializeField] XState m_XState = null;
+    [SerializeField] XEvent m_XEvent = null;
 
     static UnityEvent m_EnsureDone = new UnityEvent();
 
@@ -73,6 +75,7 @@ public class Core : Singleton<Core>
         EnsureCore<ModelDirector>(ref m_ModelDirector);
         EnsureCore<XSettings>(ref m_XSettings);
         EnsureCore<XState>(ref m_XState);
+        EnsureCore<XEvent>(ref m_XEvent);
 
         Debug.Log("Core Initialized.");
     }

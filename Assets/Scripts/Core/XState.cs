@@ -79,9 +79,6 @@ public partial class XState : States
     }
 
     MapPreferences m_MapPreferences;
-
-    string m_PlayerName;
-    string m_MasterName;
     Transform m_MasterCharacter;
     Transform m_PlayerCharecter;
 
