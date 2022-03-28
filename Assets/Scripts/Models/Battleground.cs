@@ -36,6 +36,7 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
 	public void ReadyCamera(bool isMaster, UnityAction done = null)
 	{
 		DollyCameraComponent dolly = isMaster ? m_MasterDolly : m_PlayerDolly;
+		dolly.camera.Priority = 11;
 		StartCoroutine(SwitchingCamera(dolly.camera, done));
 	}
 
@@ -65,6 +66,7 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
 			yield return null;
 		}
 
+		dolly.camera.Priority = 10;
 		dolly.dollyCart.enabled = false;
 		dolly.camera.enabled = false;
 

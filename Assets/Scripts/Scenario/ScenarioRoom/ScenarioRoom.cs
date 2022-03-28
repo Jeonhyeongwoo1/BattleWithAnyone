@@ -61,12 +61,14 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 
 	public void OnScenarioStop(UnityAction done)
 	{
+		roomChat.DisConnect();
 		PhotonNetwork.EnableCloseConnection = false;
 		done?.Invoke();
 	}
 
 	public override void OnJoinedRoom()
 	{
+		Debug.Log("Joined Room");
 		SetRoomCustomInfo();
 		ConnectRoomChat();
 	}
@@ -91,9 +93,6 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 	{
 		Debug.Log("On Created Room");
 		roomUI.Init();
-		Core.networkManager.member = MemberFactory.Get();
-		roomChat.Connect(Core.networkManager.member.mbr_id, devPhotonNetwork.GetRoomTitle());
-		roomChat.connectCompleted = ConnectCompleted;
 		PhotonNetwork.EnableCloseConnection = true;
 	}
 

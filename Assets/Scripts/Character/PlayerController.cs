@@ -232,10 +232,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     /// </summary>
     void LateUpdate()
     {
-        if (Input.GetMouseButton(1))
-        {
-            
-        }
+      
     }
 
     void Awake()
@@ -248,27 +245,27 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if (!transform.TryGetComponent<PhotonView>(out var view))
         {
             gameObject.AddComponent<PhotonView>();
-        }
-    }
+		}
+	}
 
-    void OnEnable()
-    {
-        m_PlayerActions.Player.Jump.started += DoJump;
-        m_PlayerActions.Player.Attack.started += DoAttack;
-        m_PlayerActions.Player.Reload.started += DoReload;
-        m_PlayerActions.Player.Rolling.started += DoRolling;
-        m_PlayerActions.Player.MousePosition.started += _ => LateUpdate();
-        m_PlayerActions.Player.Enable();
+	public override void OnEnable()
+	{
+		m_PlayerActions.Player.Jump.started += DoJump;
+		m_PlayerActions.Player.Attack.started += DoAttack;
+		m_PlayerActions.Player.Reload.started += DoReload;
+		m_PlayerActions.Player.Rolling.started += DoRolling;
+		m_PlayerActions.Player.MousePosition.started += _ => LateUpdate();
+		m_PlayerActions.Player.Enable();
 
-        jumpAnimation = Animator.StringToHash("Jump");
-    }
+		jumpAnimation = Animator.StringToHash("Jump");
+	}
 
-    void OnDisable()
-    {
-        m_PlayerActions.Player.Jump.started -= DoJump;
-        m_PlayerActions.Player.Attack.started -= DoAttack;
-        m_PlayerActions.Player.Reload.started -= DoReload;
-        m_PlayerActions.Player.Rolling.started -= DoRolling;
+	public override void OnDisable()
+	{
+		m_PlayerActions.Player.Jump.started -= DoJump;
+		m_PlayerActions.Player.Attack.started -= DoAttack;
+		m_PlayerActions.Player.Reload.started -= DoReload;
+		m_PlayerActions.Player.Rolling.started -= DoRolling;
         m_PlayerActions.Player.MousePosition.started -= _ => LateUpdate();
         m_PlayerActions.Player.Disable();
     }

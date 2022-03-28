@@ -2,75 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine.UI;
-using System.Timers;
 
-public class GameTimer : MonoBehaviourPunCallbacks, IPunObservable
+public class GameTimer : MonoBehaviourPun, IPunObservable
 {
-    [SerializeField] Text m_Timer;
+	[SerializeField] Text m_Timer;
 
-    private string s;
+	float m_RounTime = 0;
 
-    IEnumerator Timer()
-    {
-        float time = 150;
-        while(time != 0)
-        {
-            s = System.DateTime.Now.Second.ToString();
-            yield return null;
-        }
+	public void StartTimer()
+	{
+		if (!PhotonNetwork.IsMasterClient) { return; }
 
-       
-    }
+		StartCoroutine(Timer());
+	}
 
-    public void STartTimer()
-    {
-        photonView.RPC("OnLoaded", RpcTarget.All);
-        StartCoroutine(Timer());
-    }
+	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+	{
+		if (stream.IsWriting && PhotonNetwork.IsMasterClient)
+		{
+			stream.SendNext(m_RounTime);
+		}
+		else
+		{
+            float roundTime = (float)stream.ReceiveNext();
+			m_Timer.text = string.Format("{0}", Mathf.Floor(roundTime));
+		}
+	}
 
-    void OnLoaded()
-    {
-        
-    }
+	IEnumerator Timer()
+	{
+		m_RounTime = Core.state.mapPreferences.roundTime;
+		while (m_RounTime >= 0)
+		{
+			m_RounTime -= Time.deltaTime;
+			m_Timer.text = string.Format("{0}", (int)m_RounTime);
+			yield return null;
+		}
+	}
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(s);
-        }
-        else
-        {
-            print(stream.ReceiveNext());
-        }
-    }
-
-    [ContextMenu("TEST")]
-    public void TEST()
-    {
-        s = "TEST";
-    }
-
-    public override void OnEnable()
-    {
-        base.OnEnable();
-    }
-
-    public override void OnDisable()
-    {
-        base.OnDisable();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

@@ -22,19 +22,20 @@ public class GamePlayManager : MonoBehaviourPunCallbacks
 		popups.OpenPopupAsync<Round>(() =>
 		{
 			Round round = popups.Get<Round>();
-			round.ShowRoundInfo(GamePrepared);
+			round.ShowRoundInfo(OnGamePrepared);
 		});
 	}
 
-	void GamePrepared()
+	void OnGamePrepared()
 	{
 		Log("Game ready");
-		
 		XState.MapPreferences map = Core.state.mapPreferences;
 		XTheme theme = Core.plugs.Get<XTheme>();
-		theme.SetGameInfo(map.roundTime.ToString(), map.numberOfRound.ToString(), Core.networkManager.member.mbr_id, Core.state.playerName);
+		theme.SetGameInfo(map.roundTime.ToString(), map.numberOfRound.ToString(),
+													PhotonNetwork.MasterClient.NickName,
+													PhotonNetwork.IsMasterClient ? PhotonNetwork.MasterClient.NickName : PhotonNetwork.NickName);
 		Core.plugs.Get<XTheme>().Open();
-theme.gameTimer.STartTimer();
+		theme.gameTimer.StartTimer();
 		StartCoroutine(GamePlaying());
 	}
 

@@ -35,13 +35,13 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
         {
             Debug.LogError("Un loaded Map!!");
             done?.Invoke();
-            return;
-        }
+			return;
+		}
 
-        StartCoroutine(model.ShootingCamera(PhotonNetwork.IsMasterClient, done));
-    }
+		StartCoroutine(model.ShootingCamera(PhotonNetwork.IsMasterClient, done));
+	}
 
-    public void OnScenarioStart(UnityAction done)
+	public void OnScenarioStart(UnityAction done)
     {
         Core.gameManager.OnGamePrepare();
 		done?.Invoke();

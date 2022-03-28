@@ -54,7 +54,7 @@ public class RoomChat : MonoBehaviour, IChatClientListener
     }
 
     public void Connect(string userName, string roomTitle)
-    {
+    {   
         m_ChatClient = new ChatClient(this);
         m_ChatClient.UseBackgroundWorkerForSending = true;
         m_ChatClient.AuthValues = new Photon.Chat.AuthenticationValues(userName);

@@ -74,7 +74,6 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	{
 		m_KickPlayer.gameObject.SetActive(true);
 		m_PlayerName.text = playerName;
-		Core.state.playerName = playerName;
 
 		if (m_SelectedCharacter != null)
 		{
