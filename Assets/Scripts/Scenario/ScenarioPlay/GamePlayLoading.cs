@@ -166,6 +166,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
 				IModel model = Core.models.Get();
 				int playerIndex = PhotonNetwork.IsMasterClient ? 1 : 0;
 				player.transform.SetParent(model.playerCreatePoints[playerIndex].parent);
+                player.name = PhotonNetwork.IsMasterClient ? "Master" + name : "Player" + name;
 			}
 		}
 	}

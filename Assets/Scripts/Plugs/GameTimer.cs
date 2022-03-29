@@ -40,6 +40,7 @@ public class GameTimer : MonoBehaviourPun, IPunObservable, IOnEventCallback
             object data = photonEvent.CustomData;
             int status = (int)data;
             Core.gameManager.SetState((GamePlayManager.Status)status);
+            Core.state.masterWinCount++; //타임아웃일 경우에는 방장이 승리한다.
         }
 
     }

@@ -106,13 +106,14 @@ public class XTheme : MonoBehaviour, IPlugable
 
 	void OnValueChanged(string key, object o)
 	{
+		int value = (int)o;
 		switch (key)
 		{
 			case nameof(Core.state.playerWinCount):
-				m_PlayerWinCount.text = (string)o;
+				m_PlayerWinCount.text = value.ToString();
 				break;
 			case nameof(Core.state.masterWinCount):
-				m_MasterWinCount.text = (string)o;
+				m_MasterWinCount.text = value.ToString();
 				break;
 		}
 	}

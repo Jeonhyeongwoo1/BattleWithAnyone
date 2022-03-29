@@ -2,8 +2,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
 using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
 
-public class PlayerController : MonoBehaviourPunCallbacks
+public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 {
     public enum State
     {
@@ -192,7 +194,34 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public void DoDie()
     {
         m_Animator.SetTrigger("Die");
+        
+        object[] content = { GamePlayManager.Status.RoundDone, PhotonNetwork.IsMasterClient };
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+        PhotonNetwork.RaiseEvent((byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE, content, raiseEventOptions, SendOptions.SendReliable);
+
     }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (!photonView.IsMine) { return; } //Dev
+        if (photonEvent.Code == (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            int status = (int)data[0];
+            bool isMaster = (bool)data[1];
+            Core.gameManager.SetState((GamePlayManager.Status)status);
+
+            if (isMaster)
+            {
+                Core.state.playerWinCount += 1;
+            }
+            else
+            {
+                Core.state.masterWinCount += 1;
+            }
+        }
+    }
+
 
     private void Update()
     {
@@ -256,7 +285,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		m_PlayerActions.Player.Rolling.started += DoRolling;
 		m_PlayerActions.Player.MousePosition.started += _ => LateUpdate();
 		m_PlayerActions.Player.Enable();
-
+        PhotonNetwork.AddCallbackTarget(this);
 		jumpAnimation = Animator.StringToHash("Jump");
 	}
 
@@ -268,6 +297,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		m_PlayerActions.Player.Rolling.started -= DoRolling;
         m_PlayerActions.Player.MousePosition.started -= _ => LateUpdate();
         m_PlayerActions.Player.Disable();
+        PhotonNetwork.RemoveCallbackTarget(this);
+    }
+
+    [ContextMenu("Die")]
+    public void TestDie()
+    {
+        DoDie();
     }
 
 }
