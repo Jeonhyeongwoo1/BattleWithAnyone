@@ -119,6 +119,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(ConnectingNetwork(done));
     }
 
+    public void WaitStateToConnectedToMasterServer(UnityAction done)
+    {
+        StartCoroutine(WaitingConnectedToMasterServer(done));
+    }
+
     public override void OnDisconnected(DisconnectCause cause)
     {
         Log("DisConnected" + cause);
@@ -206,6 +211,34 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
 
         done?.Invoke();
+    }
+
+    IEnumerator WaitingConnectedToMasterServer(UnityAction done)
+	{
+		float elapsed = 0;
+		while (PhotonNetwork.NetworkClientState != ClientState.ConnectedToMasterServer)
+		{
+			if (elapsed > m_NetworkMaxWaitTime)
+			{
+				NoticePopup.content = MessageCommon.Get("network.failed");
+				Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+				Core.scenario.OnLoadScenario(nameof(ScenarioLogin));
+				BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
+				yield break;
+			}
+
+			elapsed += Time.deltaTime;
+			yield return null;
+		}
+
+		done?.Invoke();
+	}
+
+    /// <summary>
+    /// Awake is called when the script instance is being loaded.
+    /// </summary>
+    void Awake()
+    {
     }
 
 }

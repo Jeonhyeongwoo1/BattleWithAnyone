@@ -7,11 +7,11 @@ public class Core : Singleton<Core>
     static public ScenarioDirector scenario => Core.I?.m_ScenarioDirector;
     static public PlugDirector plugs => Core.I?.m_PlugDirector;
     static public ModelDirector models => Core.I?.m_ModelDirector;
-    static public NetworkManager networkManager => Core.I.m_NetworkManager;
-    static public XSettings settings => Core.I.m_XSettings;
-    static public GamePlayManager gameManager => Core.I.m_GamePlayManager;
-    static public XState state => Core.I.m_XState;
-    static public XEvent xEvent => Core.I.m_XEvent;
+    static public NetworkManager networkManager => Core.I?.m_NetworkManager;
+    static public XSettings settings => Core.I?.m_XSettings;
+    static public GamePlayManager gameManager => Core.I?.m_GamePlayManager;
+    static public XState state => Core.I?.m_XState;
+    static public XEvent xEvent => Core.I?.m_XEvent;
 
     [SerializeField] ModelDirector m_ModelDirector = null;
     [SerializeField] ScenarioDirector m_ScenarioDirector = null;

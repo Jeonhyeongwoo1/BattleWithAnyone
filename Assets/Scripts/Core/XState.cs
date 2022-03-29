@@ -82,6 +82,9 @@ public partial class XState : States
     Transform m_MasterCharacter;
     Transform m_PlayerCharecter;
 
+    int m_MasterWinCount;
+    int m_PlayerWinCount;
+
     void SilentListen()
     {
         Debug.Log("Silent Listen!!!!");

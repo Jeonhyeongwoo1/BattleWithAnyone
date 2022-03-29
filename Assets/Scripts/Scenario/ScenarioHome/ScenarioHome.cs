@@ -10,7 +10,6 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     public UserInfo userInfo;
     public RoomMenu roomMenu;
 
-    [SerializeField, Range(0, 10)] float m_NetworkWaitTime = 10;
     [SerializeField] Button m_Exit;
 
     public void OnScenarioPrepare(UnityAction done)
@@ -24,20 +23,20 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     public void OnScenarioStandbyCamera(UnityAction done)
     {
         done?.Invoke();
-    }
+	}
 
-    public void OnScenarioStart(UnityAction done)
-    {
-        if (Core.networkManager.member != null && PhotonNetwork.IsConnected)
-        {
-            StartCoroutine(WaitingConnectedToMasterServer(() => PhotonNetwork.JoinLobby()));
-            done?.Invoke();
-            return;
-        }
+	public void OnScenarioStart(UnityAction done)
+	{
+		if (Core.networkManager.member != null && PhotonNetwork.IsConnected)
+		{
+			Core.networkManager.WaitStateToConnectedToMasterServer(() => PhotonNetwork.JoinLobby());
+			done?.Invoke();
+			return;
+		}
 
-        Core.networkManager.ConnectPhotonNetwork(() => StartCoroutine(WaitingConnectedToMasterServer(JoinLobby)));
-        done?.Invoke();
-    }
+		Core.networkManager.ConnectPhotonNetwork(() => Core.networkManager.WaitStateToConnectedToMasterServer(JoinLobby));
+		done?.Invoke();
+	}
 
     //Local 
     void JoinLobby()
@@ -59,27 +58,6 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         userInfo.SetUserInfo(Core.networkManager.member.mbr_id);
         userInfo.gameObject.SetActive(true);
         m_Exit.gameObject.SetActive(true);
-    }
-
-    IEnumerator WaitingConnectedToMasterServer(UnityAction done)
-    {
-        float elapsed = 0;
-        while (PhotonNetwork.NetworkClientState != Photon.Realtime.ClientState.ConnectedToMasterServer)
-        {
-            if (elapsed > m_NetworkWaitTime)
-            {
-                NoticePopup.content = MessageCommon.Get("network.failed");
-                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-                Core.scenario.OnLoadScenario(nameof(ScenarioLogin));
-                BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
-                yield break;
-            }
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        done?.Invoke();
     }
 
     private void Start()
