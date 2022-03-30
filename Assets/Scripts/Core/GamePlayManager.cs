@@ -45,6 +45,12 @@ public class GamePlayManager : MonoBehaviourPunCallbacks
 		XTheme theme = Core.plugs.Get<XTheme>();
 		theme.roundTime = map.roundTime;
 		theme.SetPlayersName(PhotonNetwork.MasterClient.NickName, PhotonNetwork.IsMasterClient ? PhotonNetwork.MasterClient.NickName : PhotonNetwork.NickName);
+		Transform player = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter : Core.state.playerCharacter;
+		if (player.TryGetComponent<PlayerController>(out var component))
+		{
+			theme.player = component;
+		}
+
 		Core.plugs.Get<XTheme>().Open(OnGameStart);
 	}
 

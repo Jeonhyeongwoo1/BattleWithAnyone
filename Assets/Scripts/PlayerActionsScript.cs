@@ -172,6 +172,61 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""89bc8570-97f1-4864-b0ae-f0e08568434c"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Up"",
+                    ""id"": ""e7d7fedd-e9f9-49fc-8a28-03c4fc65642b"",
+                    ""path"": ""<Touchscreen>/primaryTouch/delta/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Down"",
+                    ""id"": ""d30a5ab7-c372-4b43-8272-b98220ee0dc8"",
+                    ""path"": ""<Touchscreen>/primaryTouch/delta/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Left"",
+                    ""id"": ""666cacde-b7bf-48c6-ab97-5188d00fc79f"",
+                    ""path"": ""<Touchscreen>/primaryTouch/delta/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Right"",
+                    ""id"": ""191b6ce9-11d9-4fb6-9646-eab0ae9d66dc"",
+                    ""path"": ""<Touchscreen>/primaryTouch/delta/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
                     ""name"": """",
                     ""id"": ""9075197f-cc3e-41a9-abc2-43076b8f92a5"",
                     ""path"": ""<Keyboard>/shift"",

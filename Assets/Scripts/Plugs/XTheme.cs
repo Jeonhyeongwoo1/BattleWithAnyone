@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class XTheme : MonoBehaviour, IPlugable
 {
@@ -15,6 +16,8 @@ public class XTheme : MonoBehaviour, IPlugable
 			m_RoundTime.text = value.ToString();
 		}
 	}
+	
+	public PlayerController player { private get; set; }
 
 	public GameTimer gameTimer;
 
@@ -22,8 +25,8 @@ public class XTheme : MonoBehaviour, IPlugable
 	[SerializeField] RectTransform m_CharacterInfo;
 
 	[Header("[Stage Info]")]
-	[SerializeField] Text m_Master;
-	[SerializeField] Text m_Player;
+	[SerializeField] Text m_MasterName;
+	[SerializeField] Text m_PlayerName;
 	[SerializeField] Text m_RoundTime;
 	[SerializeField] Text m_MasterWinCount;
 	[SerializeField] Text m_PlayerWinCount;
@@ -31,8 +34,10 @@ public class XTheme : MonoBehaviour, IPlugable
 	[Header("[Components]")]
 	[SerializeField] JoyStick m_Joystick;
 	[SerializeField] Button m_Roll;
-	[SerializeField] Button m_Shoot;
+	[SerializeField] Button m_Attack;
 	[SerializeField] Button m_Reload;
+	[SerializeField] Button m_Jump;
+	[SerializeField] Text m_Bullet;
 	[SerializeField] Slider m_HealthBar;
 
 	[SerializeField] AnimationCurve m_Curve;
@@ -45,8 +50,8 @@ public class XTheme : MonoBehaviour, IPlugable
 
 	public void SetPlayersName(string master, string player)
 	{
-		m_Master.text = master;
-		m_Player.text = player;
+		m_MasterName.text = master;
+		m_PlayerName.text = player;
 	}
 
 	IEnumerator Opening(UnityAction done)
@@ -56,7 +61,7 @@ public class XTheme : MonoBehaviour, IPlugable
 		StartCoroutine(CoUtilize.VLerp((v) => m_CharacterInfo.anchoredPosition = v, m_CharacterInfo_Close_Pos, m_CharacterInfo_Open_Pos, m_OpenCloseDuration, () => count++, m_Curve));
 		StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Joystick.transform.localScale = v, Vector3.zero, Vector3.one, m_OpenCloseDuration, () => count++, m_ScaleCurve));
 		StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Roll.transform.localScale = v, Vector3.zero, Vector3.one, m_OpenCloseDuration, () => count++, m_ScaleCurve));
-		StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Shoot.transform.localScale = v, Vector3.zero, Vector3.one, m_OpenCloseDuration, () => count++, m_ScaleCurve));
+		StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Attack.transform.localScale = v, Vector3.zero, Vector3.one, m_OpenCloseDuration, () => count++, m_ScaleCurve));
 		StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Reload.transform.localScale = v, Vector3.zero, Vector3.one, m_OpenCloseDuration, () => count++, m_ScaleCurve));
 
 		while (count != 6) { yield return null; }
@@ -70,7 +75,7 @@ public class XTheme : MonoBehaviour, IPlugable
 		StartCoroutine(CoUtilize.VLerp((v) => m_CharacterInfo.anchoredPosition = v, m_CharacterInfo_Open_Pos, m_CharacterInfo_Close_Pos, m_OpenCloseDuration, () => count++, m_Curve));
 		StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Joystick.transform.localScale = v, Vector3.one, Vector3.zero, m_OpenCloseDuration, () => count++, m_Curve));
 		StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Roll.transform.localScale = v, Vector3.one, Vector3.zero, m_OpenCloseDuration, () => count++, m_Curve));
-		StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Shoot.transform.localScale = v, Vector3.one, Vector3.zero, m_OpenCloseDuration, () => count++, m_Curve));
+		StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Attack.transform.localScale = v, Vector3.one, Vector3.zero, m_OpenCloseDuration, () => count++, m_Curve));
 		StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Reload.transform.localScale = v, Vector3.one, Vector3.zero, m_OpenCloseDuration, () => count++, m_Curve));
 
 		while (count != 6) { yield return null; }
@@ -81,7 +86,7 @@ public class XTheme : MonoBehaviour, IPlugable
 	{
 		m_Joystick.transform.localScale = Vector3.zero;
 		m_Roll.transform.localScale = Vector3.zero;
-		m_Shoot.transform.localScale = Vector3.zero;
+		m_Attack.transform.localScale = Vector3.zero;
 		m_Reload.transform.localScale = Vector3.zero;
 
 		m_StageInfo.anchoredPosition = m_StageInfo_Close_Pos;
@@ -118,9 +123,43 @@ public class XTheme : MonoBehaviour, IPlugable
 		}
 	}
 
+	PlayerController GetPlayer()
+	{
+		if (player == null)
+		{
+			Transform tr = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter : Core.state.playerCharacter;
+			if (!tr.TryGetComponent<PlayerController>(out var component))
+			{
+				player = component;
+			}
+		}
+
+		return player;
+	}
+
+	void DoAttack()
+	{
+	}
+
+	void DoRoll()
+	{
+	}
+
+	void DoReload()
+	{
+	}
+
+	void DoJump()
+	{
+	}
+
 	void Awake()
 	{
-		transform.GetChild(0).gameObject.SetActive(false);
+	//	transform.GetChild(0).gameObject.SetActive(false);
+		m_Roll.onClick.AddListener(DoRoll);
+		m_Reload.onClick.AddListener(DoReload);
+		m_Attack.onClick.AddListener(DoAttack);
+		m_Jump.onClick.AddListener(DoJump);
 	}
 
 	// Start is called before the first frame update

@@ -1389,6 +1389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: 0
+  m_IsCharacterTest: 1
   m_BlockSkybox: {fileID: 971649177}
   m_LoadingAnimation: {fileID: 1582837666}
 --- !u!1 &5041720563456330952

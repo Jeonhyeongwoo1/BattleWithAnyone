@@ -131,6 +131,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
 		Transform tr = null;
 		tr = PhotonNetwork.Instantiate(XSettings.chracterPath + name, createPoints[playerIndex].position, createPoints[playerIndex].rotation, 0).transform;
 		tr.SetParent(createPoints[playerIndex].parent);
+		tr.name = PhotonNetwork.IsMasterClient ? "Master" + name : "Player" + name;
 
 		if (PhotonNetwork.IsMasterClient)
 		{

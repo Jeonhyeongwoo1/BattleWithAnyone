@@ -12,5 +12,6 @@ public partial class XState
 
 	public int masterWinCount { get => m_MasterWinCount; set { m_MasterWinCount = value; Set(nameof(masterWinCount), value); } }
 	public int playerWinCount { get => m_PlayerWinCount; set { m_PlayerWinCount = value; Set(nameof(playerWinCount), value); } }
+	public Vector2 playerPosNormalized { get=> m_PlayerPosNormalized; set { m_PlayerPosNormalized = value; Set(nameof(playerPosNormalized), value);}}
 
 }
