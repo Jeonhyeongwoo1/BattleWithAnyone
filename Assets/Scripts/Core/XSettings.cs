@@ -14,18 +14,27 @@ public class XSettings : MonoBehaviour
 	public string url => profile == Profile.dev ? m_DevUrl : m_LocalUrl;
 	public Profile profile;
 
+    public const string messageCommonPath = "Jsons/Message-common-kr";
+
     /*
-	*   ---------------------------- ---------------------------
+	*   -------------------------------------------------------
 	*	PhotonNetwork Resource Path
-	*   ---------------------------- ---------------------------
+	*   -------------------------------------------------------
 	*/
-    public static readonly string chracterPath = "Prefabs/";
+    public const string chracterPath = "Prefabs/";
     /*
-	*   ---------------------------- ---------------------------
+	*   -------------------------------------------------------
 	*/
 
-    private	readonly string m_DevUrl = "http://battlewithanyoneview.cafe24app.com";
-	private	readonly string m_LocalUrl = "localhost:8001";
-
+    /*
+	*   -------------------------------------------------------
+	*	Network Url Path
+	*   -------------------------------------------------------
+	*/
+    private readonly string m_DevUrl = "http://battlewithanyoneview.cafe24app.com";
+    private readonly string m_LocalUrl = "localhost:8001";
+    /*
+ 	*   -------------------------------------------------------
+ 	*/
 
 }

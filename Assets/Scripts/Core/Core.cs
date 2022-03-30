@@ -10,6 +10,7 @@ public class Core : Singleton<Core>
     static public NetworkManager networkManager => Core.I?.m_NetworkManager;
     static public XSettings settings => Core.I?.m_XSettings;
     static public GamePlayManager gameManager => Core.I?.m_GamePlayManager;
+    static public ObjectPoolManager poolManager => Core.I?.m_ObjectPoolManager;
     static public XState state => Core.I?.m_XState;
     static public XEvent xEvent => Core.I?.m_XEvent;
 
@@ -19,6 +20,7 @@ public class Core : Singleton<Core>
     [SerializeField] NetworkManager m_NetworkManager = null;
     [SerializeField] XSettings m_XSettings = null;
     [SerializeField] GamePlayManager m_GamePlayManager = null;
+    [SerializeField] ObjectPoolManager m_ObjectPoolManager = null;
     [SerializeField] XState m_XState = null;
     [SerializeField] XEvent m_XEvent = null;
 
@@ -74,6 +76,7 @@ public class Core : Singleton<Core>
         EnsureCore<NetworkManager>(ref m_NetworkManager);
         EnsureCore<ModelDirector>(ref m_ModelDirector);
         EnsureCore<XSettings>(ref m_XSettings);
+        EnsureCore<ObjectPoolManager>(ref m_ObjectPoolManager);
         EnsureCore<XState>(ref m_XState);
         EnsureCore<XEvent>(ref m_XEvent);
 

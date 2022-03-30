@@ -12,10 +12,19 @@ public class PoolData
 	public GameObject prefab;
 }
 
+public class ObjectPoolExtension : MonoBehaviour
+{
+	public static GameObject CreatePrefab(GameObject prefab, Transform parent)
+	{
+		GameObject go = Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
+		return go;
+	}
+}
+
 public class ObjectPool
 {
 	int m_CreateCount = 5; //오브젝트가 없을 경우에 새롭게 생성하는 오브젝트 수
-	PoolData m_PoolData;
+	PoolData m_PoolData = new PoolData();
 	Queue<GameObject> m_ObjectPool = new Queue<GameObject>();
 
 	public ObjectPool(int initialCount, int maxCount, Transform parent, GameObject prefab)
@@ -30,9 +39,8 @@ public class ObjectPool
 	public int Count() => m_ObjectPool.Count;
 
 	public GameObject Create()
-	{
-		GameObject go = new GameObject(nameof(m_PoolData.prefab));
-		go.transform.SetParent(m_PoolData.parent);
+    {
+        GameObject go = ObjectPoolExtension.CreatePrefab(m_PoolData.prefab, m_PoolData.parent);
 		go.SetActive(false);
 		m_ObjectPool.Enqueue(go);
 		return go;
@@ -43,9 +51,7 @@ public class ObjectPool
 		int count = m_PoolData.initialCount;
 		for (int i = 0; i < count; i++)
 		{
-			GameObject go = new GameObject(nameof(m_PoolData.prefab));
-			go.transform.SetParent(m_PoolData.parent);
-			m_ObjectPool.Enqueue(go);
+            Create();
 		}
 	}
 
@@ -55,9 +61,7 @@ public class ObjectPool
 		{
 			for (int i = 0; i < m_CreateCount; i++)
 			{
-				GameObject go = new GameObject(nameof(m_PoolData.prefab));
-				go.transform.SetParent(m_PoolData.parent);
-				m_ObjectPool.Enqueue(go);
+                Create();
 			}
 		}
 
@@ -71,7 +75,7 @@ public class ObjectPool
 	}
 }
 
-public class ObjectPoolManager : Singleton<ObjectPoolManager>
+public class ObjectPoolManager : MonoBehaviour
 {
 	Dictionary<string, ObjectPool> m_ObjectPoolManager = new Dictionary<string, ObjectPool>();
 
@@ -87,7 +91,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
 		m_ObjectPoolManager.Add(key, value);
 	}
 
-	public void Remove(string key, ObjectPool value)
+	public void Remove(string key)
 	{
 		ObjectPool pool = null;
 		if (!m_ObjectPoolManager.TryGetValue(key, out pool))
@@ -100,6 +104,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
 	}
 
 	public bool Has(string key) => m_ObjectPoolManager.ContainsKey(key);
+	public int Count() => m_ObjectPoolManager.Count;
 
 	public void ClearPooledObject(string key)
 	{
