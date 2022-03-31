@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using System;
 
 [Serializable]
@@ -12,17 +13,38 @@ public class PoolData
 	public GameObject prefab;
 }
 
-public class ObjectPoolExtension : MonoBehaviour
+public class ObjectPoolHelper : MonoBehaviour
 {
 	public static GameObject CreatePrefab(GameObject prefab, Transform parent)
 	{
 		GameObject go = Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
 		return go;
 	}
+
+	public static IEnumerator PoolCleaner(GameObject go, int count, float interval, UnityAction done = null)
+	{
+		WaitForSeconds waitForSeconds = new WaitForSeconds(interval);
+		for(int i = 0; i < count; i++)
+		{
+			if (go != null)
+			{
+				Destroy(go);
+			}
+
+			yield return waitForSeconds;
+		}
+		done?.Invoke();
+	}
+
+	public static void PoolClean(GameObject go)
+	{
+		Destroy(go);
+	}
 }
 
 public class ObjectPool
 {
+	float m_PoolingCleanInterval = 0.1f;
 	int m_CreateCount = 5; //오브젝트가 없을 경우에 새롭게 생성하는 오브젝트 수
 	PoolData m_PoolData = new PoolData();
 	Queue<GameObject> m_ObjectPool = new Queue<GameObject>();
@@ -40,7 +62,7 @@ public class ObjectPool
 
 	public GameObject Create()
     {
-        GameObject go = ObjectPoolExtension.CreatePrefab(m_PoolData.prefab, m_PoolData.parent);
+        GameObject go = ObjectPoolHelper.CreatePrefab(m_PoolData.prefab, m_PoolData.parent);
 		go.SetActive(false);
 		m_ObjectPool.Enqueue(go);
 		return go;
@@ -70,6 +92,12 @@ public class ObjectPool
 
 	public void Despawn(GameObject go)
 	{
+		if(m_PoolData.maxCount < m_ObjectPool.Count)
+		{
+			ObjectPoolHelper.PoolClean(go);
+			return;
+		}
+
 		if (go.activeSelf) { go.SetActive(false); }
 		m_ObjectPool.Enqueue(go);
 	}

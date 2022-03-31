@@ -7,19 +7,81 @@ using ExitGames.Client.Photon;
 
 public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 {
-	public enum State
+	public enum State { IDLE, RUN, JUMPING, ROLLING, ATTACKING, VICTORY, DIE, RELOADING }
+	private enum cameraType { FP, TP }
+
+	[SerializeField] cameraType m_CameraType;
+	[SerializeField] State m_State;
+	[SerializeField] CharacterOption m_COption;
+	[SerializeField] CameraOption m_FPCamera;
+	[SerializeField] CameraOption m_TPCamera;
+	[SerializeField] AnimationParameters m_AniParam;
+	[SerializeField] CharacterController m_Controller;
+	[SerializeField] Animator m_Animator;
+	
+	PlayerActionsScript m_PlayerActions;
+	Vector3 m_MoveDir;
+
+	void Rotation()
 	{
-		IDLE,
-		RUN,
-		JUMPING,
-		ROLLING,
-		ATTACKING,
-		VICTORY,
-		DIE,
-		RELOADING
+	
 	}
 
-	[SerializeField] State m_State;
+	void Move()
+	{
+		Vector2 move = m_PlayerActions.Player.Move.ReadValue<Vector2>();
+		Vector3 dir = (transform.forward * move.y + transform.right * move.x) * Time.deltaTime * m_COption.movingSpeed;
+		m_Controller.Move(dir);
+
+		m_Animator.SetFloat(m_AniParam.horizontal, move.x);
+		m_Animator.SetFloat(m_AniParam.vertical, move.y);
+	}
+
+	void Update()
+	{
+		Move();
+		Rotation();
+	}
+
+	public override void OnEnable()
+	{
+		m_PlayerActions.Player.Enable();
+		PhotonNetwork.AddCallbackTarget(this);
+	}
+
+	public override void OnDisable()
+	{
+		m_PlayerActions.Player.Disable();
+		PhotonNetwork.RemoveCallbackTarget(this);
+	}
+	
+	void Awake()
+	{
+		m_PlayerActions = new PlayerActionsScript();
+	}
+
+	public void OnEvent(EventData photonEvent)
+	{
+		if (!photonView.IsMine) { return; } //Dev
+		if (photonEvent.Code == (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE)
+		{
+			object[] data = (object[])photonEvent.CustomData;
+			int status = (int)data[0];
+			bool isMaster = (bool)data[1];
+			Core.gameManager.SetState((GamePlayManager.Status)status);
+
+			if (isMaster)
+			{
+				Core.state.playerWinCount += 1;
+			}
+			else
+			{
+				Core.state.masterWinCount += 1;
+			}
+		}
+	}
+
+	/*
 	[SerializeField] CinemachineVirtualCamera m_Camera;
 	[SerializeField] CharacterController m_Character;
 	[SerializeField] Animator m_Animator;
@@ -279,10 +341,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
 	public override void OnEnable()
 	{
+		
 		m_PlayerActions.Player.Jump.started += _ => DoJump();
 		m_PlayerActions.Player.Attack.started += _ => DoAttack();
 		m_PlayerActions.Player.Reload.started += _ => DoReload();
 		m_PlayerActions.Player.Rolling.started += _ => DoRolling();
+		
 		m_PlayerActions.Player.Enable();
 		jumpAnimation = Animator.StringToHash("Jump");
 		PhotonNetwork.AddCallbackTarget(this);
@@ -290,10 +354,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
 	public override void OnDisable()
 	{
+		
 		m_PlayerActions.Player.Jump.started -= _ => DoJump();
 		m_PlayerActions.Player.Attack.started -= _ => DoAttack();
 		m_PlayerActions.Player.Reload.started -= _ => DoReload();
 		m_PlayerActions.Player.Rolling.started -= _ => DoRolling();
+		
 		m_PlayerActions.Player.Disable();
 		PhotonNetwork.RemoveCallbackTarget(this);
 	}
@@ -303,5 +369,5 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 	{
 		DoDie();
 	}
-
+*/
 }

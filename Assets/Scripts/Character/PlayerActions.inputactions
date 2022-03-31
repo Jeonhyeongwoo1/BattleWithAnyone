@@ -52,12 +52,12 @@
                 },
                 {
                     "name": "MousePosition",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "08a1f78e-781b-4ffd-88c2-41c54886e159",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -217,10 +217,10 @@
                 },
                 {
                     "name": "",
-                    "id": "eb5c61a6-b493-4962-a340-4803e351ed1a",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
+                    "id": "96ef4347-c0b7-4406-b21e-607e12cd56c4",
+                    "path": "<Mouse>/position",
+                    "interactions": "Hold",
+                    "processors": "NormalizeVector2",
                     "groups": "",
                     "action": "MousePosition",
                     "isComposite": false,

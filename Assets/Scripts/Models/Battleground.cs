@@ -73,7 +73,7 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
 		Transform character = isMaster ? Core.state.masterCharacter : Core.state.playerCharacter;
 		if (character.TryGetComponent<PlayerController>(out var contorller))
 		{
-			CinemachineVirtualCamera camera = contorller.GetCamera();
+			CinemachineVirtualCamera camera = null;
 			yield return SwitchingCamera(camera, done);
 		}
 		else
