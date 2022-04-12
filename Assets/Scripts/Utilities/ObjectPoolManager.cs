@@ -4,15 +4,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 
-[Serializable]
-public class PoolData
-{
-	public int initialCount;
-	public int maxCount;
-	public Transform parent;
-	public GameObject prefab;
-}
-
 public class ObjectPoolHelper : MonoBehaviour
 {
 	public static GameObject CreatePrefab(GameObject prefab, Transform parent)
@@ -44,8 +35,17 @@ public class ObjectPoolHelper : MonoBehaviour
 
 public class ObjectPool
 {
-	float m_PoolingCleanInterval = 0.1f;
-	int m_CreateCount = 5; //오브젝트가 없을 경우에 새롭게 생성하는 오브젝트 수
+    [Serializable]
+    public class PoolData
+    {
+        public int initialCount;
+        public int maxCount;
+        public Transform parent;
+        public GameObject prefab;
+    }
+
+    //float m_PoolingCleanInterval = 0.1f;
+    int m_CreateCount = 5; //오브젝트가 없을 경우에 새롭게 생성하는 오브젝트 수
 	PoolData m_PoolData = new PoolData();
 	Queue<GameObject> m_ObjectPool = new Queue<GameObject>();
 

@@ -14,7 +14,7 @@ public interface IScenario
 
 public class ScenarioTemplate : MonoBehaviour, IScenario
 {
-    public string scenarioName => typeof(ScenarioTemplate).Name;
+    public string scenarioName => nameof(ScenarioTemplate);
 
     public void OnScenarioPrepare(UnityAction done)
     {

@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
 {
-    public string scenarioName => typeof(ScenarioPlay).Name;
-
+    public string scenarioName => nameof(ScenarioPlay);
+    
     [SerializeField] GamePlayLoading m_GameLoading;
     [SerializeField] Button m_GoHome;
 

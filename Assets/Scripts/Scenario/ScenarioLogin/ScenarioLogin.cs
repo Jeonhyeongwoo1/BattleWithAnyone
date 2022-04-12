@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ScenarioLogin : MonoBehaviour, IScenario
 {
-    public string scenarioName => typeof(ScenarioLogin).Name;
+    public string scenarioName => nameof(ScenarioLogin);
 
     [SerializeField] RectTransform m_LoginForm;
     [SerializeField] InputField m_Id;

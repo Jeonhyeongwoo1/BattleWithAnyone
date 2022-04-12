@@ -7,8 +7,8 @@ using Photon.Realtime;
 
 public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 {
-	public string scenarioName => typeof(ScenarioRoom).Name;
-
+	public string scenarioName => nameof(ScenarioRoom);
+	
 	public RoomUI roomUI;
 	public RoomChat roomChat;
 

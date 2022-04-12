@@ -6,7 +6,7 @@ using TMPro;
 
 public class ScenarioLoading : MonoBehaviour, IScenario
 {
-    public string scenarioName => typeof(ScenarioLoading).Name;
+    public string scenarioName => nameof(ScenarioLoading);
 
     public TextAnimator textAnimator;
     public Slider loadingbar;

@@ -6,7 +6,7 @@ using Photon.Pun;
 
 public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
 {
-    public string scenarioName => typeof(ScenarioHome).Name;
+    public string scenarioName => nameof(ScenarioHome);
     public UserInfo userInfo;
     public RoomMenu roomMenu;
 
