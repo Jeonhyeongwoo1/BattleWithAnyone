@@ -29,12 +29,12 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Move"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Value"",
                     ""id"": ""3875d02f-922c-415f-989b-61058dde3dfa"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Jump"",
@@ -73,9 +73,18 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""MousePosition"",
+                    ""name"": ""Look"",
                     ""type"": ""Value"",
                     ""id"": ""08a1f78e-781b-4ffd-88c2-41c54886e159"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Touch"",
+                    ""type"": ""Value"",
+                    ""id"": ""d0d1aeaf-3217-40ac-8b27-60483a35d4aa"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -98,7 +107,7 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""d191b7a5-dccb-4ae3-99dc-f573dec82ef3"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Press,Press(behavior=1)"",
+                    ""interactions"": ""Press(pressPoint=0.5)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Attack"",
@@ -172,59 +181,15 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""89bc8570-97f1-4864-b0ae-f0e08568434c"",
-                    ""path"": ""2DVector"",
+                    ""name"": """",
+                    ""id"": ""644ec8fe-a2f3-4c72-8e9d-fc55215872a9"",
+                    ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Move"",
-                    ""isComposite"": true,
+                    ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""Up"",
-                    ""id"": ""e7d7fedd-e9f9-49fc-8a28-03c4fc65642b"",
-                    ""path"": ""<Touchscreen>/primaryTouch/delta/y"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Down"",
-                    ""id"": ""d30a5ab7-c372-4b43-8272-b98220ee0dc8"",
-                    ""path"": ""<Touchscreen>/primaryTouch/delta/y"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Left"",
-                    ""id"": ""666cacde-b7bf-48c6-ab97-5188d00fc79f"",
-                    ""path"": ""<Touchscreen>/primaryTouch/delta/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Right"",
-                    ""id"": ""191b6ce9-11d9-4fb6-9646-eab0ae9d66dc"",
-                    ""path"": ""<Touchscreen>/primaryTouch/delta/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -240,11 +205,22 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""96ef4347-c0b7-4406-b21e-607e12cd56c4"",
-                    ""path"": ""<Mouse>/position"",
-                    ""interactions"": ""Hold"",
+                    ""path"": ""<Touchscreen>/touch0/delta"",
+                    ""interactions"": """",
                     ""processors"": ""NormalizeVector2"",
                     ""groups"": """",
-                    ""action"": ""MousePosition"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""14e54688-78c7-4807-9178-08caa6a759d6"",
+                    ""path"": ""<Touchscreen>/primaryTouch/startPosition"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Touch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -260,7 +236,8 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_Rolling = m_Player.FindAction("Rolling", throwIfNotFound: true);
-        m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
+        m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
+        m_Player_Touch = m_Player.FindAction("Touch", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -325,7 +302,8 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_Rolling;
-    private readonly InputAction m_Player_MousePosition;
+    private readonly InputAction m_Player_Look;
+    private readonly InputAction m_Player_Touch;
     public struct PlayerActions
     {
         private @PlayerActionsScript m_Wrapper;
@@ -335,7 +313,8 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @Rolling => m_Wrapper.m_Player_Rolling;
-        public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
+        public InputAction @Look => m_Wrapper.m_Player_Look;
+        public InputAction @Touch => m_Wrapper.m_Player_Touch;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -360,9 +339,12 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
                 @Rolling.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRolling;
                 @Rolling.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRolling;
                 @Rolling.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRolling;
-                @MousePosition.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
-                @MousePosition.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
-                @MousePosition.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
+                @Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
+                @Touch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
+                @Touch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
+                @Touch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouch;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -382,9 +364,12 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
                 @Rolling.started += instance.OnRolling;
                 @Rolling.performed += instance.OnRolling;
                 @Rolling.canceled += instance.OnRolling;
-                @MousePosition.started += instance.OnMousePosition;
-                @MousePosition.performed += instance.OnMousePosition;
-                @MousePosition.canceled += instance.OnMousePosition;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
+                @Touch.started += instance.OnTouch;
+                @Touch.performed += instance.OnTouch;
+                @Touch.canceled += instance.OnTouch;
             }
         }
     }
@@ -396,6 +381,7 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
         void OnAttack(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnRolling(InputAction.CallbackContext context);
-        void OnMousePosition(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
+        void OnTouch(InputAction.CallbackContext context);
     }
 }

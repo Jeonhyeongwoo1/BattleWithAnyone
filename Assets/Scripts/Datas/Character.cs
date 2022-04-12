@@ -22,7 +22,19 @@ public class CharacterOption
 	[Tooltip("총알 갯수")]
     public float bulletCount;
 	[Tooltip("다음 총알 발사 대기시간")]
-    public float shootingDelay; 
+    public float shootingCoolTime;
+    [Tooltip("Roll 이동 파워")]
+    public float rollingForce;
+    public JumpOption jumpOption;
+}
+
+[Serializable]
+public class JumpOption
+{
+    [Tooltip("애니메이션 전환")]
+    public float animationTransition = 0.15f;
+    [Tooltip("Ground LayerMask")]
+    public LayerMask groundLayerMask;
 }
 
 [Serializable]
@@ -44,20 +56,23 @@ public class CameraOption
 [Serializable]
 public class AnimationParameters
 {
-    public string horizontal = "Horizontal";
-    public string vertical = "Vertical";
-    public string attack = "Attack";
-    public string reload = "Reload";
-    public string victory = "Victory";
-    public string die = "Die";
+    public readonly string horizontal = "Horizontal";
+    public readonly string vertical = "Vertical";
+    public readonly string attack = "Attack";
+    public readonly string reload = "Reload";
+    public readonly string victory = "Victory";
+    public readonly string die = "Die";
+    public readonly string jump = "Jump";
+    public readonly string isGrounded = "IsGrounded";
+    public readonly string reloadingSpeed = "ReloadingSpeed";
     public RollingOption rolling;
 
 	[Serializable]
 	public class RollingOption
 	{
-		public string forward = "RollingFWD";
-		public string left = "RollingLeft";
-		public string right = "RollingRight";
-		public string back = "RollingBWD";
+		public readonly string forward = "RollingFWD";
+		public readonly string left = "RollingLeft";
+		public readonly string right = "RollingRight";
+		public readonly string back = "RollingBWD";
 	}
 }

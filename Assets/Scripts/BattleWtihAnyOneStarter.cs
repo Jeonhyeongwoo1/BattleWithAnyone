@@ -60,10 +60,14 @@ public class BattleWtihAnyOneStarter : MonoBehaviour
 	}
 
 	void OnLoadScenarioLoading()
-	{
-		if (m_IsCharacterTest) { return; }
+    {
+        if (m_IsCharacterTest)
+        {
+            Core.scenario.OnLoadScenario(nameof(ScenarioTraining));
+            return;
+        }
 
-		Core.settings.profile = profile;
+        Core.settings.profile = profile;
 
 		if (ScenarioDirector.scenarioReady)
 		{

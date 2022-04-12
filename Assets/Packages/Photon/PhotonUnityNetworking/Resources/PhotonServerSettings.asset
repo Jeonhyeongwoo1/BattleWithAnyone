@@ -44,6 +44,10 @@ MonoBehaviour:
   - CreateCharacter
   - RoomMapSetInfo
   - OnLoadScenarioPlay
+  - SetPlayersCharacter
+  - UpdateLoadingProgress
+  - OnCreateCharacters
+  - CreatedPlayerCharacter
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

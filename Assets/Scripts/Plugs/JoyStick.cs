@@ -10,18 +10,31 @@ public class JoyStick : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
 	RectTransform m_RectTransform;
 
 	[SerializeField] float m_Range;
+    private Vector2 m_PointerDownPos;
+    private Vector3 m_StartPos;
 
-	public void OnBeginDrag(PointerEventData eventData)
+    public void OnBeginDrag(PointerEventData eventData)
 	{
-		Vector3 position = GetPosition(eventData.position);
-		playPosition.anchoredPosition = position;
-	}
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(transform.parent.GetComponentInParent<RectTransform>(), eventData.position, eventData.pressEventCamera, out m_PointerDownPos);
+
+        //	Vector3 position = GetPosition(eventData.position);
+        //	playPosition.anchoredPosition = position;
+    }
 
 	public void OnDrag(PointerEventData eventData)
 	{
-		Vector3 position = GetPosition(eventData.position);
-		playPosition.anchoredPosition = position;
-	}
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(transform.parent.GetComponentInParent<RectTransform>(), eventData.position, eventData.pressEventCamera, out var position);
+        var delta = position - m_PointerDownPos;
+
+        delta = Vector2.ClampMagnitude(delta, m_Range);
+        ((RectTransform)transform).anchoredPosition = m_StartPos + (Vector3)delta;
+
+        var newPos = new Vector2(delta.x / m_Range, delta.y / m_Range);
+		playPosition.anchoredPosition = newPos;
+
+        //	Vector3 position = GetPosition(eventData.position);
+        //	playPosition.anchoredPosition = position;
+    }
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
@@ -52,12 +65,12 @@ public class JoyStick : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
 
 	void OnEnable()
 	{
-		Core.state.Listen(nameof(Core.state.playerPosNormalized), OnValueChanged);
+		Core.state?.Listen(nameof(Core.state.playerPosNormalized), OnValueChanged);
 	}
 
 	void OnDisable()
 	{
-		Core.state.Stop(nameof(Core.state.playerPosNormalized), OnValueChanged);
+		Core.state?.Stop(nameof(Core.state.playerPosNormalized), OnValueChanged);
 	}
 
 }
