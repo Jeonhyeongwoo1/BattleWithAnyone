@@ -8,8 +8,6 @@ public class BattleWtihAnyOneStarter : MonoBehaviour
 {
 	public XSettings.Profile profile;
 
-	[SerializeField] bool m_IsCharacterTest;
-
 	[SerializeField] BlockSkybox m_BlockSkybox;
 	[SerializeField] LoadingAnimation m_LoadingAnimation;
 
@@ -61,7 +59,7 @@ public class BattleWtihAnyOneStarter : MonoBehaviour
 
 	void OnLoadScenarioLoading()
     {
-        if (m_IsCharacterTest)
+        if (XSettings.isCharacterTest)
         {
             Core.scenario.OnLoadScenario(nameof(ScenarioTraining));
             return;

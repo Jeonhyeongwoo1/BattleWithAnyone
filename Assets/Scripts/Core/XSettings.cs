@@ -11,6 +11,7 @@ public class XSettings : MonoBehaviour
 		dev
 	}
 
+	public static bool isCharacterTest = true;
 	public string url => profile == Profile.dev ? m_DevUrl : m_LocalUrl;
 	public Profile profile;
 
