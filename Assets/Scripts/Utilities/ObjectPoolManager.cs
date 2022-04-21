@@ -8,7 +8,7 @@ public class ObjectPoolHelper : MonoBehaviour
 {
 	public static GameObject CreatePrefab(GameObject prefab, Transform parent)
 	{
-		GameObject go = Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
+		GameObject go = Instantiate(prefab, parent, false);
 		return go;
 	}
 

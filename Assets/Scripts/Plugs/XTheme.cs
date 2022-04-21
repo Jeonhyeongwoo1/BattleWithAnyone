@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Photon.Pun;
+using TMPro;
 
 public class XTheme : MonoBehaviour, IPlugable
 {
@@ -39,6 +40,7 @@ public class XTheme : MonoBehaviour, IPlugable
     [SerializeField] Button m_Jump;
     [SerializeField] Text m_Bullet;
     [SerializeField] Slider m_HealthBar;
+    [SerializeField] TextMeshProUGUI m_HealthValue;
 
     [SerializeField] AnimationCurve m_Curve;
     [SerializeField] AnimationCurve m_ScaleCurve;
@@ -49,6 +51,7 @@ public class XTheme : MonoBehaviour, IPlugable
     [SerializeField] Vector3 m_CharacterInfo_Close_Pos = new Vector3(0, -300, 0);
 
     public const string InteractableJump = "Jump";
+    public const string Health = "Health";
 
     public void SetPlayersName(string master, string player)
     {
@@ -93,6 +96,11 @@ public class XTheme : MonoBehaviour, IPlugable
 
         m_StageInfo.anchoredPosition = m_StageInfo_Close_Pos;
         m_CharacterInfo.anchoredPosition = m_CharacterInfo_Close_Pos;
+        Transform player = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter : Core.state.playerCharacter;
+        if(player.TryGetComponent<PlayerController>(out var component))
+        {
+            playerController = component;
+        }
     }
 
     public void Open(UnityAction done = null)
@@ -162,7 +170,11 @@ public class XTheme : MonoBehaviour, IPlugable
     void Start()
     {
         Core.Ensure(() => Core.plugs.Loaded(this));
-        playerController = FindObjectOfType<PlayerController>();
+
+        if(XSettings.isCharacterTest)
+        {
+            playerController = FindObjectOfType<PlayerController>();
+        }
     }
 
     private void OnDestroy()
@@ -170,24 +182,37 @@ public class XTheme : MonoBehaviour, IPlugable
         Core.Ensure(() => Core.plugs.Unloaded(this));
     }
 
-    void UpdateInteractableJump(string key, object o)
+    void OnRaisedEvent(string key, object o)
     {
-        bool interactable = (bool)o;
-        m_Jump.interactable = interactable;
+        switch (key)
+        {
+            case InteractableJump:
+                bool interactable = (bool)o;
+                m_Jump.interactable = interactable;
+                break;
+            case Health:
+                float amount = (float)o;
+                if (amount < 0) { amount = 0; }
+                m_HealthBar.value = amount;
+                m_HealthValue.text = string.Format("{0}", amount);
+                break;
+        }
     }
 
     void OnEnable()
     {
         Core.state?.Listen(nameof(Core.state.playerWinCount), OnValueChanged);
         Core.state?.Listen(nameof(Core.state.masterWinCount), OnValueChanged);
-        Core.xEvent?.Watch(InteractableJump, UpdateInteractableJump);
+        Core.xEvent?.Watch(InteractableJump, OnRaisedEvent);
+        Core.xEvent?.Watch(Health, OnRaisedEvent);
     }
 
     void OnDisable()
     {
         Core.state?.Stop(nameof(Core.state.playerWinCount), OnValueChanged);
         Core.state?.Stop(nameof(Core.state.masterWinCount), OnValueChanged);
-        Core.xEvent?.Stop(InteractableJump, UpdateInteractableJump);
+        Core.xEvent?.Stop(InteractableJump, OnRaisedEvent);
+        Core.xEvent?.Stop(Health, OnRaisedEvent);
     }
 
     [ContextMenu("Open")]
