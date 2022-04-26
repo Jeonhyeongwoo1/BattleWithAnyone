@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1545060327260647690}
   - component: {fileID: 4184848443495175059}
   - component: {fileID: 6138390301587898546}
+  - component: {fileID: 9169384053848731691}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -30,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 3353761764165269102}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.02, y: 1.81, z: -31.67}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8434533230863604308}
@@ -44,7 +45,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3353761764165269102}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: f1d338e1382bddb498292a56a788d711, type: 3}
 --- !u!23 &1109052716099000570
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -102,7 +103,7 @@ MonoBehaviour:
   attribute:
     type: 1
     cannon:
-      fwdForce: 40
+      fwdForce: 30
       damage: 20
       upForce: 5
       hitRange: 1.5
@@ -143,6 +144,7 @@ MonoBehaviour:
       secondColliderRange: 0
       secondBallForce: 0
       secondBallDamage: 0
+      secondBallScale: 0
       secondBallCount: 0
       secondBall: {fileID: 0}
     maxLifeTime: 4
@@ -183,6 +185,28 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!114 &9169384053848731691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3353761764165269102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &8437542945314352870
 GameObject:
   m_ObjectHideFlags: 0

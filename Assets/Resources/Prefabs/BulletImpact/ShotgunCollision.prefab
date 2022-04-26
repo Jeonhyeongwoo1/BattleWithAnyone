@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 198670200411678530}
   - component: {fileID: 199543461153555330}
   - component: {fileID: 1656282185793982479}
+  - component: {fileID: -6993856116864842008}
   m_Layer: 0
   m_Name: ShotgunCollision
   m_TagString: Untagged
@@ -4896,9 +4897,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 198670200411678530}
+--- !u!114 &-6993856116864842008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384676760634654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1799462483020482
 GameObject:
   m_ObjectHideFlags: 0

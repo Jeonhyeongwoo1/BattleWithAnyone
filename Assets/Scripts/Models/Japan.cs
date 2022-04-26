@@ -6,7 +6,10 @@ using UnityEngine.Events;
 public class Japan : MonoBehaviour, IModel
 {
 	public string Name => nameof(Battleground);
+	public Transform poolObjectCreatePoints => m_PoolObjectCreatePoint;
     public Transform[] playerCreatePoints { get; set; }
+
+    [SerializeField] Transform m_PoolObjectCreatePoint;
 
     public void LoadedModel(UnityAction done = null)
 	{

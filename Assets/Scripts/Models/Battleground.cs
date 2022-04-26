@@ -10,6 +10,7 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
 {
 	public string Name => nameof(Battleground);
 	public Transform[] playerCreatePoints => m_PlayerCreatePoints;
+	public Transform poolObjectCreatePoints => m_PoolObjectCreatePoint;
 
 	[Serializable]
 	public struct DollyCameraComponent
@@ -20,6 +21,7 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
 	}
 
 	[SerializeField] Transform[] m_PlayerCreatePoints;
+	[SerializeField] Transform m_PoolObjectCreatePoint;
 	[SerializeField] DollyCameraComponent m_MasterDolly;
 	[SerializeField] DollyCameraComponent m_PlayerDolly;
 
@@ -84,12 +86,12 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
 
 	void Awake()
 	{
-		Core.Ensure(() => Core.models.OnLoaded(this));
+        Core.models?.OnLoaded(this);
 	}
 
 	private void OnDestroy()
 	{
-		Core.Ensure(() => Core.models.Unloaded(this));
+        Core.models?.Unloaded(this);
 	}
 
 }

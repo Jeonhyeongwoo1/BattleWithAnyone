@@ -53,24 +53,4 @@ public class JoyStick : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDrag
 		m_RectTransform = GetComponent<RectTransform>();
 	}
 
-	void OnValueChanged(string key, object o)
-	{
-		switch (key)
-		{
-			case nameof(Core.state.playerPosNormalized):
-				break;
-		}
-
-	}
-
-	void OnEnable()
-	{
-		Core.state?.Listen(nameof(Core.state.playerPosNormalized), OnValueChanged);
-	}
-
-	void OnDisable()
-	{
-		Core.state?.Stop(nameof(Core.state.playerPosNormalized), OnValueChanged);
-	}
-
 }

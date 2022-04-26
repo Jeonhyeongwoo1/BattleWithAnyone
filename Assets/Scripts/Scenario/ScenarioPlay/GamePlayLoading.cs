@@ -7,175 +7,151 @@ using System;
 
 public class GamePlayLoading : MonoBehaviourPunCallbacks
 {
-	[SerializeField] Text m_Title;
-	[SerializeField] Text m_Master;
-	[SerializeField] Text m_Player;
-	[SerializeField] Slider m_MasterBar;
-	[SerializeField] Slider m_PlayerBar;
-	[SerializeField] TextAnimator m_TextAnimator;
-	[SerializeField, Range(0, 5)] float m_MinLoadingDuration;
+    [SerializeField] Text m_Title;
+    [SerializeField] Text m_Master;
+    [SerializeField] Text m_Player;
+    [SerializeField] Slider m_MasterBar;
+    [SerializeField] Slider m_PlayerBar;
+    [SerializeField] TextAnimator m_TextAnimator;
+    [SerializeField, Range(0, 5)] float m_MinLoadingDuration;
 
-	float m_TotalCompletedCount = 4;
-	public Transform masterTestCharacter;
-	public Transform playerTestCharacter;
+    float m_TotalCompletedCount = 4;
+    public Transform masterTestCharacter;
+    public Transform playerTestCharacter;
 
-	public void Prepare()
-	{
-		m_Title.text = Core.state.mapPreferences?.mapName;
-		m_Master.text = PhotonNetwork.MasterClient.NickName;
-		m_Player.text = PhotonNetwork.IsMasterClient ? PhotonNetwork.MasterClient.NickName : PhotonNetwork.NickName;
-		m_MasterBar.value = 0;
-		m_PlayerBar.value = 0;
+    public void Prepare()
+    {
+        m_Title.text = Core.state.mapPreferences?.mapName;
+        m_Master.text = PhotonNetwork.MasterClient.NickName;
+        m_Player.text = PhotonNetwork.IsMasterClient ? PhotonNetwork.MasterClient.NickName : PhotonNetwork.NickName;
+        m_MasterBar.value = 0;
+        m_PlayerBar.value = 0;
 
-		if (!gameObject.activeSelf)
-		{
-			gameObject.SetActive(true);
-		}
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+        }
 
-		//test
-		if (String.IsNullOrEmpty(m_Player.text))
-		{
-			m_Player.text = "TESTer";
-		}
+        //test
+        if (String.IsNullOrEmpty(m_Player.text))
+        {
+            m_Player.text = "TESTer";
+        }
 
-		if (String.IsNullOrEmpty(m_Master.text))
-		{
-			m_Master.text = MemberFactory.Get().mbr_id;
-		}
-	}
+        if (String.IsNullOrEmpty(m_Master.text))
+        {
+            m_Master.text = MemberFactory.Get().mbr_id;
+        }
+    }
 
-	public void StartLoading(UnityAction done)
-	{
-		StartCoroutine(Loading(done));
-	}
+    public void StartLoading(UnityAction done)
+    {
+        StartCoroutine(Loading(done));
+    }
 
-	public void EndLoading()
-	{
-		StopAllCoroutines();
-		m_TextAnimator.StopAllCoroutines();
-		gameObject.SetActive(false);
-	}
+    public void EndLoading()
+    {
+        StopAllCoroutines();
+        m_TextAnimator.StopAllCoroutines();
+        gameObject.SetActive(false);
+    }
 
-	IEnumerator Loading(UnityAction done)
-	{
-		float elapsed = 0;
-		float loadedCount = 0;
+    IEnumerator Loading(UnityAction done)
+    {
+        float elapsed = 0;
+        float loadedCount = 0;
 
-		//Model, Theme
-		if (Core.state.mapPreferences == null)
-		{
-			Debug.LogError("Map is null");
-			yield break;
-		}
+        //Model, Theme
+        if (Core.state.mapPreferences == null)
+        {
+            Debug.LogError("Map is null");
+            yield break;
+        }
 
-		m_TextAnimator.StartAnimation();
+        m_TextAnimator.StartAnimation();
 
-		Core.models.Load(Core.state.mapPreferences.mapName, () =>
-		{
-			loadedCount++;
-			IModel b = Core.models.Get();
+        Core.models.Load(Core.state.mapPreferences.mapName, () =>
+        {
+            loadedCount++;
+            IModel b = Core.models.Get();
+            OnCreateCharacters(() => loadedCount++);
+            b.ReadyCamera(PhotonNetwork.IsMasterClient, () => loadedCount++);
+        });
 
-			//Only Test			
-			if (Core.state.masterCharacter == null)
-			{
-				Core.state.masterCharacter = masterTestCharacter;
-			}
+        Core.plugs.Load<XTheme>(() => loadedCount++);
 
-			if (Core.state.playerCharacter == null)
-			{
-				Core.state.playerCharacter = playerTestCharacter;
-			}
+        float value = 0;
+        Slider progress = PhotonNetwork.IsMasterClient ? m_MasterBar : m_PlayerBar;
+        bool isUpdated = false;
+        while (value < 1)
+        {
+            elapsed += Time.deltaTime;
+            value = MathF.Min((elapsed / m_MinLoadingDuration), (loadedCount / m_TotalCompletedCount));
+            progress.value = Mathf.Lerp(0, 1, value);
 
-			OnCreateCharacters(() => loadedCount++);
-			b.ReadyCamera(PhotonNetwork.IsMasterClient, () => loadedCount++);
-		});
+            if ((0.5f < value && value < 0.7f) && !isUpdated)
+            {
+                photonView.RPC("UpdateLoadingProgress", RpcTarget.Others, 0.5f);
+                isUpdated = true;
+            }
 
-		Core.plugs.Load<XTheme>(() => loadedCount++);
+            yield return null;
+        }
 
-		float value = 0;
-		Slider progress = PhotonNetwork.IsMasterClient ? m_MasterBar : m_PlayerBar;
-		bool isUpdated = false;
-		while (value < 1)
-		{
-			elapsed += Time.deltaTime;
-			value = MathF.Min((elapsed / m_MinLoadingDuration), (loadedCount / m_TotalCompletedCount));
-			progress.value = Mathf.Lerp(0, 1, value);
+        Transform player = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter : Core.state.playerCharacter;
+        if (player.TryGetComponent<PlayerController>(out var controller))
+        {
+            controller.CreateBullet();
+            controller.CreateCollisionEffect();
+            controller.photonView.RPC(nameof(controller.SetParent), RpcTarget.All, PhotonNetwork.IsMasterClient);
+        }
 
-			if ((0.5f < value && value < 0.7f) && !isUpdated)
-			{
-				photonView.RPC("UpdateLoadingProgress", RpcTarget.Others, 0.5f);
-				isUpdated = true;
-			}
+        photonView.RPC("UpdateLoadingProgress", RpcTarget.Others, 1.0f);
 
-			yield return null;
-		}
+        yield return new WaitForSeconds(2f);
+        done?.Invoke();
+    }
 
-		photonView.RPC("UpdateLoadingProgress", RpcTarget.Others, 1.0f);
+    void OnCreateCharacters(UnityAction done = null)
+    {
+        IModel model = Core.models.Get();
+        if (model == null)
+        {
+            Debug.LogError("Map isn't Loaded!!");
+            return;
+        }
 
-		yield return new WaitForSeconds(2f);
-		done?.Invoke();
-	}
+        //Only Test			
+        if (Core.state.masterCharacter == null)
+        {
+            Core.state.masterCharacter = masterTestCharacter;
+        }
 
-	void OnCreateCharacters(UnityAction done = null)
-	{
-		IModel model = Core.models.Get();
-		if (model == null)
-		{
-			Debug.LogError("Map isn't Loaded!!");
-			return;
-		}
+        if (Core.state.playerCharacter == null)
+        {
+            Core.state.playerCharacter = playerTestCharacter;
+        }
 
-		Transform[] createPoints = model.playerCreatePoints;
-		string name = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter.name : Core.state.playerCharacter.name;
-		int playerIndex = PhotonNetwork.IsMasterClient ? 0 : 1;
-		Transform tr = null;
-		tr = PhotonNetwork.Instantiate(XSettings.chracterPath + name, createPoints[playerIndex].position, createPoints[playerIndex].rotation, 0).transform;
-		tr.SetParent(createPoints[playerIndex].parent);
-		tr.name = PhotonNetwork.IsMasterClient ? "Master" + name : "Player" + name;
+        string name = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter.name : Core.state.playerCharacter.name;
+        Transform[] createPoints = model.playerCreatePoints;
+        int index = PhotonNetwork.IsMasterClient ? 0 : 1;
+        Transform player = PhotonNetwork.Instantiate(XSettings.chracterPath + name, createPoints[index].position, createPoints[index].rotation, 0).transform;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Core.state.masterCharacter = player;
+        }
+        else
+        {
+            Core.state.playerCharacter = player;
+        }
 
-		if (PhotonNetwork.IsMasterClient)
-		{
-			Core.state.masterCharacter = tr;
-		}
-		else
-		{
-			Core.state.playerCharacter = tr;
-		}
+        done?.Invoke();
+    }
 
-		photonView.RPC(nameof(CreatedPlayerCharacter), RpcTarget.Others);
-		done?.Invoke();
-	}
-
-	[PunRPC]
-	public void CreatedPlayerCharacter()
-	{
-		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-		foreach (var player in players)
-		{
-			PhotonView photonView = player.GetPhotonView();
-			if (!photonView.IsMine)
-			{
-				if (PhotonNetwork.IsMasterClient)
-				{
-					Core.state.playerCharacter = player.transform;
-				}
-				else
-				{
-					Core.state.masterCharacter = player.transform;
-				}
-
-				IModel model = Core.models.Get();
-				int playerIndex = PhotonNetwork.IsMasterClient ? 1 : 0;
-				player.transform.SetParent(model.playerCreatePoints[playerIndex].parent);
-                player.name = PhotonNetwork.IsMasterClient ? "Master" + name : "Player" + name;
-			}
-		}
-	}
-
-	[PunRPC]
-	void UpdateLoadingProgress(float value)
-	{
-		Slider slider = PhotonNetwork.IsMasterClient ? m_PlayerBar : m_MasterBar;
-		slider.value = value;
-	}
+    [PunRPC]
+    void UpdateLoadingProgress(float value)
+    {
+        Slider slider = PhotonNetwork.IsMasterClient ? m_PlayerBar : m_MasterBar;
+        slider.value = value;
+    }
 }

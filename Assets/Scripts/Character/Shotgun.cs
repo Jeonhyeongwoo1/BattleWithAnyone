@@ -1,29 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class Shotgun : BulletBase
 {
     int m_RecoupPellet = 0;
 
-    public override void Init(Vector3 dir, Transform shooter)
+    public override void Shoot(Vector3 dir, Vector3 position, Quaternion rotation)
     {
-        transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-        direction = dir;
-    }
-
-    public override void Shoot()
-    {
-        Vector3 angle = attribute.shotgun.vAngle;
-        Pellet[] pellets = attribute.shotgun.pellets;
-        for (int i = 0; i < pellets.Length; i++)
-        {
-            Vector3 random = new Vector3(Random.Range(-angle.x, angle.x), Random.Range(-angle.y, angle.y), Random.Range(-angle.z, angle.z));
-            pellets[i].Init(attribute.shotgun.damage, direction, attribute.maxLifeTime, 0, RecoupPellet, false);
-            pellets[i].gameObject.SetActive(true);
-            pellets[i].transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
-            pellets[i].rb.AddForce(transform.forward * attribute.shotgun.fwdForce + random, ForceMode.Impulse);
-        }
+       photonView.RPC(nameof(Shooting), RpcTarget.All, dir, position, rotation);
     }
 
     void RecoupPellet()
@@ -31,16 +18,49 @@ public class Shotgun : BulletBase
         m_RecoupPellet++;
         if (attribute.shotgun.pellets.Length == m_RecoupPellet)
         {
-            Core.poolManager.Despawn(nameof(Bullet), gameObject);
+            photonView.RPC(nameof(NotifyObjDisappeared), RpcTarget.All);
         }
     }
 
-    private void OnEnable()
+    [PunRPC]
+    void Shooting(Vector3 dir, Vector3 position, Quaternion rotation)
+    {
+        transform.SetPositionAndRotation(position, rotation);
+        direction = dir;
+        gameObject.SetActive(true);
+
+        Vector3 angle = attribute.shotgun.vAngle;
+        Pellet[] pellets = attribute.shotgun.pellets;
+        float damage = attribute.shotgun.damage;
+        float maxLife = attribute.maxLifeTime;
+        float force = attribute.shotgun.fwdForce;
+        
+        for (int i = 0; i < pellets.Length; i++)
+        {
+            Vector3 random = new Vector3(Random.Range(-angle.x, angle.x), Random.Range(-angle.y, angle.y), Random.Range(-angle.z, angle.z));
+            pellets[i].Shoot(damage, direction, maxLife, random, force, RecoupPellet, false);
+        }
+    }
+
+    [PunRPC]
+    void NotifyObjDisappeared()
+    {
+        if (photonView.IsMine)
+        {
+            Core.poolManager.Despawn(nameof(Bullet), gameObject);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    public override void OnEnable()
     {
         lifeTime = attribute.maxLifeTime;
     }
 
-    private void OnDisable()
+    public override void OnDisable()
     {
         lifeTime = 0;
     }
@@ -51,7 +71,7 @@ public class Shotgun : BulletBase
 
         if (lifeTime < 0)
         {
-            Core.poolManager.Despawn(nameof(Bullet), gameObject);
+            photonView.RPC(nameof(NotifyObjDisappeared), RpcTarget.All);
         }
     }
 

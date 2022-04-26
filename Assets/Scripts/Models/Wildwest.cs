@@ -7,8 +7,11 @@ public class Wildwest : MonoBehaviour, IModel
 {
 	public string Name => nameof(Battleground);
     public Transform[] playerCreatePoints { get; set; }
+	public Transform poolObjectCreatePoints => m_PoolObjectCreatePoint;
 
-	public void LoadedModel(UnityAction done = null)
+    [SerializeField] Transform m_PoolObjectCreatePoint;
+
+    public void LoadedModel(UnityAction done = null)
 	{
 
 	}

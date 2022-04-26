@@ -590,7 +590,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4862177526683233266
 Transform:
   m_ObjectHideFlags: 0
@@ -598,7 +598,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4862177526683233260}
-  m_LocalRotation: {x: 0.00014104904, y: -0.993858, z: -0.0011872984, w: -0.110657}
+  m_LocalRotation: {x: 0.0001410458, y: -0.9938584, z: -0.0011872975, w: -0.11065354}
   m_LocalPosition: {x: 2.513433, y: 1.24, z: -24.879452}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -657,7 +657,7 @@ MonoBehaviour:
     jumpCoolTime: 1
     attackSpeed: 1
     reloadTime: 1
-    bulletCount: 1
+    bulletCount: 10
     shootingCoolTime: 0.5
     rollingForce: 2
     jumpOption:
@@ -681,18 +681,17 @@ MonoBehaviour:
   m_AniParam: {}
   m_Animator: {fileID: 4862177526683233261}
   m_ShootPoint: {fileID: 2237753108182754221}
-  m_Bullet: {fileID: 9119753535280460302, guid: f6d12ae3dcf204f3e9b49537f0761e54,
-    type: 3}
   m_AimCollisionMask:
     serializedVersion: 2
     m_Bits: 257
-  m_CollisionEffect: {fileID: 5162948088626481158, guid: 87be4828c723249a89051addc2e560c5,
-    type: 3}
   m_GunfireEffect: {fileID: 0}
   m_IsGround: 0
   m_GroundCheckRadius: 0
   m_BulletCreateCount: 10
-  m_CurHealth: 0
+  m_Bullet: {fileID: 1545060327260647690, guid: ee01231a5d8834426805618239aa588e,
+    type: 3}
+  m_CollisionEffect: {fileID: 39927117892878705, guid: 87be4828c723249a89051addc2e560c5,
+    type: 3}
 --- !u!114 &4862177526683232789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2204,7 +2203,7 @@ GameObject:
   - component: {fileID: 8029187709520254187}
   m_Layer: 9
   m_Name: BlockCollision
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2253,7 +2252,7 @@ CapsuleCollider:
   m_Radius: 0.4
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0.7, z: 0}
+  m_Center: {x: -0.1, y: 0.7, z: 0}
 --- !u!1 &5911674539348140772
 GameObject:
   m_ObjectHideFlags: 0

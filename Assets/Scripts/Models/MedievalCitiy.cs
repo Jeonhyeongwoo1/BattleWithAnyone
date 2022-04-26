@@ -7,8 +7,11 @@ public class MedievalCitiy : MonoBehaviour, IModel
 {
 	public string Name => nameof(Battleground);
     public Transform[] playerCreatePoints { get; set; }
-	
-	public void LoadedModel(UnityAction done = null)
+    public Transform poolObjectCreatePoints => m_PoolObjectCreatePoint;
+
+    [SerializeField] Transform m_PoolObjectCreatePoint;
+
+    public void LoadedModel(UnityAction done = null)
 	{
 
 	}

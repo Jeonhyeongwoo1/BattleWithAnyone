@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class CannonBullet : BulletBase
 {
@@ -11,21 +13,9 @@ public class CannonBullet : BulletBase
     float m_CurCollision = 0;
     float m_CollisionDetectionWaitTime = 0f;
 
-    public override void Init(Vector3 dir, Transform shooter)
+    public override void Shoot(Vector3 dir, Vector3 position, Quaternion rotation)
     {
-        transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-        direction = dir;
-        this.shooter = shooter;
-    }
-
-    public override void Shoot()
-    {
-        rb.AddForce(transform.forward * m_CannonAttirbute.fwdForce, ForceMode.Impulse);
-        rb.AddForce(transform.up * m_CannonAttirbute.upForce, ForceMode.Impulse);
-
-
-        if (bulletEffect != null)
-            bulletEffect?.Play();
+        photonView.RPC(nameof(Shooting), Photon.Pun.RpcTarget.All, dir, position, rotation);
     }
 
     BulletAttribute.Cannon GetCannonAttribute()
@@ -54,8 +44,6 @@ public class CannonBullet : BulletBase
             Collider[] players = Physics.OverlapSphere(transform.position, rayCastRange, playerLayer);
             for (int i = 0; i < players.Length; i++)
             {
-                if (players[i].transform == shooter) { continue; }
-
                 if (players[i].transform.TryGetComponent<PlayerController>(out var component))
                 {
                     OnHit(component);
@@ -64,33 +52,70 @@ public class CannonBullet : BulletBase
             }
         }
 
-        if (!isHit && attribute.junkrat.isSecondBall)
+        if (!isHit && attribute.junkrat.isSecondBall && photonView.IsMine)
         {
-            Pellet ball = attribute.junkrat.secondBall;
             float range = attribute.junkrat.secondBallRandomRange;
             int count = attribute.junkrat.secondBallCount;
+            float scale = attribute.junkrat.secondBallScale;
             for (int i = 0; i < count; i++)
             {
-                Vector3 random = new Vector3(Random.Range(-range, range), Random.Range(-range, range), Random.Range(-range, range));
-                Pellet pellet = Instantiate<Pellet>(ball, transform.position, Quaternion.identity, transform.parent);
-                pellet.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-                pellet.Init(attribute.junkrat.secondBallDamage, direction, attribute.junkrat.maxSecondLifeTime, attribute.junkrat.secondColliderRange, null, true);
-                pellet.gameObject.SetActive(true);
-                pellet.rb.useGravity = true;
-                pellet.rb.AddForce(random * attribute.junkrat.secondBallForce, ForceMode.Impulse);
+                GameObject p = PhotonNetwork.Instantiate(XSettings.bulletPath + attribute.junkrat.secondBall.name, transform.position, Quaternion.identity, 0);
+                if(p.TryGetComponent<Pellet>(out var pellet))
+                {
+                    pellet.Shoot(attribute.junkrat.secondBallDamage, direction, attribute.junkrat.maxSecondLifeTime, attribute.junkrat.secondColliderRange, range, attribute.junkrat.secondBallForce, scale, true);
+                }
             }
-
         }
 
         PlayCollisionEffect();
-        Core.poolManager.Despawn(nameof(Bullet), gameObject);
+        BulletDisable();
+    }
+
+    void BulletDisable()
+    {
+        if (photonView.IsMine)
+        {
+            Core.poolManager.Despawn(nameof(Bullet), gameObject);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
 
     void OnHit(PlayerController player)
     {
-        float damage = m_CannonAttirbute.damage;
-        player.TakeDamange(damage);
+        if(player.TryGetComponent<PhotonView>(out var view))
+        {
+            if(!view.IsMine)
+            {
+                photonView.RPC(nameof(TakeDamange), RpcTarget.Others, m_CannonAttirbute.damage);
+            }
+        }
+    }
+
+    [PunRPC]
+    void Shooting(Vector3 dir, Vector3 position, Quaternion rotation)
+    {
+        transform.position = position;
+        transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
+        direction = dir;
+        gameObject.SetActive(true);
+        rb.AddForce(transform.forward * m_CannonAttirbute.fwdForce, ForceMode.Impulse);
+        rb.AddForce(transform.up * m_CannonAttirbute.upForce, ForceMode.Impulse);
+        if (bulletEffect != null)
+            bulletEffect?.Play();
+    }
+
+    [PunRPC]
+    void TakeDamange(int damage)
+    {
+        Transform player = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter : Core.state.playerCharacter;
+        if (player.TryGetComponent<PlayerController>(out var controller))
+        {
+            controller.TakeDamange(damage);
+        }
     }
 
     IEnumerator WaitTime(float time, UnityAction done)
@@ -99,7 +124,7 @@ public class CannonBullet : BulletBase
         done?.Invoke();
     }
 
-    private void OnEnable()
+    public override void OnEnable()
     {
         if (attribute.type == BulletAttribute.BulletType.None)
         {
@@ -121,11 +146,15 @@ public class CannonBullet : BulletBase
         Collider[] players = Physics.OverlapSphere(transform.position, rayCastRange, playerLayer);
         for (int i = 0; i < players.Length; i++)
         {
-            if (players[i].transform == shooter) { continue; }
+            if (players[i].transform.TryGetComponent<PhotonView>(out var view))
+            {
+                if (view.IsMine) { continue; }
+            }
+
+            if (!players[i].transform.TryGetComponent<PlayerController>(out var p)) { continue; }
+
             rb.velocity = Vector3.zero;
             m_Collider.isTrigger = true;
-
-            if (players[i].transform.TryGetComponent<PlayerController>(out var p)) { }
             StartCoroutine(WaitTime(timeBeforeExplosion, () => Explosion(p)));
         }
 
@@ -152,7 +181,11 @@ public class CannonBullet : BulletBase
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.transform == shooter) { return; }
+        if(other.transform.TryGetComponent<PhotonView>(out var view))
+        {
+            if (view.IsMine) { return; }
+        }
+        
         if (other.rigidbody != null) //Debug
         {
             other.rigidbody.velocity = Vector3.zero;
@@ -174,7 +207,7 @@ public class CannonBullet : BulletBase
         bulletEffect.Stop();
     }
 
-    private void OnDisable()
+    public override void OnDisable()
     {
         m_Collider.isTrigger = false;
         lifeTime = 0;

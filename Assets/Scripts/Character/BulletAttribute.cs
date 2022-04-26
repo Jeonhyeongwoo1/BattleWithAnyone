@@ -22,7 +22,7 @@ public class BulletAttribute
     public class BaseItem
     {
         public float fwdForce;
-        public float damage;
+        public int damage;
     }
 
     [Serializable]
@@ -56,7 +56,7 @@ public class BulletAttribute
     {
         public float residualfireDamageInterval;
         public float residualfireDuration;
-        public float residualfireDamage;
+        public int residualfireDamage;
     }
 
     [Serializable]
@@ -68,6 +68,7 @@ public class BulletAttribute
         public float secondColliderRange;
         public float secondBallForce;
         public float secondBallDamage;
+        public float secondBallScale;
         public int secondBallCount;
         public Pellet secondBall;
     }

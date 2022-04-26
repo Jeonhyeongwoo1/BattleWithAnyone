@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class Pellet : MonoBehaviour
+public class Pellet : MonoBehaviourPunCallbacks
 {
     public Rigidbody rb => m_Rigidbody;
 
+    [SerializeField] bool m_TransforParent;
     [SerializeField] BulletCollisionEffect m_Effect;
     [SerializeField] Rigidbody m_Rigidbody;
     [SerializeField] LayerMask m_LayerMask;
@@ -18,28 +21,71 @@ public class Pellet : MonoBehaviour
     float m_CurLifeTime;
     float m_SecondColliderRange;
     UnityAction m_Despawn;
-
-    public void Init(float damage, Vector3 direction, float lifeTime, float coliderRange, UnityAction despawn, bool isExplode = false)
+ 
+    public void Shoot(float damage, Vector3 direction, float lifeTime, float coliderRange, float range, float force, float scale, bool isExplode)
     {
+        photonView.RPC(nameof(Shooting), RpcTarget.All, damage, direction, lifeTime, coliderRange, range, force, scale, isExplode);
+    }
+
+    public void Shoot(float damage, Vector3 direction, float lifeTime, Vector3 random, float force, UnityAction despawn, bool isExplode)
+    {
+        m_Despawn = despawn;
+        photonView.RPC(nameof(Shooting), RpcTarget.All, damage, direction, random, lifeTime, force, isExplode);
+    }
+
+    [PunRPC]
+    void Shooting(float damage, Vector3 direction, Vector3 random, float lifeTime, float force, bool isExplode)
+    {
+        m_Damage = damage;
+        m_Direction = direction;
+        m_CurLifeTime = lifeTime;
+        m_IsExplode = isExplode;
+        gameObject.SetActive(true);
+        transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        m_Rigidbody.AddForce(transform.forward * force + random, ForceMode.Impulse);
+    }
+
+    [PunRPC]
+    void Shooting(float damage, Vector3 direction, float lifeTime, float coliderRange, float range, float force, float scale, bool isExplode)
+    {
+        Vector3 random = new Vector3(Random.Range(-range, range), Random.Range(-range, range), Random.Range(-range, range));
+        transform.localScale = new Vector3(scale, scale, scale);
         m_Damage = damage;
         m_Direction = direction;
         m_CurLifeTime = lifeTime;
         m_SecondColliderRange = coliderRange;
         m_IsExplode = isExplode;
-        m_Despawn = despawn;
+        gameObject.SetActive(true);
+        transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        m_Rigidbody.useGravity = true;
+        m_Rigidbody.AddForce(random * force, ForceMode.Impulse);
     }
 
     void OnHit(Transform target)
     {
         if (target.tag == "Player")
         {
-            if (target.TryGetComponent<PlayerController>(out var player))
+            if (target.TryGetComponent<PhotonView>(out var view))
             {
-                player.TakeDamange(m_Damage);
+                if (!view.IsMine)
+                {
+                    photonView.RPC(nameof(TakeDamange), RpcTarget.Others, m_Damage);
+                }
             }
         }
 
        DisablePellet();
+    }
+
+    [PunRPC]
+    void TakeDamange(int damage)
+    {
+        Transform player = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter : Core.state.playerCharacter;
+
+        if (player.TryGetComponent<PlayerController>(out var controller))
+        {
+            controller.TakeDamange(damage);
+        }
     }
 
     void DisablePellet()
@@ -47,14 +93,31 @@ public class Pellet : MonoBehaviour
         
         if (m_IsExplode)
         {
-            m_Despawn?.Invoke();
-            BulletCollisionEffect effect = Instantiate<BulletCollisionEffect>(m_Effect, transform.position, transform.rotation, transform.parent);
-            effect.PlayEffect(transform.position, transform.rotation);
+            if(!photonView.IsMine) { return;}
+
+            GameObject go = PhotonNetwork.Instantiate(XSettings.bulletImpactPath + m_Effect.name, transform.position, transform.rotation, 0);
+            if(go.transform.TryGetComponent<BulletCollisionEffect>(out var effect))
+            {
+                effect.PlayEffect(transform.position, transform.rotation);
+            }
+            photonView.RPC(nameof(NotifyObjDisappeared), RpcTarget.All, true);
+        }
+        else
+        {
+            m_Effect.PlayEffect(transform.position, transform.rotation, () => m_Despawn?.Invoke());
+            photonView.RPC(nameof(NotifyObjDisappeared), RpcTarget.All, false);
+        }
+    }
+
+    [PunRPC]
+    void NotifyObjDisappeared(bool isDestroy)
+    {
+        if(isDestroy)
+        {
             Destroy(gameObject);
         }
         else
         {
-            m_Effect.PlayEffect(transform.position, transform.rotation, ()=> m_Despawn.Invoke());
             gameObject.SetActive(false);
         }
     }
@@ -65,9 +128,15 @@ public class Pellet : MonoBehaviour
         {
             m_Rigidbody = rb;
         }
+
+        if (m_TransforParent)
+        {
+            IModel model = Core.models.Get();
+            transform.SetParent(model.poolObjectCreatePoints);
+        }
     }
 
-    private void OnDisable()
+    public override void OnDisable()
     {
         m_Rigidbody.velocity = Vector3.zero;
         m_Rigidbody.angularVelocity = Vector3.zero;
@@ -108,7 +177,7 @@ public class Pellet : MonoBehaviour
         {
             other.rigidbody.velocity = Vector3.zero;
         }
-        
+
         OnHit(other.transform);
     }
 

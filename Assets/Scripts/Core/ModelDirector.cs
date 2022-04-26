@@ -7,6 +7,7 @@ public interface IModel
 {
     string Name { get; }
     Transform[] playerCreatePoints { get; }
+    Transform poolObjectCreatePoints { get;}
     void LoadedModel(UnityAction done = null);
     void UnLoadModel(UnityAction done = null);
     void ReadyCamera(bool isMaster, UnityAction done = null);

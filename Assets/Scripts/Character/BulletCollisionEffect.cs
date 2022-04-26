@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Photon.Realtime;
+using Photon.Pun;
 
-public class BulletCollisionEffect : MonoBehaviour
+public class BulletCollisionEffect : MonoBehaviourPunCallbacks
 {
-    public enum Type { Destory, Despawn, Disable}
+    public enum Type { Destory, Despawn, Disable }
 
     public Type type { get => m_Type; set => m_Type = value; }
 
+    [SerializeField] bool m_TransforParent;
+    [SerializeField] bool m_DisableState;
     [SerializeField] Type m_Type;
-    [SerializeField] bool m_IsDestory = false;
     [SerializeField] ParticleSystem m_Effect;
 
     public void PlayEffect(Vector3 position, Quaternion rotation, UnityAction done = null)
@@ -20,26 +23,42 @@ public class BulletCollisionEffect : MonoBehaviour
         StartCoroutine(PlayingCollisionEffect(done));
     }
 
+    [PunRPC]
+    public void SetBulletCollisionPoolObj()
+    {
+        IModel model = Core.models.Get();
+        transform.SetParent(model.poolObjectCreatePoints);
+        gameObject.SetActive(m_DisableState);
+    }
+
+    private void Awake()
+    {
+        if(m_TransforParent)
+        {
+            photonView.RPC(nameof(SetBulletCollisionPoolObj), RpcTarget.All);
+        }
+    }
+
     IEnumerator PlayingCollisionEffect(UnityAction done)
     {
         m_Effect.Play();
         while (m_Effect.isPlaying) { yield return null; }
         m_Effect.Stop();
-        done?.Invoke();
 
         switch (m_Type)
         {
             case Type.Destory:
                 Destroy(gameObject);
-            break;
+                break;
             case Type.Despawn:
                 Core.poolManager.Despawn(nameof(BulletCollisionEffect), gameObject);
-            break;
+                break;
             case Type.Disable:
                 gameObject.SetActive(false);
-            break;
+                break;
         }
 
+        done?.Invoke();
     }
 
 }

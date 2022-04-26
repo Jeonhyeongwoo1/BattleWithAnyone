@@ -4896,6 +4896,7 @@ GameObject:
   - component: {fileID: 7985351401101819858}
   - component: {fileID: 4417897793613840435}
   - component: {fileID: 5124567281616931753}
+  - component: {fileID: 3866836416284949171}
   m_Layer: 0
   m_Name: Pellet (9)
   m_TagString: Pellet
@@ -5010,11 +5011,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Effect: {fileID: 1051048241786828977}
-  m_Rigidbody: {fileID: 0}
+  m_Rigidbody: {fileID: 4417897793613840435}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
   m_RayDist: 1
+--- !u!114 &3866836416284949171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499579443524110330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &516186864172803339
 GameObject:
   m_ObjectHideFlags: 0
@@ -9909,6 +9932,7 @@ GameObject:
   - component: {fileID: 5061999384419161009}
   - component: {fileID: 3286777262671660586}
   - component: {fileID: 2723449882506820974}
+  - component: {fileID: 5437555510458090973}
   m_Layer: 0
   m_Name: ShotgunCollision (3)
   m_TagString: Untagged
@@ -14793,9 +14817,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 5061999384419161009}
+--- !u!114 &5437555510458090973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625447426676646490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &733165401129340064
 GameObject:
   m_ObjectHideFlags: 0
@@ -14810,6 +14856,7 @@ GameObject:
   - component: {fileID: 9194485554699797259}
   - component: {fileID: 3220526016112899073}
   - component: {fileID: 7668098486425930094}
+  - component: {fileID: 4270603338694048071}
   m_Layer: 0
   m_Name: Pellet (1)
   m_TagString: Pellet
@@ -14924,11 +14971,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Effect: {fileID: 701673272228915052}
-  m_Rigidbody: {fileID: 0}
+  m_Rigidbody: {fileID: 3220526016112899073}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
   m_RayDist: 1
+--- !u!114 &4270603338694048071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733165401129340064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &987499156253775305
 GameObject:
   m_ObjectHideFlags: 0
@@ -19823,6 +19892,7 @@ GameObject:
   - component: {fileID: 3364288469687347024}
   - component: {fileID: 2206144961209140469}
   - component: {fileID: 7146081840236712448}
+  - component: {fileID: 3714931085428195810}
   m_Layer: 0
   m_Name: ShotgunCollision (5)
   m_TagString: Untagged
@@ -24707,9 +24777,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 3364288469687347024}
+--- !u!114 &3714931085428195810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110788721579342740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1177725919282053827
 GameObject:
   m_ObjectHideFlags: 0
@@ -29604,6 +29696,7 @@ GameObject:
   - component: {fileID: 6421168626998409102}
   - component: {fileID: 4402801664157103328}
   - component: {fileID: 7287641653665681237}
+  - component: {fileID: 7898665895847052235}
   m_Layer: 0
   m_Name: ShotgunCollision (2)
   m_TagString: Untagged
@@ -34488,9 +34581,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 6421168626998409102}
+--- !u!114 &7898665895847052235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1233208100617239358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1235046305256879866
 GameObject:
   m_ObjectHideFlags: 0
@@ -34505,6 +34620,7 @@ GameObject:
   - component: {fileID: 6073319953232328656}
   - component: {fileID: 6788594838525220776}
   - component: {fileID: 219085026045097760}
+  - component: {fileID: 7445799219353775837}
   m_Layer: 0
   m_Name: Pellet
   m_TagString: Pellet
@@ -34619,11 +34735,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Effect: {fileID: 7347129185249390153}
-  m_Rigidbody: {fileID: 0}
+  m_Rigidbody: {fileID: 6788594838525220776}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
   m_RayDist: 1
+--- !u!114 &7445799219353775837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235046305256879866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2755593039396661912
 GameObject:
   m_ObjectHideFlags: 0
@@ -34638,6 +34776,7 @@ GameObject:
   - component: {fileID: 7866145574490519106}
   - component: {fileID: 7847372533597046576}
   - component: {fileID: 1203949241875407373}
+  - component: {fileID: 2084077369088638810}
   m_Layer: 0
   m_Name: Pellet (6)
   m_TagString: Pellet
@@ -34752,11 +34891,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Effect: {fileID: 8140723049085595904}
-  m_Rigidbody: {fileID: 0}
+  m_Rigidbody: {fileID: 7847372533597046576}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
   m_RayDist: 1
+--- !u!114 &2084077369088638810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2755593039396661912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2965491548210523216
 GameObject:
   m_ObjectHideFlags: 0
@@ -34769,6 +34930,7 @@ GameObject:
   - component: {fileID: 8131639840606646653}
   - component: {fileID: 4958740139074507250}
   - component: {fileID: 8140723049085595904}
+  - component: {fileID: 7815109811995515378}
   m_Layer: 0
   m_Name: ShotgunCollision (6)
   m_TagString: Untagged
@@ -39653,9 +39815,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 8131639840606646653}
+--- !u!114 &7815109811995515378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2965491548210523216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &3510309172726341846
 GameObject:
   m_ObjectHideFlags: 0
@@ -39666,6 +39850,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3510309172726341842}
   - component: {fileID: 9119753535280460302}
+  - component: {fileID: -4402571591220592034}
   m_Layer: 0
   m_Name: Shotgun
   m_TagString: Untagged
@@ -39774,6 +39959,7 @@ MonoBehaviour:
       secondColliderRange: 0
       secondBallForce: 0
       secondBallDamage: 0
+      secondBallScale: 0
       secondBallCount: 0
       secondBall: {fileID: 0}
     maxLifeTime: 3
@@ -39784,6 +39970,28 @@ MonoBehaviour:
   bulletEffect: {fileID: 0}
   bounciness: 0.663
   rayCastRange: 1
+--- !u!114 &-4402571591220592034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3510309172726341846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &3537275789725476177
 GameObject:
   m_ObjectHideFlags: 0
@@ -39796,6 +40004,7 @@ GameObject:
   - component: {fileID: 848105083685877904}
   - component: {fileID: 7496274924489569359}
   - component: {fileID: 1126057632802025007}
+  - component: {fileID: 7447106661180542390}
   m_Layer: 0
   m_Name: ShotgunCollision (4)
   m_TagString: Untagged
@@ -44680,9 +44889,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 848105083685877904}
+--- !u!114 &7447106661180542390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3537275789725476177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4630871046649054347
 GameObject:
   m_ObjectHideFlags: 0
@@ -49579,6 +49810,7 @@ GameObject:
   - component: {fileID: 4600110660842820965}
   - component: {fileID: 2665715983126693243}
   - component: {fileID: 5732382345196970345}
+  - component: {fileID: 6710096278530839454}
   m_Layer: 0
   m_Name: Pellet (7)
   m_TagString: Pellet
@@ -49693,11 +49925,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Effect: {fileID: 6942147660834030702}
-  m_Rigidbody: {fileID: 0}
+  m_Rigidbody: {fileID: 2665715983126693243}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
   m_RayDist: 1
+--- !u!114 &6710096278530839454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4750768528298214935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4977380091289264531
 GameObject:
   m_ObjectHideFlags: 0
@@ -59476,6 +59730,7 @@ GameObject:
   - component: {fileID: 949615591872440079}
   - component: {fileID: 5811329276424884463}
   - component: {fileID: 5669207719351096459}
+  - component: {fileID: 8267898417484488123}
   m_Layer: 0
   m_Name: Pellet (5)
   m_TagString: Pellet
@@ -59590,11 +59845,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Effect: {fileID: 7146081840236712448}
-  m_Rigidbody: {fileID: 0}
+  m_Rigidbody: {fileID: 5811329276424884463}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
   m_RayDist: 1
+--- !u!114 &8267898417484488123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5603848918261378347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &5616985302401805960
 GameObject:
   m_ObjectHideFlags: 0
@@ -64491,6 +64768,7 @@ GameObject:
   - component: {fileID: 7574330928439366248}
   - component: {fileID: 5148784535923906704}
   - component: {fileID: 7513903767454996687}
+  - component: {fileID: 6538781216922229896}
   m_Layer: 0
   m_Name: Pellet (4)
   m_TagString: Pellet
@@ -64605,11 +64883,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Effect: {fileID: 1126057632802025007}
-  m_Rigidbody: {fileID: 0}
+  m_Rigidbody: {fileID: 5148784535923906704}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
   m_RayDist: 1
+--- !u!114 &6538781216922229896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5682178357892077903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &5829703358632122673
 GameObject:
   m_ObjectHideFlags: 0
@@ -69504,6 +69804,7 @@ GameObject:
   - component: {fileID: 6115910529958891411}
   - component: {fileID: 8148389198658362959}
   - component: {fileID: 701673272228915052}
+  - component: {fileID: 2597672676322627417}
   m_Layer: 0
   m_Name: ShotgunCollision (1)
   m_TagString: Untagged
@@ -74388,9 +74689,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 6115910529958891411}
+--- !u!114 &2597672676322627417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6199275509416519854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &6576364419593530227
 GameObject:
   m_ObjectHideFlags: 0
@@ -74405,6 +74728,7 @@ GameObject:
   - component: {fileID: 5226604792718309255}
   - component: {fileID: 270046649694616681}
   - component: {fileID: 5706299869433365070}
+  - component: {fileID: 702908032181929439}
   m_Layer: 0
   m_Name: Pellet (3)
   m_TagString: Pellet
@@ -74519,11 +74843,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Effect: {fileID: 2723449882506820974}
-  m_Rigidbody: {fileID: 0}
+  m_Rigidbody: {fileID: 270046649694616681}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
   m_RayDist: 1
+--- !u!114 &702908032181929439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6576364419593530227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &6591605534887780144
 GameObject:
   m_ObjectHideFlags: 0
@@ -74536,6 +74882,7 @@ GameObject:
   - component: {fileID: 610271546849301789}
   - component: {fileID: 8516317893302032605}
   - component: {fileID: 6942147660834030702}
+  - component: {fileID: 276321335042621251}
   m_Layer: 0
   m_Name: ShotgunCollision (7)
   m_TagString: Untagged
@@ -79420,9 +79767,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 610271546849301789}
+--- !u!114 &276321335042621251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6591605534887780144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &7795340637237026657
 GameObject:
   m_ObjectHideFlags: 0
@@ -79435,6 +79804,7 @@ GameObject:
   - component: {fileID: 2076783388146427536}
   - component: {fileID: 6844393369866875728}
   - component: {fileID: 3787697459573864481}
+  - component: {fileID: 102005774154209888}
   m_Layer: 0
   m_Name: ShotgunCollision (8)
   m_TagString: Untagged
@@ -84319,9 +84689,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 2076783388146427536}
+--- !u!114 &102005774154209888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7795340637237026657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &8131808350972877051
 GameObject:
   m_ObjectHideFlags: 0
@@ -84334,6 +84726,7 @@ GameObject:
   - component: {fileID: 8680016610306350635}
   - component: {fileID: 2373711173416643046}
   - component: {fileID: 1051048241786828977}
+  - component: {fileID: 2593414756253753953}
   m_Layer: 0
   m_Name: ShotgunCollision (9)
   m_TagString: Untagged
@@ -89218,9 +89611,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 8680016610306350635}
+--- !u!114 &2593414756253753953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8131808350972877051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &8290018968449152132
 GameObject:
   m_ObjectHideFlags: 0
@@ -94115,6 +94530,7 @@ GameObject:
   - component: {fileID: 8199829725972093188}
   - component: {fileID: 8200667301430721988}
   - component: {fileID: 7347129185249390153}
+  - component: {fileID: 1362525861697775953}
   m_Layer: 0
   m_Name: ShotgunCollision
   m_TagString: Untagged
@@ -98999,9 +99415,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Type: 2
-  m_IsDestory: 0
   m_Effect: {fileID: 8199829725972093188}
+--- !u!114 &1362525861697775953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8290739428478778200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &8491335823537638170
 GameObject:
   m_ObjectHideFlags: 0
@@ -99016,6 +99454,7 @@ GameObject:
   - component: {fileID: 7043037508389504691}
   - component: {fileID: 6340574071992960473}
   - component: {fileID: 7187182613433664673}
+  - component: {fileID: 7113141576154967710}
   m_Layer: 0
   m_Name: Pellet (2)
   m_TagString: Pellet
@@ -99130,11 +99569,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Effect: {fileID: 7287641653665681237}
-  m_Rigidbody: {fileID: 0}
+  m_Rigidbody: {fileID: 6340574071992960473}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
   m_RayDist: 1
+--- !u!114 &7113141576154967710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8491335823537638170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &9018368110041391455
 GameObject:
   m_ObjectHideFlags: 0
@@ -99149,6 +99610,7 @@ GameObject:
   - component: {fileID: 4881099469617839789}
   - component: {fileID: 7461821594637629146}
   - component: {fileID: 2372189402235076203}
+  - component: {fileID: 9158945208417362738}
   m_Layer: 0
   m_Name: Pellet (8)
   m_TagString: Pellet
@@ -99263,8 +99725,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Effect: {fileID: 3787697459573864481}
-  m_Rigidbody: {fileID: 0}
+  m_Rigidbody: {fileID: 7461821594637629146}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
   m_RayDist: 1
+--- !u!114 &9158945208417362738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9018368110041391455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

@@ -44,7 +44,7 @@ public class GameEndUI : MonoBehaviour
 		}
 
 		//GameEnd
-		Core.gameManager.SetState(GamePlayManager.Status.GameEnd);
+		Core.gameManager.state = (GamePlayManager.State.GameEnd);
 	}
 
 	void OpenCloseGameEndUI(string key, object o)

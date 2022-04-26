@@ -20,7 +20,7 @@ public class CharacterOption
 	[Tooltip("장전 시간")]
     public float reloadTime;
 	[Tooltip("총알 갯수")]
-    public float bulletCount;
+    public int bulletCount;
 	[Tooltip("다음 총알 발사 대기시간")]
     public float shootingCoolTime;
     [Tooltip("Roll 이동 파워")]
@@ -65,6 +65,7 @@ public class AnimationParameters
     public readonly string jump = "Jump";
     public readonly string isGrounded = "IsGrounded";
     public readonly string reloadingSpeed = "ReloadingSpeed";
+    public readonly string idle = "Idle";
     public RollingOption rolling;
 
 	[Serializable]

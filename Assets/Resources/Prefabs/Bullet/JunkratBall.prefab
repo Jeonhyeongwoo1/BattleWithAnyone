@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6636864689562694003}
   - component: {fileID: 3685775516386615890}
   - component: {fileID: 4615256260286605447}
+  - component: {fileID: 3101018951143360178}
   m_Layer: 0
   m_Name: JunkratBall
   m_TagString: Untagged
@@ -159,7 +160,7 @@ MonoBehaviour:
     junkrat:
       fwdForce: 30
       damage: 20
-      upForce: 5
+      upForce: 3
       hitRange: 1.5
       maxCollision: 3
       downForce: 5
@@ -167,13 +168,14 @@ MonoBehaviour:
       collisionDetectionWaitTime: 0.15
       deceleration: 0.3
       isSecondBall: 1
-      maxSecondLifeTime: 0.8
+      maxSecondLifeTime: 2
       secondBallRandomRange: 1
       secondColliderRange: 0.8
-      secondBallForce: 9
+      secondBallForce: 5
       secondBallDamage: 5
+      secondBallScale: 0.3
       secondBallCount: 3
-      secondBall: {fileID: 1605017554615204224, guid: f0a751102f2bc4a8da84158f68cdba47,
+      secondBall: {fileID: 1013899330889107008, guid: d491ff5ef900645b39203f5cbe2a5412,
         type: 3}
     maxLifeTime: 5
   playerLayer:
@@ -184,6 +186,28 @@ MonoBehaviour:
   bounciness: 0.663
   rayCastRange: 0.8
   m_Collider: {fileID: 6636864689562694003}
+--- !u!114 &3101018951143360178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5225165914270094478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &8015802851907578258
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,40 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Photon.Pun;
 
 public class Fireball : BulletBase
 {
     BulletAttribute.MagicBullet magicBullet;
 
-    public override void Init(Vector3 dir, Transform shooter)
+    public override void Shoot(Vector3 dir, Vector3 position, Quaternion rotation)
     {
-        transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-        direction = dir;
-        this.shooter = shooter;
-    }
-
-    public override void Shoot()
-    {
-        if (magicBullet.rootParticle.isPlaying || magicBullet.rootParticle.isEmitting)
-        {
-            magicBullet.rootParticle.Stop();
-        }
-
-        var main = magicBullet.rootParticle.main;
-        main.startSpeed = magicBullet.fwdForce;
-        main.duration = magicBullet.effectDuration;
-        magicBullet.rootParticle.Play();
-    }
-
-    BulletAttribute.MagicBullet GetMagicBullet()
-    {
-        switch (attribute.type)
-        {
-            case BulletAttribute.BulletType.Fireball:
-                return attribute.fireball;
-        }
-
-        return null;
+        photonView.RPC(nameof(Shooting), RpcTarget.All, dir, position);
     }
 
     private void Update()
@@ -44,12 +19,11 @@ public class Fireball : BulletBase
 
         if (lifeTime < 0)
         {
-            attribute.fireball.rootParticle.Stop();
-            Core.poolManager.Despawn(nameof(Bullet), gameObject);
+            photonView.RPC(nameof(NotifyObjDisappeared), RpcTarget.All);   
         }
     }
 
-    private void OnEnable()
+    public override void OnEnable()
     {
         if (attribute.type == BulletAttribute.BulletType.None)
         {
@@ -60,7 +34,7 @@ public class Fireball : BulletBase
         magicBullet = GetMagicBullet();
     }
 
-    private void OnDisable()
+    public override void OnDisable()
     {
         lifeTime = 0;
     }
@@ -90,7 +64,48 @@ public class Fireball : BulletBase
             OnHit(other.transform);
         }
 
-        StartCoroutine(PlayingParticle(() => Core.poolManager.Despawn(nameof(Bullet), gameObject)));
+        StartCoroutine(PlayingParticle(() => photonView.RPC(nameof(NotifyObjDisappeared), RpcTarget.All)));
+    }
+    
+    BulletAttribute.MagicBullet GetMagicBullet()
+    {
+        switch (attribute.type)
+        {
+            case BulletAttribute.BulletType.Fireball:
+                return attribute.fireball;
+        }
+
+        return null;
+    }
+
+    [PunRPC]
+    void NotifyObjDisappeared()
+    {
+        attribute.fireball.rootParticle.Stop();
+        if (photonView.IsMine)
+        {
+            Core.poolManager.Despawn(nameof(Bullet), gameObject);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    [PunRPC]
+    void Shooting(Vector3 dir, Vector3 position)
+    {
+        transform.SetPositionAndRotation(position, Quaternion.LookRotation(dir, Vector3.up));
+        gameObject.SetActive(true);
+        if (magicBullet.rootParticle.isPlaying || magicBullet.rootParticle.isEmitting)
+        {
+            magicBullet.rootParticle.Stop();
+        }
+
+        var main = magicBullet.rootParticle.main;
+        main.startSpeed = magicBullet.fwdForce;
+        main.duration = magicBullet.effectDuration;
+        magicBullet.rootParticle.Play();
     }
 
     IEnumerator PlayingParticle(UnityAction done)

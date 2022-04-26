@@ -18,7 +18,26 @@ public class XTheme : MonoBehaviour, IPlugable
         }
     }
 
-	private PlayerController playerController;
+    public GameObject Crosshair
+    {
+        get => m_Crosshair.gameObject;
+    }
+
+    public string bullet
+    {
+        set 
+        {
+            m_CurBullet.text = value;
+            m_TotalBullet.text = value;
+        }
+    }
+
+    [SerializeField]  private PlayerController m_Player;
+    public PlayerController player
+    {
+        private get => m_Player;
+        set => m_Player = value;
+    }
 
     public GameTimer gameTimer;
 
@@ -38,9 +57,11 @@ public class XTheme : MonoBehaviour, IPlugable
     [SerializeField] Button m_Attack;
     [SerializeField] Button m_Reload;
     [SerializeField] Button m_Jump;
-    [SerializeField] Text m_Bullet;
+    [SerializeField] Text m_CurBullet;
+    [SerializeField] Text m_TotalBullet;
     [SerializeField] Slider m_HealthBar;
     [SerializeField] TextMeshProUGUI m_HealthValue;
+    [SerializeField] Transform m_Crosshair;
 
     [SerializeField] AnimationCurve m_Curve;
     [SerializeField] AnimationCurve m_ScaleCurve;
@@ -51,7 +72,6 @@ public class XTheme : MonoBehaviour, IPlugable
     [SerializeField] Vector3 m_CharacterInfo_Close_Pos = new Vector3(0, -300, 0);
 
     public const string InteractableJump = "Jump";
-    public const string Health = "Health";
 
     public void SetPlayersName(string master, string player)
     {
@@ -68,8 +88,9 @@ public class XTheme : MonoBehaviour, IPlugable
         StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Roll.transform.localScale = v, Vector3.zero, Vector3.one, m_OpenCloseDuration, () => count++, m_ScaleCurve));
         StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Attack.transform.localScale = v, Vector3.zero, Vector3.one, m_OpenCloseDuration, () => count++, m_ScaleCurve));
         StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Reload.transform.localScale = v, Vector3.zero, Vector3.one, m_OpenCloseDuration, () => count++, m_ScaleCurve));
+        StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Jump.transform.localScale = v, Vector3.zero, Vector3.one, m_OpenCloseDuration, () => count++, m_ScaleCurve));
 
-        while (count != 6) { yield return null; }
+        while (count != 7) { yield return null; }
         done?.Invoke();
     }
 
@@ -82,8 +103,9 @@ public class XTheme : MonoBehaviour, IPlugable
         StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Roll.transform.localScale = v, Vector3.one, Vector3.zero, m_OpenCloseDuration, () => count++, m_Curve));
         StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Attack.transform.localScale = v, Vector3.one, Vector3.zero, m_OpenCloseDuration, () => count++, m_Curve));
         StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Reload.transform.localScale = v, Vector3.one, Vector3.zero, m_OpenCloseDuration, () => count++, m_Curve));
+        StartCoroutine(CoUtilize.VLerpUnclamped((v) => m_Jump.transform.localScale = v, Vector3.one, Vector3.zero, m_OpenCloseDuration, () => count++, m_Curve));
 
-        while (count != 6) { yield return null; }
+        while (count != 7) { yield return null; }
         done?.Invoke();
     }
 
@@ -93,14 +115,10 @@ public class XTheme : MonoBehaviour, IPlugable
         m_Roll.transform.localScale = Vector3.zero;
         m_Attack.transform.localScale = Vector3.zero;
         m_Reload.transform.localScale = Vector3.zero;
+        m_Jump.transform.localScale = Vector3.zero;
 
         m_StageInfo.anchoredPosition = m_StageInfo_Close_Pos;
         m_CharacterInfo.anchoredPosition = m_CharacterInfo_Close_Pos;
-        Transform player = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter : Core.state.playerCharacter;
-        if(player.TryGetComponent<PlayerController>(out var component))
-        {
-            playerController = component;
-        }
     }
 
     public void Open(UnityAction done = null)
@@ -114,6 +132,7 @@ public class XTheme : MonoBehaviour, IPlugable
     {
         StartCoroutine(Closing(() =>
         {
+            m_Crosshair.gameObject.SetActive(false);
             transform.GetChild(0).gameObject.SetActive(false);
             done?.Invoke();
         }));
@@ -130,31 +149,39 @@ public class XTheme : MonoBehaviour, IPlugable
             case nameof(Core.state.masterWinCount):
                 m_MasterWinCount.text = value.ToString();
                 break;
+            case nameof(Core.state.bulletCount):
+                m_CurBullet.text = value.ToString();
+                break;
+            case nameof(Core.state.health):
+                if (value < 0) { break; }
+                m_HealthBar.value = value;
+                m_HealthValue.text = string.Format("{0}", value);
+                break;
         }
     }
 
     void DoAttack()
     {
 		m_Attack.interactable = false;
-		playerController.Attack(()=> m_Attack.interactable = true);
+		player.Attack(()=> m_Attack.interactable = true);
     }
 
     void DoRoll()
     {
         m_Roll.interactable = false;
-        playerController.Roll(() => m_Roll.interactable = true);
+        player.Roll(() => m_Roll.interactable = true);
     }
 
     void DoReload()
     {
         m_Reload.interactable = false;
-        playerController.Reload(() => m_Reload.interactable = true);
+        player.Reload(() => m_Reload.interactable = true);
     }
 
     void DoJump()
     {
         m_Jump.interactable = false;
-        playerController.Jump(() => m_Jump.interactable = true);
+        player.Jump(() => m_Jump.interactable = true);
     }
 
     void Awake()
@@ -170,11 +197,6 @@ public class XTheme : MonoBehaviour, IPlugable
     void Start()
     {
         Core.Ensure(() => Core.plugs.Loaded(this));
-
-        if(XSettings.isCharacterTest)
-        {
-            playerController = FindObjectOfType<PlayerController>();
-        }
     }
 
     private void OnDestroy()
@@ -190,12 +212,6 @@ public class XTheme : MonoBehaviour, IPlugable
                 bool interactable = (bool)o;
                 m_Jump.interactable = interactable;
                 break;
-            case Health:
-                float amount = (float)o;
-                if (amount < 0) { amount = 0; }
-                m_HealthBar.value = amount;
-                m_HealthValue.text = string.Format("{0}", amount);
-                break;
         }
     }
 
@@ -203,16 +219,18 @@ public class XTheme : MonoBehaviour, IPlugable
     {
         Core.state?.Listen(nameof(Core.state.playerWinCount), OnValueChanged);
         Core.state?.Listen(nameof(Core.state.masterWinCount), OnValueChanged);
+        Core.state?.Listen(nameof(Core.state.bulletCount), OnValueChanged);
+        Core.state?.Listen(nameof(Core.state.health), OnValueChanged);
         Core.xEvent?.Watch(InteractableJump, OnRaisedEvent);
-        Core.xEvent?.Watch(Health, OnRaisedEvent);
     }
 
     void OnDisable()
     {
         Core.state?.Stop(nameof(Core.state.playerWinCount), OnValueChanged);
         Core.state?.Stop(nameof(Core.state.masterWinCount), OnValueChanged);
+        Core.state?.Stop(nameof(Core.state.bulletCount), OnValueChanged);
+        Core.state?.Stop(nameof(Core.state.health), OnValueChanged);
         Core.xEvent?.Stop(InteractableJump, OnRaisedEvent);
-        Core.xEvent?.Stop(Health, OnRaisedEvent);
     }
 
     [ContextMenu("Open")]

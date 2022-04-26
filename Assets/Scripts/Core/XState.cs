@@ -84,7 +84,8 @@ public partial class XState : States
 
     int m_MasterWinCount;
     int m_PlayerWinCount;
-    Vector2 m_PlayerPosNormalized;
+    int m_BulletCount;
+    int m_Health;
 
     void SilentListen()
     {

@@ -13,6 +13,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     public enum State { IDLE, RUN, JUMPING, ROLLING, VICTORY, DIE }
     private enum cameraType { FP, TP }
 
+    public int bullet
+    {
+        get => m_COption.bulletCount;
+    }
+
     public bool isReloading = false;
     public bool isAttacking = false;
     public bool isTestCharacter = false;
@@ -26,32 +31,78 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField] AnimationParameters m_AniParam;
     [SerializeField] Animator m_Animator;
     [SerializeField] Transform m_ShootPoint;
-    [SerializeField] BulletBase m_Bullet;
     [SerializeField] LayerMask m_AimCollisionMask;
-    [SerializeField] ParticleSystem m_CollisionEffect;
     [SerializeField] ParticleSystem m_GunfireEffect;
     [SerializeField] bool m_IsGround = false;
     [SerializeField] float m_GroundCheckRadius;
     [SerializeField] int m_BulletCreateCount = 10;
-    [SerializeField] float m_CurHealth;
+    [SerializeField] BulletBase m_Bullet;
+    [SerializeField] BulletCollisionEffect m_CollisionEffect;
 
     PlayerActionsScript m_PlayerActions;
     Vector3 m_NormalizedMove;
     Vector3 m_NoramlizedRotate;
     Vector3 m_TouchStartPos;
     Vector2 m_MoveParam;
-    Vector3 m_ScreenCenterPosition;
-
+    
+    float m_ScreenHalf = 0;
     float m_DeltaTime = 0f;
     float m_JumpCoolTime = 0;
     bool m_TakeDamangeByResidualFire = false;
 
+    [PunRPC]
+    public void NotifyResetState()
+    {
+        m_Animator.SetTrigger(m_AniParam.idle);
+        m_State = State.IDLE;
+        Core.state.health = 100;
+        Core.state.bulletCount = m_COption.bulletCount;
+        m_NoramlizedRotate = Vector3.zero;
+        m_NormalizedMove = Vector3.zero;
+        m_MoveParam = Vector2.zero;
+    }
+
+    [PunRPC]
+    public void SetParent(bool isMaster)
+    {
+        IModel model = Core.models.Get();
+        Transform[] players = model.playerCreatePoints;
+        int index = isMaster ? 0 : 1;
+        transform.SetParent(players[index].parent);
+        transform.name = index == 0 ? "Master" : "Player";
+    }
+
     public CinemachineVirtualCamera GetCamera() => m_CameraType == cameraType.TP ? m_TPCamera.camera : m_FPCamera.camera;
+
+    public void CreateBullet()
+    {
+        if (!Core.poolManager.Has(nameof(Bullet)))
+        {
+            if (m_Bullet)
+            {
+                ObjectPool bulletPool = new ObjectPool(m_BulletCreateCount, m_BulletCreateCount * 2, transform.parent, m_Bullet.gameObject);
+                Core.poolManager.Add(nameof(Bullet), bulletPool);
+                Core.poolManager.Initialize(nameof(Bullet), XSettings.bulletPath + m_Bullet.name);
+            }
+        }
+    }
+
+    public void CreateCollisionEffect()
+    {
+        if (!Core.poolManager.Has(nameof(BulletCollisionEffect)))
+        {
+            if (m_CollisionEffect)
+            {
+                ObjectPool effectPool = new ObjectPool(m_BulletCreateCount, m_BulletCreateCount * 2, transform.parent, m_CollisionEffect.gameObject);
+                Core.poolManager.Add(nameof(BulletCollisionEffect), effectPool);
+                Core.poolManager.Initialize(nameof(BulletCollisionEffect), XSettings.bulletImpactPath + m_CollisionEffect.name);
+            }
+        }
+    }
 
     public void Jump(UnityAction done)
     {
-        if (!photonView.IsMine) { return; }
-        if (m_JumpCoolTime > 0 || !m_IsGround)
+        if (!photonView.IsMine || m_JumpCoolTime > 0 || !m_IsGround)
         {
             done?.Invoke();
             return;
@@ -66,7 +117,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void Attack(UnityAction done)
     {
-        if (!photonView.IsMine) { return; }
+        if (!photonView.IsMine || Core.state.bulletCount <= 0)
+        {
+            done?.Invoke();
+            return;
+        }
+
         if (isReloading || m_State == State.ROLLING)
         {
             done?.Invoke();
@@ -80,11 +136,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         if (go == null) { return; }
         if (go.TryGetComponent<BulletBase>(out var bullet))
         {
-            go.SetActive(true);
-            bullet.transform.SetPositionAndRotation(m_ShootPoint.position, m_ShootPoint.rotation);
-            Vector3 dir = (m_ScreenCenterPosition - m_ShootPoint.position).normalized;
-            bullet.Init(dir, transform);
-            bullet.Shoot();
+            Vector3 screenCenter = GetScreenCenterPosition();
+            Vector3 dir = (screenCenter - m_ShootPoint.position).normalized;
+            bullet.Shoot(dir, m_ShootPoint.position, m_ShootPoint.rotation);
+            Core.state.bulletCount--;
         }
 
         StartCoroutine(SkillCoolDownTime(m_COption.shootingCoolTime, () =>
@@ -96,8 +151,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void Reload(UnityAction done)
     {
-        if (!photonView.IsMine) { return; }
-        if (isAttacking)
+        if (!photonView.IsMine || isAttacking)
         {
             done?.Invoke();
             return;
@@ -108,14 +162,14 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         StartCoroutine(AnimationProgressing(m_AniParam.reload, 1, () =>
         {
             isReloading = false;
+            Core.state.bulletCount = m_COption.bulletCount;
             done?.Invoke();
         }));
     }
 
     public void Roll(UnityAction done)
     {
-        if (!photonView.IsMine) { return; }
-        if (m_NormalizedMove == Vector3.zero)
+        if (!photonView.IsMine || m_NormalizedMove == Vector3.zero)
         {
             done?.Invoke();
             return;
@@ -163,6 +217,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         m_State = State.DIE;
         m_Animator.SetTrigger(m_AniParam.die);
+        
+        object content = PhotonNetwork.IsMasterClient;
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+        PhotonNetwork.RaiseEvent((byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
     public void Victory()
@@ -171,19 +229,18 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         m_Animator.SetTrigger(m_AniParam.victory);
     }
 
-    public void TakeDamagedByResidualFire(float duration, float damage, float interval)
+    public void TakeDamagedByResidualFire(float duration, int damage, float interval)
     {
         if (m_TakeDamangeByResidualFire) { return; }
 
         StartCoroutine(TakingDamageByResidualFire(duration, damage, interval));
     }
 
-    public void TakeDamange(float amount)
+    public void TakeDamange(int amount)
     {
-        m_CurHealth -= amount;
-        Core.xEvent?.Raise(XTheme.Health, m_CurHealth);
+        Core.state.health -= amount;
 
-        if (m_CurHealth <= 0)
+        if (Core.state.health <= 0)
         {
             Die();
         }
@@ -195,7 +252,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 #if UNITY_EDITOR
         if (Input.GetMouseButton(1))
         {
-            m_NoramlizedRotate = new Vector2(Input.GetAxisRaw("Mouse X"), -Input.GetAxisRaw("Mouse Y"));
+            m_NoramlizedRotate = Vector3.Lerp(m_NoramlizedRotate, new Vector2(Input.GetAxisRaw("Mouse X"), -Input.GetAxisRaw("Mouse Y")), m_DeltaTime * 50);
+        }
+
+        if(Input.GetMouseButtonUp(1))
+        {
+            m_NoramlizedRotate = Vector3.zero;
         }
 #endif
 
@@ -260,6 +322,33 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         m_Animator.SetBool(m_AniParam.isGrounded, m_IsGround);
     }
 
+    Vector3 GetScreenCenterPosition()
+    {
+        Vector2 screenPoint = new Vector2((Screen.width / 2), (Screen.height / 2));
+        Ray ray = Camera.main.ScreenPointToRay(screenPoint);
+        if (Physics.Raycast(ray, out RaycastHit raycastHit, Mathf.Infinity, m_AimCollisionMask))
+        {
+            //    Debug.DrawRay(ray.origin, ray.direction * Mathf.Infinity, Color.red);
+            return raycastHit.point;
+        }
+        else
+        {
+            return ray.origin + ray.direction * 100;
+        }
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code == (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE)
+        {
+            //Victory
+            if(Core.state.health > 0)
+            {
+                Victory();
+            }
+        }
+    }
+
     IEnumerator AnimationProgressing(string param, int layer, UnityAction done)
     {
         float elapsed = 0;
@@ -302,7 +391,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         done?.Invoke();
     }
 
-    IEnumerator TakingDamageByResidualFire(float duration, float damage, float interval)
+    IEnumerator TakingDamageByResidualFire(float duration, int damage, float interval)
     {
         m_TakeDamangeByResidualFire = true;
         float elapsed = 0;
@@ -344,11 +433,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         m_Animator.SetFloat(m_AniParam.reloadingSpeed, m_COption.reloadTime);
         m_PlayerActions.Player.Move.performed += ctx => m_NormalizedMove = ctx.ReadValue<Vector2>();
         m_PlayerActions.Player.Move.canceled += ctx => m_NormalizedMove = Vector2.zero;
-        m_PlayerActions.Player.Look.performed += ctx => m_NoramlizedRotate = new Vector2(ctx.ReadValue<Vector2>().x, -ctx.ReadValue<Vector2>().y);
+        m_PlayerActions.Player.Look.performed += ctx => m_NoramlizedRotate = Vector3.Lerp(m_NoramlizedRotate, new Vector2(ctx.ReadValue<Vector2>().x, -ctx.ReadValue<Vector2>().y), m_DeltaTime * 50);
         m_PlayerActions.Player.Look.canceled += ctx => m_NoramlizedRotate = Vector2.zero;
         m_PlayerActions.Player.Touch.performed += ctx => m_TouchStartPos = ctx.ReadValue<Vector2>();
         m_PlayerActions.Player.Touch.canceled += ctx => m_TouchStartPos = Vector2.zero;
-
+        m_ScreenHalf = Screen.width / 2;
 #if UNITY_EDITOR
         m_PlayerActions.Player.Jump.started += ctx => Jump(null);
         //  m_PlayerActions.Player.Attack.started += ctx => Attack(null);
@@ -359,18 +448,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     void Start()
     {
-        if (!Core.poolManager.Has(nameof(Bullet)))
-        {
-            ObjectPool bulletPool = new ObjectPool(m_BulletCreateCount, m_BulletCreateCount * 2, transform.parent, m_Bullet.gameObject);
-            Core.poolManager.Add(nameof(Bullet), bulletPool);
-            Core.poolManager.Initialize(nameof(Bullet));
-
-            ObjectPool effectPool = new ObjectPool(m_BulletCreateCount, m_BulletCreateCount * 2, transform.parent, m_CollisionEffect.gameObject);
-            Core.poolManager.Add(nameof(BulletCollisionEffect), effectPool);
-            Core.poolManager.Initialize(nameof(BulletCollisionEffect));
-        }
-
-        m_CurHealth = m_COption.health;
+        Core.state.bulletCount = m_COption.bulletCount;
+        Core.state.health = m_COption.health;
     }
 
     void Update()
@@ -393,41 +472,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     }
 
-    void GetScreenCenterPosition()
+    [ContextMenu("Die")]
+    public void TestDie()
     {
-        Vector2 screenPoint = new Vector2((Screen.width / 2), (Screen.height / 2));
-        Ray ray = Camera.main.ScreenPointToRay(screenPoint);
-        m_ScreenCenterPosition = Vector3.zero;
-        if (Physics.Raycast(ray, out RaycastHit raycastHit, Mathf.Infinity, m_AimCollisionMask))
-        {
-            //    Debug.DrawRay(ray.origin, ray.direction * Mathf.Infinity, Color.red);
-            m_ScreenCenterPosition = raycastHit.point;
-        }
-        else
-        {
-            m_ScreenCenterPosition = ray.origin + ray.direction * 100;
-        }
-
+        Core.state.health = 0;
+        Die();
     }
 
-    public void OnEvent(EventData photonEvent)
-    {
-        if (!photonView.IsMine) { return; } //Dev
-        if (photonEvent.Code == (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE)
-        {
-            object[] data = (object[])photonEvent.CustomData;
-            int status = (int)data[0];
-            bool isMaster = (bool)data[1];
-            Core.gameManager.SetState((GamePlayManager.Status)status);
-
-            if (isMaster)
-            {
-                Core.state.playerWinCount += 1;
-            }
-            else
-            {
-                Core.state.masterWinCount += 1;
-            }
-        }
-    }
 }

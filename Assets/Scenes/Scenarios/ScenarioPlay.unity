@@ -1439,9 +1439,9 @@ MonoBehaviour:
   m_PlayerBar: {fileID: 1884371563}
   m_TextAnimator: {fileID: 1387564606}
   m_MinLoadingDuration: 4
-  masterTestCharacter: {fileID: 2984482802974842690, guid: d4dda876ae8f04aff93518b7411564f5,
+  masterTestCharacter: {fileID: 4862177526683233266, guid: e400179c2a0e4400693258e9d9a6c39c,
     type: 3}
-  playerTestCharacter: {fileID: 2984482802974842690, guid: d4dda876ae8f04aff93518b7411564f5,
+  playerTestCharacter: {fileID: 4862177526683233266, guid: e400179c2a0e4400693258e9d9a6c39c,
     type: 3}
 --- !u!114 &1440333206
 MonoBehaviour:

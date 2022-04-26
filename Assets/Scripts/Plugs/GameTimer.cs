@@ -20,6 +20,13 @@ public class GameTimer : MonoBehaviourPun, IPunObservable, IOnEventCallback
         StartCoroutine(Timer(RoundEnd));
     }
 
+    public void StopTimer()
+    {
+        StopAllCoroutines();
+        m_Timer.text = "0";
+        m_RounTime = 0;
+    }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting && PhotonNetwork.IsMasterClient)
@@ -35,21 +42,18 @@ public class GameTimer : MonoBehaviourPun, IPunObservable, IOnEventCallback
 
     public void OnEvent(EventData photonEvent)
     {
-		if(photonEvent.Code == (byte)PhotonEventCode.ROUNDDONE_TIMEOUT)
+        switch (photonEvent.Code)
         {
-            object data = photonEvent.CustomData;
-            int status = (int)data;
-            Core.gameManager.SetState((GamePlayManager.Status)status);
-            Core.state.masterWinCount++; //타임아웃일 경우에는 방장이 승리한다.
+            case (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE:
+                StopTimer();
+                break;
         }
-
     }
 
     void RoundEnd()
     {
-		object content = GamePlayManager.Status.RoundDone;
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-        PhotonNetwork.RaiseEvent((byte)PhotonEventCode.ROUNDDONE_TIMEOUT, content, raiseEventOptions, SendOptions.SendReliable);
+		RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+        PhotonNetwork.RaiseEvent((byte)PhotonEventCode.ROUNDDONE_TIMEOUT, null, raiseEventOptions, SendOptions.SendReliable);
     }
 
     IEnumerator Timer(UnityAction done)

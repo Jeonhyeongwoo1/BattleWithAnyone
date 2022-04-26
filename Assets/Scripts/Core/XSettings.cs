@@ -11,7 +11,7 @@ public class XSettings : MonoBehaviour
 		dev
 	}
 
-	public static bool isCharacterTest = true;
+	public static bool isCharacterTest = false;
 	public string url => profile == Profile.dev ? m_DevUrl : m_LocalUrl;
 	public Profile profile;
 
@@ -23,6 +23,8 @@ public class XSettings : MonoBehaviour
 	*   -------------------------------------------------------
 	*/
     public const string chracterPath = "Prefabs/";
+	public const string bulletPath = "Prefabs/Bullet/";
+	public const string bulletImpactPath = "Prefabs/BulletImpact/";
     /*
 	*   -------------------------------------------------------
 	*/

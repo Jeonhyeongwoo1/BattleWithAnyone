@@ -26,10 +26,8 @@ public class TraniningCharacter : MonoBehaviour
             if (go.TryGetComponent<BulletBase>(out var bullet))
             {
                 go.SetActive(true);
-                bullet.transform.SetPositionAndRotation(m_ShootPoint.position, Quaternion.Euler(m_ShootPoint.eulerAngles));
                 Vector3 dir = transform.forward;
-                bullet.Init(dir, transform);
-                bullet.Shoot();
+                bullet.Shoot(dir,m_ShootPoint.position, Quaternion.Euler(m_ShootPoint.eulerAngles));
             }
 
             yield return waitForSeconds;

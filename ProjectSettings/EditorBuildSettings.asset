@@ -53,6 +53,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Scenarios/ScenarioTraining.unity
     guid: c9ff623721be1d74dbd5f4980f3450d5
+  - enabled: 1
+    path: Assets/Scenes/Models/TrainingModel.unity
+    guid: e4fbf8669e6424c4695b43247618c7de
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 7dba8cac8b0114c9592725a8d50feca4,
       type: 2}
