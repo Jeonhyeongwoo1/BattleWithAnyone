@@ -41,19 +41,27 @@ public class Fireball : BulletBase
 
     void OnHit(Transform target)
     {
-        if (target.TryGetComponent<PlayerController>(out var player))
+        if (target.TryGetComponent<PhotonView>(out var view))
         {
-            player.TakeDamange(magicBullet.damage);
-            SpeicalAttack(player);
+            if (!view.IsMine)
+            {
+                BulletAttribute.Fireball f = attribute.fireball;
+                photonView.RPC(nameof(TakeDamange), RpcTarget.Others, attribute.fireball.damage, f.residualfireDuration, f.residualfireDamage, f.residualfireDamageInterval);
+            }
         }
     }
 
-    void SpeicalAttack(PlayerController player)
+    [PunRPC]
+    void TakeDamange(int damage, float duration, int fireDamage, float damageInterval)
     {
-        if (attribute.type == BulletAttribute.BulletType.Fireball)
+        Transform player = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter : Core.state.playerCharacter;
+        if (player.TryGetComponent<PlayerController>(out var controller))
         {
-            BulletAttribute.Fireball f = attribute.fireball;
-            player.TakeDamagedByResidualFire(f.residualfireDuration, f.residualfireDamage, f.residualfireDamageInterval);
+            controller.TakeDamange(damage);
+            if (attribute.type == BulletAttribute.BulletType.Fireball)
+            {
+                controller.TakeDamagedByResidualFire(duration, fireDamage, damageInterval);
+            }
         }
     }
 

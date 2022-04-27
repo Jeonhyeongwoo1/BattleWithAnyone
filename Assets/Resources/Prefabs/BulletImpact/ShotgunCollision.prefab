@@ -4897,7 +4897,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f5a24c3d9f45f1bed0522c3d18e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TransforParent: 0
+  m_TransforParent: 1
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 198670200411678530}
 --- !u!114 &-6993856116864842008

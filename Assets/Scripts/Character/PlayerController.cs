@@ -13,14 +13,29 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     public enum State { IDLE, RUN, JUMPING, ROLLING, VICTORY, DIE }
     private enum cameraType { FP, TP }
 
-    public int bullet
+    public int bulletCount
     {
         get => m_COption.bulletCount;
     }
 
+    public BulletAttribute.BulletType gunType
+    {
+        get => m_Bullet.bulletType;
+    }
+
+    public float speed
+    {
+        get=> m_COption.movingSpeed;
+    }
+
+    public int damage
+    {
+        get => m_Bullet.damage;
+    }
+
+    public bool roomCharacter = false;
     public bool isReloading = false;
     public bool isAttacking = false;
-    public bool isTestCharacter = false;
 
     [SerializeField] cameraType m_CameraType;
     [SerializeField] State m_State;
@@ -102,7 +117,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void Jump(UnityAction done)
     {
-        if (!photonView.IsMine || m_JumpCoolTime > 0 || !m_IsGround)
+        if (!photonView.IsMine || m_JumpCoolTime > 0 || !m_IsGround || m_State == State.ROLLING || m_State == State.DIE || m_State == State.VICTORY)
         {
             done?.Invoke();
             return;
@@ -117,13 +132,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void Attack(UnityAction done)
     {
-        if (!photonView.IsMine || Core.state.bulletCount <= 0)
-        {
-            done?.Invoke();
-            return;
-        }
-
-        if (isReloading || m_State == State.ROLLING)
+        if (!photonView.IsMine || Core.state.bulletCount <= 0 || isReloading || m_State == State.ROLLING || m_State == State.DIE || m_State == State.VICTORY)
         {
             done?.Invoke();
             return;
@@ -142,6 +151,16 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
             Core.state.bulletCount--;
         }
 
+        if(m_GunfireEffect != null)
+        {
+            if(m_GunfireEffect.isPlaying)
+            {
+                m_GunfireEffect.Stop();
+            }
+
+            m_GunfireEffect.Play();
+        }
+
         StartCoroutine(SkillCoolDownTime(m_COption.shootingCoolTime, () =>
         {
             isAttacking = false;
@@ -151,7 +170,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void Reload(UnityAction done)
     {
-        if (!photonView.IsMine || isAttacking)
+        if (!photonView.IsMine || isAttacking || m_State == State.DIE || m_State == State.VICTORY)
         {
             done?.Invoke();
             return;
@@ -169,7 +188,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void Roll(UnityAction done)
     {
-        if (!photonView.IsMine || m_NormalizedMove == Vector3.zero)
+        if (!photonView.IsMine || m_NormalizedMove == Vector3.zero || !m_IsGround || m_State == State.DIE || m_State == State.VICTORY)
         {
             done?.Invoke();
             return;
@@ -238,8 +257,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void TakeDamange(int amount)
     {
-        Core.state.health -= amount;
+        if (Core.state.health <= 0) { return; }
 
+        Core.state.health -= amount;
         if (Core.state.health <= 0)
         {
             Die();
@@ -408,18 +428,21 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public override void OnEnable()
     {
+        if (roomCharacter) { return; }
         m_PlayerActions.Player.Enable();
         PhotonNetwork.AddCallbackTarget(this);
     }
 
     public override void OnDisable()
     {
+        if (roomCharacter) { return; }
         m_PlayerActions.Player.Disable();
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
     void Awake()
     {
+        if (roomCharacter) { return; }
         m_PlayerActions = new PlayerActionsScript();
         if (TryGetComponent<Rigidbody>(out var body))
         {
@@ -454,7 +477,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     void Update()
     {
-        if (isTestCharacter) { return; }
+        if (roomCharacter) { return; }
         if (!photonView.IsMine) { return; }
         if (m_State == State.VICTORY || m_State == State.DIE) { return; }
 

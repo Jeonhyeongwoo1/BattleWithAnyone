@@ -17,36 +17,37 @@ public class Pellet : MonoBehaviourPunCallbacks
 
     Vector3 m_Direction;
     bool m_IsExplode;
-    float m_Damage;
+    bool m_IsHit;
+    int m_Damage;
     float m_CurLifeTime;
     float m_SecondColliderRange;
     UnityAction m_Despawn;
  
-    public void Shoot(float damage, Vector3 direction, float lifeTime, float coliderRange, float range, float force, float scale, bool isExplode)
+    public void Shoot(int damage, Vector3 direction, float lifeTime, float coliderRange, float range, float force, float scale, bool isExplode)
     {
         photonView.RPC(nameof(Shooting), RpcTarget.All, damage, direction, lifeTime, coliderRange, range, force, scale, isExplode);
     }
 
-    public void Shoot(float damage, Vector3 direction, float lifeTime, Vector3 random, float force, UnityAction despawn, bool isExplode)
+    public void Shoot(int damage, Vector3 direction, float lifeTime, Vector3 random, float force, UnityAction despawn, bool isExplode)
     {
         m_Despawn = despawn;
         photonView.RPC(nameof(Shooting), RpcTarget.All, damage, direction, random, lifeTime, force, isExplode);
     }
 
     [PunRPC]
-    void Shooting(float damage, Vector3 direction, Vector3 random, float lifeTime, float force, bool isExplode)
+    void Shooting(int damage, Vector3 direction, Vector3 random, float lifeTime, float force, bool isExplode)
     {
         m_Damage = damage;
         m_Direction = direction;
         m_CurLifeTime = lifeTime;
         m_IsExplode = isExplode;
-        gameObject.SetActive(true);
         transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        gameObject.SetActive(true);
         m_Rigidbody.AddForce(transform.forward * force + random, ForceMode.Impulse);
     }
 
     [PunRPC]
-    void Shooting(float damage, Vector3 direction, float lifeTime, float coliderRange, float range, float force, float scale, bool isExplode)
+    void Shooting(int damage, Vector3 direction, float lifeTime, float coliderRange, float range, float force, float scale, bool isExplode)
     {
         Vector3 random = new Vector3(Random.Range(-range, range), Random.Range(-range, range), Random.Range(-range, range));
         transform.localScale = new Vector3(scale, scale, scale);
@@ -63,6 +64,8 @@ public class Pellet : MonoBehaviourPunCallbacks
 
     void OnHit(Transform target)
     {
+        if (m_IsHit) { return; }
+        m_IsHit = true;
         if (target.tag == "Player")
         {
             if (target.TryGetComponent<PhotonView>(out var view))
@@ -138,9 +141,11 @@ public class Pellet : MonoBehaviourPunCallbacks
 
     public override void OnDisable()
     {
+        m_IsHit = false;
         m_Rigidbody.velocity = Vector3.zero;
         m_Rigidbody.angularVelocity = Vector3.zero;
         m_CurLifeTime = 0;
+        transform.localPosition = Vector3.zero;
     }
 
     private void Update()
@@ -153,15 +158,7 @@ public class Pellet : MonoBehaviourPunCallbacks
                 OnHit(players[i].transform);
             }
         }
-        else
-        {
-            Ray ray = new Ray(transform.position, m_Direction);
-            if (Physics.Raycast(ray, out RaycastHit raycastHit, m_RayDist, m_LayerMask))
-            {
-                OnHit(raycastHit.transform);
-            }
-        }
-
+ 
         if (m_CurLifeTime < 0)
         {
             DisablePellet();

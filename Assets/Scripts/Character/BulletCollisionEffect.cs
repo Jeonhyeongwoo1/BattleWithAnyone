@@ -16,15 +16,24 @@ public class BulletCollisionEffect : MonoBehaviourPunCallbacks
     [SerializeField] Type m_Type;
     [SerializeField] ParticleSystem m_Effect;
 
+    UnityAction m_EffectPlayingDone = null;
+
     public void PlayEffect(Vector3 position, Quaternion rotation, UnityAction done = null)
     {
-        transform.SetPositionAndRotation(position, rotation);
-        gameObject.SetActive(true);
-        StartCoroutine(PlayingCollisionEffect(done));
+        m_EffectPlayingDone = done;
+        photonView.RPC(nameof(NotfiyPlayEffect), RpcTarget.All, position, rotation);
     }
 
     [PunRPC]
-    public void SetBulletCollisionPoolObj()
+    void NotfiyPlayEffect(Vector3 position, Quaternion rotation)
+    {
+        transform.SetPositionAndRotation(position, rotation);
+        gameObject.SetActive(true);
+        StartCoroutine(PlayingCollisionEffect());
+    }
+
+    [PunRPC]
+    void SetBulletCollisionPoolObj()
     {
         IModel model = Core.models.Get();
         transform.SetParent(model.poolObjectCreatePoints);
@@ -33,13 +42,13 @@ public class BulletCollisionEffect : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-        if(m_TransforParent)
+        if (m_TransforParent)
         {
             photonView.RPC(nameof(SetBulletCollisionPoolObj), RpcTarget.All);
         }
     }
 
-    IEnumerator PlayingCollisionEffect(UnityAction done)
+    IEnumerator PlayingCollisionEffect()
     {
         m_Effect.Play();
         while (m_Effect.isPlaying) { yield return null; }
@@ -51,14 +60,20 @@ public class BulletCollisionEffect : MonoBehaviourPunCallbacks
                 Destroy(gameObject);
                 break;
             case Type.Despawn:
-                Core.poolManager.Despawn(nameof(BulletCollisionEffect), gameObject);
+                if (photonView.IsMine)
+                {
+                    Core.poolManager.Despawn(nameof(BulletCollisionEffect), gameObject);
+                }
+                else
+                {
+                    gameObject.SetActive(false);
+                }
                 break;
             case Type.Disable:
                 gameObject.SetActive(false);
                 break;
         }
 
-        done?.Invoke();
+        m_EffectPlayingDone?.Invoke();
     }
-
 }

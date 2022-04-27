@@ -91,7 +91,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
 
             if ((0.5f < value && value < 0.7f) && !isUpdated)
             {
-                photonView.RPC("UpdateLoadingProgress", RpcTarget.Others, 0.5f);
+                photonView.RPC(nameof(UpdateLoadingProgress), RpcTarget.Others, 0.5f);
                 isUpdated = true;
             }
 
@@ -106,7 +106,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
             controller.photonView.RPC(nameof(controller.SetParent), RpcTarget.All, PhotonNetwork.IsMasterClient);
         }
 
-        photonView.RPC("UpdateLoadingProgress", RpcTarget.Others, 1.0f);
+        photonView.RPC(nameof(UpdateLoadingProgress), RpcTarget.Others, 1.0f);
 
         yield return new WaitForSeconds(2f);
         done?.Invoke();

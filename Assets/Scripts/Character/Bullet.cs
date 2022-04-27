@@ -7,6 +7,34 @@ using Photon.Realtime;
 
 public abstract class BulletBase : MonoBehaviourPunCallbacks
 {
+    public BulletAttribute.BulletType bulletType 
+    {
+        get => attribute.type;
+    }
+
+    public int damage
+    {
+        get
+        {
+            switch (attribute.type)
+            {
+                case BulletAttribute.BulletType.Pistol:
+                    return attribute.pistol.damage;
+                case BulletAttribute.BulletType.Cannon:
+                    return attribute.cannon.damage;
+                case BulletAttribute.BulletType.Shotgun:
+                    return attribute.shotgun.damage;
+                case BulletAttribute.BulletType.Fireball:
+                    return attribute.fireball.damage;
+                case BulletAttribute.BulletType.Junkrat:
+                    return attribute.junkrat.damage;
+                case BulletAttribute.BulletType.None:
+                default:
+                    return 0;
+            }
+        }
+    }
+
     [SerializeField] protected BulletAttribute attribute;
     [SerializeField] protected LayerMask playerLayer;
     [SerializeField] protected Rigidbody rb;
@@ -21,9 +49,12 @@ public abstract class BulletBase : MonoBehaviourPunCallbacks
 
     protected void PlayCollisionEffect()
     {
+        if (!photonView.IsMine) { return; }
+
         GameObject go = Core.poolManager.Spawn(nameof(BulletCollisionEffect));
+        if (go == null) { return; }
         if (!go.TryGetComponent<BulletCollisionEffect>(out var effect)) { return; }
-        
+
         effect.PlayEffect(transform.position, transform.rotation);
     }
 

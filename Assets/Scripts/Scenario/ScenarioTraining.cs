@@ -64,9 +64,10 @@ public class ScenarioTraining : MonoBehaviourPunCallbacks, IScenario
                 Core.plugs.Load<XTheme>(() =>
                 {
                     XTheme theme = Core.plugs.Get<XTheme>();
+                    theme.Open();
                     theme.player = player;
                     theme.Crosshair.SetActive(true);
-                    theme.bullet = player.bullet.ToString();
+                    theme.bullet = player.bulletCount.ToString();
                 });
             }
         });

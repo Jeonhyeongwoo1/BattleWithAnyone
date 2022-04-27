@@ -22,7 +22,7 @@ public class XSettings : MonoBehaviour
 	*	PhotonNetwork Resource Path
 	*   -------------------------------------------------------
 	*/
-    public const string chracterPath = "Prefabs/";
+    public const string chracterPath = "Prefabs/Character/";
 	public const string bulletPath = "Prefabs/Bullet/";
 	public const string bulletImpactPath = "Prefabs/BulletImpact/";
     /*

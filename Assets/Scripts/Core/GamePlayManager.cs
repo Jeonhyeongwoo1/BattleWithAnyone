@@ -79,7 +79,7 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
         if (charcter.TryGetComponent<PlayerController>(out var player))
         {
             theme.player = player;
-			theme.bullet = player.bullet.ToString();
+			theme.bullet = player.bulletCount.ToString();
         }
 		
 		theme.SetPlayersName(PhotonNetwork.MasterClient.NickName, PhotonNetwork.IsMasterClient ? PhotonNetwork.MasterClient.NickName : PhotonNetwork.NickName);

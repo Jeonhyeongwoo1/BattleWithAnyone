@@ -11,11 +11,10 @@ public class BulletAttribute
     /*
     1. 단발성 총알 pistol
     2. 대포형 cannon
-    3. 레이저 형 (보류)
-    4. 여러개 동시에 발사 junkrat
-    5. 폭탄 형 cannon(maxCollsion)
-    6. 샷건 Shotgun
-    7. 파이어 볼 Fireball
+    3. 여러개 동시에 발사 junkrat
+    4. 폭탄 형 cannon(maxCollsion)
+    5. 샷건 Shotgun
+    6. 파이어 볼 Fireball
     */
 
     [Serializable]
@@ -41,6 +40,7 @@ public class BulletAttribute
     public class Shotgun : BaseItem
     {
         public Vector3 vAngle;
+        public float pelletLifeTime;
         public Pellet[] pellets;
     }
 
@@ -67,7 +67,7 @@ public class BulletAttribute
         public float secondBallRandomRange;
         public float secondColliderRange;
         public float secondBallForce;
-        public float secondBallDamage;
+        public int secondBallDamage;
         public float secondBallScale;
         public int secondBallCount;
         public Pellet secondBall;

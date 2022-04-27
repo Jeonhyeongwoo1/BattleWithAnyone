@@ -119,6 +119,7 @@ MonoBehaviour:
       fwdForce: 0
       damage: 0
       vAngle: {x: 0, y: 0, z: 0}
+      pelletLifeTime: 0
       pellets: []
     fireball:
       fwdForce: 0

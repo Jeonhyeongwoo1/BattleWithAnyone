@@ -18,6 +18,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 	public List<Character> characters = new List<Character>();
 
+	[SerializeField] CharacterInfoForm m_CharacterInfo;
 	[SerializeField] RoomMapInfo m_RoomMapInfo;
 	[SerializeField] Button m_CharacterSelectionCompleted;
 	[SerializeField] Transform m_CharacterContentModelImage;
@@ -77,7 +78,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 		if (m_SelectedCharacter != null)
 		{
-			photonView.RPC("CreateCharacter", RpcTarget.Others, m_SelectedCharacter.name);
+			photonView.RPC(nameof(CreateCharacter), RpcTarget.Others, m_SelectedCharacter.name);
 		}
 	}
 
@@ -150,7 +151,21 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 		m_CharacterSelectionCompleted.gameObject.SetActive(true);
 		m_CharacterDrag.SetCharacter(character.model);
-		//캐릭터 정보 넣기
+        
+		if(!m_CharacterInfo.gameObject.activeSelf)
+        {
+            m_CharacterInfo.gameObject.SetActive(true);
+        }
+
+		if(character.model.TryGetComponent<PlayerController>(out var player))
+		{
+			string name = character.name;
+			BulletAttribute.BulletType type = player.gunType;
+			float speed = player.speed;
+			int power = player.damage;
+			int bulletCount = player.bulletCount;
+			m_CharacterInfo.SetInfo(name, type, speed, power, bulletCount);
+		}		
 
 	}
 
@@ -178,7 +193,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 			m_SelectedCharacter = null;
 
 			//Change
-			photonView.RPC("ChangeCharacter", RpcTarget.All, "", PhotonNetwork.IsMasterClient ? "Master" : "Player");
+			photonView.RPC(nameof(ChangeCharacter), RpcTarget.All, "", PhotonNetwork.IsMasterClient);
 		}
 
 		if (m_SelectedForm != null)
@@ -189,6 +204,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 		m_CharacterSelectionCompleted.gameObject.SetActive(false); //캐릭터 선택완료
 		m_CharacterSelectForm.gameObject.SetActive(false); //캐릭터 선택창
+		m_CharacterInfo.gameObject.SetActive(false);
 	}
 
 	void OnDestroyCharacterContentList()
@@ -225,7 +241,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 		}
 
 		m_CharacterSelectForm.gameObject.SetActive(false);
-		photonView.RPC("ChangeCharacter", RpcTarget.All, m_SelectedCharacter.name, PhotonNetwork.IsMasterClient ? "Master" : "Player");
+		photonView.RPC(nameof(ChangeCharacter), RpcTarget.All, m_SelectedCharacter.name, PhotonNetwork.IsMasterClient);
 	}
 
 	void SetCharacterList()
@@ -251,7 +267,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 			return;
 		}
 
-		photonView.RPC("PlayerGameReadied", RpcTarget.All);
+		photonView.RPC(nameof(PlayerGameReadied), RpcTarget.All);
 	}
 
 	void OpenMapSetting()
@@ -297,15 +313,15 @@ public class RoomUI : MonoBehaviourPunCallbacks
 			return;
 		}
 
-        photonView.RPC("SetPlayersCharacter", RpcTarget.All, PhotonNetwork.IsMasterClient);
-		photonView.RPC("OnLoadScenarioPlay", RpcTarget.All);
+		Core.state.masterCharacter = m_SelectedCharacter.model;
+        photonView.RPC(nameof(SetPlayersCharacter), RpcTarget.Others);
+		photonView.RPC(nameof(OnLoadScenarioPlay), RpcTarget.All);
 	}
 
 	[PunRPC]
-	void SetPlayersCharacter(bool isMaster)
-	{
-		Core.state.masterCharacter = isMaster ? m_SelectedCharacter.model : m_OtherPlayerCharcter;
-		Core.state.playerCharacter = isMaster ? m_OtherPlayerCharcter : m_SelectedCharacter.model;
+	void SetPlayersCharacter()
+    {
+		Core.state.playerCharacter = m_SelectedCharacter.model;
 	}
 
 	[PunRPC]
@@ -322,7 +338,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 		int numberOfRound = preferences.numberOfRound;
 		int roundTime = preferences.roundTime;
 
-		photonView.RPC("RoomMapSetInfo", RpcTarget.All, mapName, numberOfRound, roundTime);
+		photonView.RPC(nameof(RoomMapSetInfo), RpcTarget.All, mapName, numberOfRound, roundTime);
 
 		string[] LobbyOptions = new string[4];
 		LobbyOptions[0] = "RoomManager";
@@ -353,14 +369,15 @@ public class RoomUI : MonoBehaviourPunCallbacks
 				{
 					c.gameObject.SetActive(true);
 				}
+                m_OtherPlayerCharcter = v.model;
 			}
 		}
 	}
 
 	[PunRPC]
-	void ChangeCharacter(string character, string playerType)
+	void ChangeCharacter(string character, bool isMaster)
 	{
-		Transform target = playerType == "Master" ? m_SelectedMasterCharacter : m_SelectedPlayerCharacter;
+		Transform target = isMaster ? m_SelectedMasterCharacter : m_SelectedPlayerCharacter;
 		if (target.childCount > 0)
 		{
 			for (int i = 0; i < target.childCount; i++)

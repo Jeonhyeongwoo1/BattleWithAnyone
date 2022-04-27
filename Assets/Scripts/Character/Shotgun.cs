@@ -31,8 +31,8 @@ public class Shotgun : BulletBase
 
         Vector3 angle = attribute.shotgun.vAngle;
         Pellet[] pellets = attribute.shotgun.pellets;
-        float damage = attribute.shotgun.damage;
-        float maxLife = attribute.maxLifeTime;
+        int damage = attribute.shotgun.damage;
+        float maxLife = attribute.shotgun.pelletLifeTime;
         float force = attribute.shotgun.fwdForce;
         
         for (int i = 0; i < pellets.Length; i++)

@@ -15,8 +15,6 @@ public class CharacterOption
     public float jumpForce;
 	[Tooltip("점프 쿨타임")]
     public float jumpCoolTime;
-	[Tooltip("공격 속도")]
-    public float attackSpeed;
 	[Tooltip("장전 시간")]
     public float reloadTime;
 	[Tooltip("총알 갯수")]

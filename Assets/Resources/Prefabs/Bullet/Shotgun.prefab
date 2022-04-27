@@ -5010,6 +5010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23417f9eeae1047f192f5033db65f6d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Effect: {fileID: 1051048241786828977}
   m_Rigidbody: {fileID: 4417897793613840435}
   m_LayerMask:
@@ -14818,6 +14819,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransforParent: 0
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 5061999384419161009}
 --- !u!114 &5437555510458090973
@@ -14970,6 +14972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23417f9eeae1047f192f5033db65f6d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Effect: {fileID: 701673272228915052}
   m_Rigidbody: {fileID: 3220526016112899073}
   m_LayerMask:
@@ -24778,6 +24781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransforParent: 0
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 3364288469687347024}
 --- !u!114 &3714931085428195810
@@ -34582,6 +34586,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransforParent: 0
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 6421168626998409102}
 --- !u!114 &7898665895847052235
@@ -34734,6 +34739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23417f9eeae1047f192f5033db65f6d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Effect: {fileID: 7347129185249390153}
   m_Rigidbody: {fileID: 6788594838525220776}
   m_LayerMask:
@@ -34890,6 +34896,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23417f9eeae1047f192f5033db65f6d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Effect: {fileID: 8140723049085595904}
   m_Rigidbody: {fileID: 7847372533597046576}
   m_LayerMask:
@@ -39816,6 +39823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransforParent: 0
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 8131639840606646653}
 --- !u!114 &7815109811995515378
@@ -39924,6 +39932,7 @@ MonoBehaviour:
       fwdForce: 35
       damage: 3
       vAngle: {x: 5, y: 8, z: 5}
+      pelletLifeTime: 2
       pellets:
       - {fileID: 219085026045097760}
       - {fileID: 7668098486425930094}
@@ -44890,6 +44899,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransforParent: 0
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 848105083685877904}
 --- !u!114 &7447106661180542390
@@ -49924,6 +49934,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23417f9eeae1047f192f5033db65f6d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Effect: {fileID: 6942147660834030702}
   m_Rigidbody: {fileID: 2665715983126693243}
   m_LayerMask:
@@ -59844,6 +59855,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23417f9eeae1047f192f5033db65f6d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Effect: {fileID: 7146081840236712448}
   m_Rigidbody: {fileID: 5811329276424884463}
   m_LayerMask:
@@ -64882,6 +64894,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23417f9eeae1047f192f5033db65f6d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Effect: {fileID: 1126057632802025007}
   m_Rigidbody: {fileID: 5148784535923906704}
   m_LayerMask:
@@ -74690,6 +74703,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransforParent: 0
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 6115910529958891411}
 --- !u!114 &2597672676322627417
@@ -74842,6 +74856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23417f9eeae1047f192f5033db65f6d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Effect: {fileID: 2723449882506820974}
   m_Rigidbody: {fileID: 270046649694616681}
   m_LayerMask:
@@ -79768,6 +79783,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransforParent: 0
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 610271546849301789}
 --- !u!114 &276321335042621251
@@ -84690,6 +84706,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransforParent: 0
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 2076783388146427536}
 --- !u!114 &102005774154209888
@@ -89612,6 +89629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransforParent: 0
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 8680016610306350635}
 --- !u!114 &2593414756253753953
@@ -99416,6 +99434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransforParent: 0
+  m_DisableState: 0
   m_Type: 2
   m_Effect: {fileID: 8199829725972093188}
 --- !u!114 &1362525861697775953
@@ -99568,6 +99587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23417f9eeae1047f192f5033db65f6d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Effect: {fileID: 7287641653665681237}
   m_Rigidbody: {fileID: 6340574071992960473}
   m_LayerMask:
@@ -99724,6 +99744,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23417f9eeae1047f192f5033db65f6d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TransforParent: 0
   m_Effect: {fileID: 3787697459573864481}
   m_Rigidbody: {fileID: 7461821594637629146}
   m_LayerMask:

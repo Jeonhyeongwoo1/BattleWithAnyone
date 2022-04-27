@@ -153,7 +153,13 @@ public class XTheme : MonoBehaviour, IPlugable
                 m_CurBullet.text = value.ToString();
                 break;
             case nameof(Core.state.health):
-                if (value < 0) { break; }
+                if (value < 0)
+                {
+                    m_HealthBar.value = 0;
+                    m_HealthValue.text = string.Format("{0}", 0);
+                    break;
+                }
+                
                 m_HealthBar.value = value;
                 m_HealthValue.text = string.Format("{0}", value);
                 break;
