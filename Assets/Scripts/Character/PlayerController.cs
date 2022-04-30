@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     public float speed
     {
         get=> m_COption.movingSpeed;
+        private set => m_COption.movingSpeed = value;
     }
 
     public int damage
@@ -85,6 +86,26 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         int index = isMaster ? 0 : 1;
         transform.SetParent(players[index].parent);
         transform.name = index == 0 ? "Master" : "Player";
+    }
+
+    public void UpdateHealth(int amount)
+    {
+        int health = Core.state.health;
+        
+        health += amount;
+        if (health > 100)
+        {
+            health = 100;
+        }
+
+        Core.state.health = health;
+    }
+
+    public void IncreaseSpeedByItem(int amount, float duration)
+    {
+        float origin = speed;
+        speed = amount;
+        StartCoroutine(ApplyingItemEffect(duration, () => speed = origin));
     }
 
     public CinemachineVirtualCamera GetCamera() => m_CameraType == cameraType.TP ? m_TPCamera.camera : m_FPCamera.camera;
@@ -367,6 +388,18 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
                 Victory();
             }
         }
+    }
+
+    IEnumerator ApplyingItemEffect(float duration, UnityAction done = null)
+    {
+        float elapsed = 0;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        done?.Invoke();
     }
 
     IEnumerator AnimationProgressing(string param, int layer, UnityAction done)

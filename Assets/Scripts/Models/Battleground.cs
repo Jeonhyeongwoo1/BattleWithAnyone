@@ -11,6 +11,7 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
 	public string Name => nameof(Battleground);
 	public Transform[] playerCreatePoints => m_PlayerCreatePoints;
 	public Transform poolObjectCreatePoints => m_PoolObjectCreatePoint;
+	public Transform itemCreatePoint => m_ItemSpawn.itemCreatePoint;
 
 	[Serializable]
 	public struct DollyCameraComponent
@@ -20,19 +21,22 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
 		public CinemachineVirtualCamera camera;
 	}
 
+	[SerializeField] ItemSpawnManager m_ItemSpawn;
 	[SerializeField] Transform[] m_PlayerCreatePoints;
 	[SerializeField] Transform m_PoolObjectCreatePoint;
 	[SerializeField] DollyCameraComponent m_MasterDolly;
 	[SerializeField] DollyCameraComponent m_PlayerDolly;
 
 	public void LoadedModel(UnityAction done = null)
-	{
-
+    {
+        if (!PhotonNetwork.IsConnected) { return; }
+		m_ItemSpawn.CreateItem(true);
+		done?.Invoke();
 	}
 
 	public void UnLoadModel(UnityAction done = null)
 	{
-
+		done?.Invoke();
 	}
 
 	public void ReadyCamera(bool isMaster, UnityAction done = null)

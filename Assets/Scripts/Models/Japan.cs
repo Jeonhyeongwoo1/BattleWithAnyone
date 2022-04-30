@@ -2,41 +2,76 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Cinemachine;
+using Photon.Pun;
 
 public class Japan : MonoBehaviour, IModel
 {
-	public string Name => nameof(Battleground);
-	public Transform poolObjectCreatePoints => m_PoolObjectCreatePoint;
-    public Transform[] playerCreatePoints { get; set; }
+    public string Name => nameof(Japan);
+    public Transform[] playerCreatePoints => m_PlayerCreatePoints;
+    public Transform poolObjectCreatePoints => m_PoolObjectCreatePoint;
+    public Transform itemCreatePoint => m_ItemSpawn.itemCreatePoint;
 
     [SerializeField] Transform m_PoolObjectCreatePoint;
+    [SerializeField] ItemSpawnManager m_ItemSpawn;
+    [SerializeField] Transform[] m_PlayerCreatePoints;
+    [SerializeField] CinemachineVirtualCamera m_MasterCam;
+    [SerializeField] CinemachineVirtualCamera m_PlayerCam;
+
 
     public void LoadedModel(UnityAction done = null)
-	{
+    {
+        if (!PhotonNetwork.IsConnected) { return; }
+        m_ItemSpawn.CreateItem(true);
+        done?.Invoke();
+    }
 
-	}
+    public void UnLoadModel(UnityAction done = null)
+    {
+        done?.Invoke();
+    }
 
-	public void UnLoadModel(UnityAction done = null)
-	{
+    public void ReadyCamera(bool isMaster, UnityAction done = null)
+    {
+        CinemachineVirtualCamera cam = isMaster ? m_MasterCam : m_PlayerCam;
+        cam.Priority = 11;
+        StartCoroutine(SwitchingCamera(cam, done));
+    }
 
-	}
+    IEnumerator SwitchingCamera(CinemachineVirtualCamera cam, UnityAction done)
+    {
+        while (!(CinemachineCore.Instance.IsLive(cam) && !CinemachineCore.Instance.GetActiveBrain(0).IsBlending))
+        {
+            if (!CinemachineCore.Instance.IsLive(cam)) { cam.enabled = false; cam.enabled = true; }
+            yield return null;
+        }
 
-	public void ReadyCamera(bool isMaster, UnityAction done = null) { }
+        done?.Invoke();
+    }
+
+    public IEnumerator ShootingCamera(bool isMaster, UnityAction done)
+    {
+        Transform character = isMaster ? Core.state.masterCharacter : Core.state.playerCharacter;
+        CinemachineVirtualCamera cam = isMaster ? m_MasterCam : m_PlayerCam;
+        cam.Priority = 10;
+        if (character.TryGetComponent<PlayerController>(out var contorller))
+        {
+            CinemachineVirtualCamera camera = contorller.GetCamera();
+            yield return SwitchingCamera(camera, done);
+        }
+        else
+        {
+            done?.Invoke();
+        }
+    }
 	
-	public IEnumerator ShootingCamera(bool isMaster, UnityAction done)
-	{
-		yield return null;
-	}
+    void Awake()
+    {
+        Core.models?.OnLoaded(this);
+    }
 
-	// Start is called before the first frame update
-	void Start()
-	{
-
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
+    private void OnDestroy()
+    {
+        Core.models?.Unloaded(this);
+    }
 }

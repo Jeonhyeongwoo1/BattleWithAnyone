@@ -25,6 +25,7 @@ public class XSettings : MonoBehaviour
     public const string chracterPath = "Prefabs/Character/";
 	public const string bulletPath = "Prefabs/Bullet/";
 	public const string bulletImpactPath = "Prefabs/BulletImpact/";
+	public const string itemPath = "Prefabs/InteractableItem/";
     /*
 	*   -------------------------------------------------------
 	*/

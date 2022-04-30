@@ -4,7 +4,7 @@ using Photon.Realtime;
 public class DevPhotonNetwork
 {
 	string m_RoomTitle = "TestRoom";
-	string m_MapTitle = "Battleground";
+	string m_MapTitle = "Mansion";
 	int m_NumberOfRound = 3;
 	int m_RoundTime = 150;
 

@@ -9,7 +9,7 @@ public class TrainingModel : MonoBehaviour, IModel
     public string Name { get => nameof(TrainingModel); }
     public Transform[] playerCreatePoints => m_PlayerCreatePoints; 
     public Transform poolObjectCreatePoints => m_PoolObjectCreatePoint; 
-
+    public Transform itemCreatePoint { get; }
     [SerializeField] Transform[] m_PlayerCreatePoints;
     [SerializeField] Transform m_PoolObjectCreatePoint;
 

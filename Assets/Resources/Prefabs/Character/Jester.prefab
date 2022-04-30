@@ -5400,6 +5400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd714eb6588504bc39eaee313f699cdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomCharacter: 0
   isReloading: 0
   isAttacking: 0
   m_CameraType: 1
@@ -5410,7 +5411,6 @@ MonoBehaviour:
     rollingCoolTime: 1
     jumpForce: 5
     jumpCoolTime: 1
-    attackSpeed: 1
     reloadTime: 1
     bulletCount: 10
     shootingCoolTime: 0.5
@@ -5419,7 +5419,7 @@ MonoBehaviour:
       animationTransition: 0.15
       groundLayerMask:
         serializedVersion: 2
-        m_Bits: 65792
+        m_Bits: 66816
   m_RBody: {fileID: 8101991486317852468}
   m_FPCamera:
     camera: {fileID: 0}

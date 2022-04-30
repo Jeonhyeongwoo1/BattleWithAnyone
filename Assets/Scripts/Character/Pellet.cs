@@ -8,6 +8,7 @@ using Photon.Realtime;
 public class Pellet : MonoBehaviourPunCallbacks
 {
     public Rigidbody rb => m_Rigidbody;
+    public int damage => m_Damage;
 
     [SerializeField] bool m_TransforParent;
     [SerializeField] BulletCollisionEffect m_Effect;
