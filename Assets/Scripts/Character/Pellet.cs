@@ -14,7 +14,6 @@ public class Pellet : MonoBehaviourPunCallbacks
     [SerializeField] BulletCollisionEffect m_Effect;
     [SerializeField] Rigidbody m_Rigidbody;
     [SerializeField] LayerMask m_LayerMask;
-    [SerializeField] float m_RayDist = 1f;
 
     Vector3 m_Direction;
     bool m_IsExplode;

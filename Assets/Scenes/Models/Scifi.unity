@@ -661,7 +661,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 390697826}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &53283788
 PrefabInstance:
@@ -2833,7 +2833,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 390697826}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &150368158
 PrefabInstance:
@@ -5923,7 +5923,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 390697826}
-  - component: {fileID: 390697827}
   m_Layer: 0
   m_Name: I T E M S P A W N
   m_TagString: Untagged
@@ -5943,35 +5942,13 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 603977963}
   - {fileID: 147793112}
   - {fileID: 33850117}
   - {fileID: 1557735185}
   - {fileID: 1256449128}
   m_Father: {fileID: 829636144}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &390697827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 390697825}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47729b5741d574fdbb3615688f13f1af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ItemCreatePoint: {fileID: 603977963}
-  m_SpawnPoints:
-  - {fileID: 147793112}
-  - {fileID: 33850117}
-  - {fileID: 1557735185}
-  - {fileID: 1256449128}
-  m_HealthItem: Health
-  m_SpeedItem: Speed
-  m_RandomItem: Random
 --- !u!1001 &391477539
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9339,12 +9316,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 603977962}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 390697826}
+  m_Father: {fileID: 829636144}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &607161390
@@ -13186,6 +13163,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 829636144}
+  - component: {fileID: 829636145}
   m_Layer: 0
   m_Name: I T E M
   m_TagString: Untagged
@@ -13205,10 +13183,32 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 603977963}
   - {fileID: 390697826}
   m_Father: {fileID: 759236911}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &829636145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829636143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55994bb1518c94752a8c9be32a69d6af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ItemCreatePoint: {fileID: 603977963}
+  m_SpawnPoints:
+  - {fileID: 147793112}
+  - {fileID: 33850117}
+  - {fileID: 1557735185}
+  - {fileID: 1256449128}
+  m_AttackableItems: []
+  m_ExplosiveItems: []
+  m_TeleportParent: {fileID: 0}
 --- !u!1001 &843538134
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19474,7 +19474,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 390697826}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1258708249
 PrefabInstance:
@@ -24257,7 +24257,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 390697826}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1558435502
 PrefabInstance:
@@ -24390,7 +24390,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PoolObjectCreatePoint: {fileID: 6356076952580406408}
-  m_ItemSpawn: {fileID: 390697827}
+  m_InteractableItem: {fileID: 829636145}
   m_PlayerCreatePoints:
   - {fileID: 6356076950769589446}
   - {fileID: 6356076950802656043}

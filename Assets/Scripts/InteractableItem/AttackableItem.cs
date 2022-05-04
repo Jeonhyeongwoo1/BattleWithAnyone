@@ -3,21 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class AttackableItem : MonoBehaviour
+public class AttackableItem : MonoBehaviour, IInteractableItem
 {
-
+    public string prefabName => gameObject.name;
+    public string interactableType => nameof(AttackableItem);
     [SerializeField] PlayParticle m_Effect;
     [SerializeField] float m_RepeatTime;
     [SerializeField] int m_Damage;
 
-    public void PlayEffect()
+    public void Play()
     {
-        m_Effect.PlayEffect();
+        InvokeRepeating(nameof(PlayEffect), 1, m_RepeatTime);
     }
 
-    public void StopEffect(bool immediately)
+    public void Stop()
     {
-        m_Effect.StopEffect(immediately);
+        CancelInvoke(nameof(Play));
+        m_Effect.StopEffect();
+    }
+
+    void PlayEffect()
+    {
+        m_Effect.PlayEffect();
     }
 
     void OnHitPlayer(Transform target)
@@ -33,6 +40,5 @@ public class AttackableItem : MonoBehaviour
     void Start()
     {
         m_Effect.hitCollision = OnHitPlayer;
-        InvokeRepeating(nameof(PlayEffect), 1, m_RepeatTime);
     }
 }

@@ -10,10 +10,10 @@ public class Japan : MonoBehaviour, IModel
     public string Name => nameof(Japan);
     public Transform[] playerCreatePoints => m_PlayerCreatePoints;
     public Transform poolObjectCreatePoints => m_PoolObjectCreatePoint;
-    public Transform itemCreatePoint => m_ItemSpawn.itemCreatePoint;
+    public Transform itemCreatePoint => m_InteractableItem.itemCreatePoint;
 
     [SerializeField] Transform m_PoolObjectCreatePoint;
-    [SerializeField] ItemSpawnManager m_ItemSpawn;
+    [SerializeField] InteractableItemControl m_InteractableItem;
     [SerializeField] Transform[] m_PlayerCreatePoints;
     [SerializeField] CinemachineVirtualCamera m_MasterCam;
     [SerializeField] CinemachineVirtualCamera m_PlayerCam;
@@ -22,7 +22,7 @@ public class Japan : MonoBehaviour, IModel
     public void LoadedModel(UnityAction done = null)
     {
         if (!PhotonNetwork.IsConnected) { return; }
-        m_ItemSpawn.CreateItem(true);
+        m_InteractableItem.CreateHelpableItems();
         done?.Invoke();
     }
 

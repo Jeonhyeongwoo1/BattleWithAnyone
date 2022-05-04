@@ -157,4 +157,3 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1

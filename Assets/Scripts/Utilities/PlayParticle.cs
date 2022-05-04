@@ -21,16 +21,9 @@ public class PlayParticle : MonoBehaviour
         StartCoroutine(PlayingEffect(done));
     }
 
-    public void StopEffect(bool immediately)
+    public void StopEffect()
     {
-        if(immediately)
-        {
-            m_Effect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        }
-        else
-        {
-            m_Effect.Stop();
-        }
+        m_Effect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     IEnumerator PlayingEffect(UnityAction done)

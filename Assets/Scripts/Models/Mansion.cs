@@ -11,7 +11,7 @@ public class Mansion : MonoBehaviour, IModel
     public string Name => nameof(Mansion);
     public Transform[] playerCreatePoints => m_PlayerCreatePoints;
     public Transform poolObjectCreatePoints => m_PoolObjectCreatePoint;
-    public Transform itemCreatePoint => m_ItemSpawn.itemCreatePoint;
+    public Transform itemCreatePoint => m_InteractableItem.itemCreatePoint;
 
     [Serializable]
     public struct DollyCameraComponent
@@ -22,7 +22,7 @@ public class Mansion : MonoBehaviour, IModel
     }
 
     [SerializeField] Transform m_PoolObjectCreatePoint;
-    [SerializeField] ItemSpawnManager m_ItemSpawn;
+    [SerializeField] InteractableItemControl m_InteractableItem;
     [SerializeField] Transform[] m_PlayerCreatePoints;
     [SerializeField] DollyCameraComponent m_MasterDolly;
     [SerializeField] DollyCameraComponent m_PlayerDolly;
@@ -31,7 +31,8 @@ public class Mansion : MonoBehaviour, IModel
     public void LoadedModel(UnityAction done = null)
     {
         if (!PhotonNetwork.IsConnected) { return; }
-        m_ItemSpawn.CreateItem(true);
+        m_InteractableItem.CreateHelpableItems();
+        m_InteractableItem.PlayInteractableItem();
         done?.Invoke();
     }
 

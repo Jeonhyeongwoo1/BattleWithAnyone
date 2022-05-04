@@ -4,8 +4,11 @@ using UnityEngine;
 using UnityEngine.Events;
 using Photon.Pun;
 
-public class ExplosiveItem : MonoBehaviourPunCallbacks
+public class ExplosiveItem : MonoBehaviourPunCallbacks, IInteractableItem
 {
+    public string prefabName => gameObject.name;
+    public string interactableType => nameof(ExplosiveItem);
+
     [SerializeField] PlayParticle m_Effect;
     [SerializeField] int m_Health = 50;
     [SerializeField] float m_Radius = 2;
@@ -13,8 +16,28 @@ public class ExplosiveItem : MonoBehaviourPunCallbacks
     [SerializeField] int m_Damage = 20;
     [SerializeField] int m_CurHealth;
 
+    bool isInteractable = false;
+
+    public void Play()
+    {
+        if(!transform.parent.gameObject.activeSelf)
+        {
+            transform.parent.gameObject.SetActive(true);
+        }
+
+        isInteractable = true;
+    }
+
+    public void Stop()
+    {
+        m_Effect.StopEffect();
+        transform.parent.gameObject.SetActive(false);
+        isInteractable = false;
+    }
+
     private void OnCollisionEnter(Collision other)
     {
+        if (!isInteractable) { return; }
         Transform target = other.transform;
         if (target.TryGetComponent<PhotonView>(out var view))
         {
@@ -34,18 +57,6 @@ public class ExplosiveItem : MonoBehaviourPunCallbacks
 
         }
     }
-
-    private void OnParticleCollision(GameObject other)
-    {
-        if (other.CompareTag("Bullet"))
-        {
-            if (other.TryGetComponent<BulletBase>(out var bullet))
-            {
-                photonView.RPC(nameof(NotifyTookDamage), RpcTarget.All, bullet.damage);
-            }
-        }
-    }
-
 
     [PunRPC]
     void NotifyTookDamage(int value)
@@ -73,12 +84,12 @@ public class ExplosiveItem : MonoBehaviourPunCallbacks
 
         if (m_Effect)
         {
-            m_Effect.PlayEffect(() => Destroy(transform.parent.gameObject));
+            m_Effect.PlayEffect(() => Stop());
             gameObject.SetActive(false);
         }
         else
         {
-            Destroy(transform.parent.gameObject);
+            Stop();
         }
     }
 
