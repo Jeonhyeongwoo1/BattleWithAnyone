@@ -48,6 +48,25 @@ MonoBehaviour:
   - UpdateLoadingProgress
   - OnCreateCharacters
   - CreatedPlayerCharacter
+  - OnShooting
+  - SettingPlayerCharacter
+  - CraeteBullet
+  - SetPlayerCharacter
+  - SetParent
+  - SetBulletPoolObj
+  - SetBulletCollisionPoolObj
+  - Shoot
+  - Shooting
+  - TakeDamange
+  - ShootingSecondBall
+  - NotifyObjDisappeared
+  - BuleltShooting
+  - PlayCollisionEffect
+  - NotifyResetState
+  - NotfiyPlayEffect
+  - SetItemParent
+  - NotifyStopEffect
+  - NotifyTookDamage
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

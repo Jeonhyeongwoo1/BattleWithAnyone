@@ -20,7 +20,10 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
         set => m_State = value;
     }
 
+	public DayAndNight lightEnvironment => m_LightEnvironment;
+
 	[SerializeField] float m_CharacterDieWaitTime = 3f;
+	[SerializeField] DayAndNight m_LightEnvironment;
 	int m_CurRound = 0;
 
 	public void OnEvent(EventData photonEvent)

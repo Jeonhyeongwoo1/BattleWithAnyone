@@ -21,6 +21,7 @@ public class MedievalCity : MonoBehaviour, IModel
         public CinemachineVirtualCamera camera;
     }
 
+    [SerializeField] ModelSkybox m_ModelSkybox;
     [SerializeField] Transform m_PoolObjectCreatePoint;
     [SerializeField] InteractableItemControl m_InteractableItem;
     [SerializeField] Transform[] m_PlayerCreatePoints;
@@ -32,11 +33,15 @@ public class MedievalCity : MonoBehaviour, IModel
 	{
         if (!PhotonNetwork.IsConnected) { return; }
         m_InteractableItem.CreateHelpableItems();
+        m_ModelSkybox.SetupSkybox(false);
+       // Core.gameManager?.lightEnvironment?.SetDayOrNight(true, false);
+
         done?.Invoke();
 	}
 
 	public void UnLoadModel(UnityAction done = null)
 	{
+        m_ModelSkybox.SetupSkybox(true);
         done?.Invoke();
 	}
 

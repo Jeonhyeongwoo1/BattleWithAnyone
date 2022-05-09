@@ -21,6 +21,7 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
 		public CinemachineVirtualCamera camera;
 	}
 
+	[SerializeField] ModelSkybox m_ModelSkybox;
     [SerializeField] InteractableItemControl m_InteractableItem;
     [SerializeField] Transform[] m_PlayerCreatePoints;
 	[SerializeField] Transform m_PoolObjectCreatePoint;
@@ -32,11 +33,13 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
         if (!PhotonNetwork.IsConnected) { return; }
         m_InteractableItem.CreateHelpableItems();
 		m_InteractableItem.PlayInteractableItem();
+		m_ModelSkybox.SetupSkybox(false);
         done?.Invoke();
 	}
 
 	public void UnLoadModel(UnityAction done = null)
 	{
+        m_ModelSkybox.SetupSkybox(true);
 		done?.Invoke();
 	}
 
