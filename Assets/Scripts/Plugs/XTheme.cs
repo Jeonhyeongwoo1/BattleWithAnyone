@@ -8,6 +8,8 @@ using TMPro;
 
 public class XTheme : MonoBehaviour, IPlugable
 {
+    public static bool OnJumpInteravtable = false;
+
     public string plugName => nameof(XTheme);
 
     public int roundTime
@@ -210,15 +212,9 @@ public class XTheme : MonoBehaviour, IPlugable
         Core.Ensure(() => Core.plugs.Unloaded(this));
     }
 
-    void OnRaisedEvent(string key, object o)
+    private void LateUpdate()
     {
-        switch (key)
-        {
-            case InteractableJump:
-                bool interactable = (bool)o;
-                m_Jump.interactable = interactable;
-                break;
-        }
+        m_Jump.interactable = OnJumpInteravtable;
     }
 
     void OnEnable()
@@ -227,7 +223,6 @@ public class XTheme : MonoBehaviour, IPlugable
         Core.state?.Listen(nameof(Core.state.masterWinCount), OnValueChanged);
         Core.state?.Listen(nameof(Core.state.bulletCount), OnValueChanged);
         Core.state?.Listen(nameof(Core.state.health), OnValueChanged);
-        Core.xEvent?.Watch(InteractableJump, OnRaisedEvent);
     }
 
     void OnDisable()
@@ -236,7 +231,6 @@ public class XTheme : MonoBehaviour, IPlugable
         Core.state?.Stop(nameof(Core.state.masterWinCount), OnValueChanged);
         Core.state?.Stop(nameof(Core.state.bulletCount), OnValueChanged);
         Core.state?.Stop(nameof(Core.state.health), OnValueChanged);
-        Core.xEvent?.Stop(InteractableJump, OnRaisedEvent);
     }
 
     [ContextMenu("Open")]

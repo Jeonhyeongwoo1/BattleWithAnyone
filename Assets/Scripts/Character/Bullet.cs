@@ -60,11 +60,11 @@ public abstract class BulletBase : MonoBehaviourPunCallbacks
 
     public virtual void Awake()
     {
-        photonView.RPC(nameof(SetBulletPoolObj), RpcTarget.All);
+        photonView.RPC(nameof(SetBulletPoolObjParent), RpcTarget.All);
     }
 
     [PunRPC]
-    public void SetBulletPoolObj()
+    public void SetBulletPoolObjParent()
     {
         IModel model = Core.models.Get();
         transform.SetParent(model.poolObjectCreatePoints);
@@ -93,13 +93,16 @@ public class Bullet : BulletBase
         switch (attribute.type)
         {
             case BulletAttribute.BulletType.Pistol:
-                if (target.tag == "Player")
+                if (target.CompareTag("Player"))
                 {
                     if (target.TryGetComponent<PhotonView>(out var view))
                     {
                         if(!view.IsMine)
                         {
-                            photonView.RPC(nameof(TakeDamange), RpcTarget.Others, attribute.pistol.damage);
+                            int damage = attribute.pistol.damage;
+                            Core.state.totalTakeDamange += damage;
+                            Core.state.totalBulletHitCount++;
+                            photonView.RPC(nameof(TakeDamange), RpcTarget.Others, damage);
                         }
                     }
                 }

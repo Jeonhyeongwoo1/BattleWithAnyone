@@ -46,6 +46,8 @@ public class Fireball : BulletBase
             if (!view.IsMine)
             {
                 BulletAttribute.Fireball f = attribute.fireball;
+                Core.state.totalTakeDamange += f.damage;
+                Core.state.totalBulletHitCount++;
                 photonView.RPC(nameof(TakeDamange), RpcTarget.Others, attribute.fireball.damage, f.residualfireDuration, f.residualfireDamage, f.residualfireDamageInterval);
             }
         }
@@ -105,11 +107,7 @@ public class Fireball : BulletBase
     {
         transform.SetPositionAndRotation(position, Quaternion.LookRotation(dir, Vector3.up));
         gameObject.SetActive(true);
-        if (magicBullet.rootParticle.isPlaying || magicBullet.rootParticle.isEmitting)
-        {
-            magicBullet.rootParticle.Stop();
-        }
-
+        magicBullet.rootParticle.Stop();
         var main = magicBullet.rootParticle.main;
         main.startSpeed = magicBullet.fwdForce;
         main.duration = magicBullet.effectDuration;

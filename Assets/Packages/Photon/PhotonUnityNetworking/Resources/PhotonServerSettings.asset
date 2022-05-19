@@ -67,6 +67,10 @@ MonoBehaviour:
   - SetItemParent
   - NotifyStopEffect
   - NotifyTookDamage
+  - SetBulletPoolObjParent
+  - NotifyPlayerSound
+  - NotifyWeaponSound
+  - UpdateAudioMax
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

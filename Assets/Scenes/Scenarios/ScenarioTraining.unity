@@ -140,6 +140,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cowboy
       objectReference: {fileID: 0}
+    - target: {fileID: 4862177526683233260, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4862177526683233266, guid: e400179c2a0e4400693258e9d9a6c39c,
         type: 3}
       propertyPath: m_RootOrder
@@ -377,7 +382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a71e5e3764e21434dbac5ea54aea4112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TestCharacter: Jester
+  m_TestCharacter: Spaceman
 --- !u!1001 &1930898918
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -661,7 +666,7 @@ PrefabInstance:
     - target: {fileID: 8062533798199228834, guid: 686071031083a44f4b27768aadec11fb,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8062533798199228860, guid: 686071031083a44f4b27768aadec11fb,
         type: 3}
@@ -940,6 +945,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Robot
+      objectReference: {fileID: 0}
+    - target: {fileID: 3413178182520090626, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3413178182520090652, guid: f9aea054ee9be466c8565dabfbe705de,
         type: 3}
@@ -4286,6 +4296,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BasicFemale
       objectReference: {fileID: 0}
+    - target: {fileID: 3731713114564367785, guid: 510c6384b133f42799e180988041981f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3731713114564367799, guid: 510c6384b133f42799e180988041981f,
         type: 3}
       propertyPath: m_RootOrder
@@ -4344,7 +4359,7 @@ PrefabInstance:
     - target: {fileID: 7717427801986513560, guid: 510c6384b133f42799e180988041981f,
         type: 3}
       propertyPath: sceneViewId
-      value: 3
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 510c6384b133f42799e180988041981f, type: 3}
@@ -5569,10 +5584,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Soldier
       objectReference: {fileID: 0}
+    - target: {fileID: 7562073000308409969, guid: e0e02c39bf2994a4c817ac2da6175020,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8122665533693688215, guid: e0e02c39bf2994a4c817ac2da6175020,
         type: 3}
       propertyPath: sceneViewId
-      value: 4
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e0e02c39bf2994a4c817ac2da6175020, type: 3}
@@ -5586,12 +5606,17 @@ PrefabInstance:
     - target: {fileID: 2895482006511773223, guid: 14fd324e440834c358554636b43656d6,
         type: 3}
       propertyPath: sceneViewId
-      value: 2
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7516589921545935812, guid: 14fd324e440834c358554636b43656d6,
         type: 3}
       propertyPath: m_Name
       value: Spaceman
+      objectReference: {fileID: 0}
+    - target: {fileID: 7516589921545935812, guid: 14fd324e440834c358554636b43656d6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7516589921545935834, guid: 14fd324e440834c358554636b43656d6,
         type: 3}

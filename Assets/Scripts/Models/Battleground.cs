@@ -34,12 +34,23 @@ public class Battleground : MonoBehaviourPunCallbacks, IModel
         m_InteractableItem.CreateHelpableItems();
 		m_InteractableItem.PlayInteractableItem();
 		m_ModelSkybox.SetupSkybox(false);
-        done?.Invoke();
+		if(Camera.main.TryGetComponent<FadeBlockingObject>(out var fadingModel))
+		{
+			fadingModel.StartCheckBlockingObject();
+		}
+		
+	    done?.Invoke();
 	}
 
 	public void UnLoadModel(UnityAction done = null)
 	{
         m_ModelSkybox.SetupSkybox(true);
+
+        if (Camera.main.TryGetComponent<FadeBlockingObject>(out var fadingModel))
+        {
+            fadingModel.StopCheckBlockingObject();
+        }
+		
 		done?.Invoke();
 	}
 

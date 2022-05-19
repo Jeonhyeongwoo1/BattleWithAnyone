@@ -42,6 +42,7 @@ public class Round : BasePopup
 		for (int i = 0; i < m_RoundTxts.Length; i++)
 		{
 			m_RoundTxt.text = m_RoundTxts[i];
+			Core.audioManager.PlayUIAudio(AudioManager.UIType.ROUND);
 			yield return CoUtilize.VLerp((v) => m_RoundTxt.transform.localScale = v, m_TextShowingScale, Vector3.one, 1, null, m_Curve);
 		}
 

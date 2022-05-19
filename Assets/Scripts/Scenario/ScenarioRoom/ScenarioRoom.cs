@@ -56,7 +56,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 		}
 
 		PhotonNetwork.JoinRoom(roomName);
-		done?.Invoke();
+        done?.Invoke();
 	}
 
 	public void OnScenarioStop(UnityAction done)
@@ -71,7 +71,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 		Debug.Log("Joined Room");
 		SetRoomCustomInfo();
 		ConnectRoomChat();
-	}
+    }
 
 	public override void OnJoinRoomFailed(short returnCode, string message)
 	{
@@ -123,7 +123,8 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 	void ConnectCompleted()
 	{
 		BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
-	}
+        Core.audioManager.PlayBackground(AudioManager.BackgroundType.ROOM);
+    }
 
 	void SetRoomCustomInfo()
 	{

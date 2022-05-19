@@ -32,6 +32,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
     public void OnScenarioStart(UnityAction done)
     {
         m_LoginForm.gameObject.SetActive(true);
+        Core.audioManager.PlayBackground(AudioManager.BackgroundType.LOGIN);
         done?.Invoke();
     }
 
@@ -94,6 +95,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
 
         Member member = JsonUtility.FromJson<Member>(data);
         Core.networkManager.member = member;
+        Core.audioManager.StopBackground();
         Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }
 
@@ -107,7 +109,8 @@ public class ScenarioLogin : MonoBehaviour, IScenario
     void OnAppleLoginSuccessed()
     {
 		Core.networkManager.member = MemberFactory.Get(); //우선은 더미데이터로 설정
-		Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+        Core.audioManager.StopBackground();
+        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }
 
     private void Start()

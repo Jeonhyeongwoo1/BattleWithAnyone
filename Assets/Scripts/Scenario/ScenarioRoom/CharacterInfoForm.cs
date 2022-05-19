@@ -24,8 +24,9 @@ public class CharacterInfoForm : MonoBehaviour
     {
         switch (gunType)
         {
-            case BulletAttribute.BulletType.Cannon:
             case BulletAttribute.BulletType.Shotgun:
+                return MessageCommon.Get("gun.shotgun");
+            case BulletAttribute.BulletType.Cannon:
             case BulletAttribute.BulletType.Junkrat:
                 return MessageCommon.Get("gun.boom");
             case BulletAttribute.BulletType.Pistol:

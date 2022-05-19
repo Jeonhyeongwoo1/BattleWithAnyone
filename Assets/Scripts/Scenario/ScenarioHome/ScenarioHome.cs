@@ -58,6 +58,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         userInfo.SetUserInfo(Core.networkManager.member.mbr_id);
         userInfo.gameObject.SetActive(true);
         m_Exit.gameObject.SetActive(true);
+        Core.audioManager.PlayBackground(AudioManager.BackgroundType.HOME);
     }
 
     private void Start()

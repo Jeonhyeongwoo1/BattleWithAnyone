@@ -164,8 +164,13 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 	{
 		Log("Game End");
 
+		m_CurRound = 0;
         Core.state.masterWinCount = 0;
         Core.state.playerWinCount = 0;
+		Core.state.totalDamangeReceived = 0;
+		Core.state.totalTakeDamange = 0;
+		Core.state.totalBulletHitCount = 0;
+		Core.state.totalShootBulletCount = 0;
         Core.state.masterCharacter = null;
         Core.state.playerCharacter = null;
         Core.state.mapPreferences = null;

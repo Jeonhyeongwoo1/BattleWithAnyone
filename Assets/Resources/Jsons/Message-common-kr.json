@@ -37,5 +37,10 @@
     "chat.reconnecting": "채팅 연결중입니다.",
     "gun.magic": "마법형",
     "gun.boom": "폭발형",
-    "gun.pistol": "단발형"
+    "gun.pistol": "단발형",
+    "gun.shotgun":"샷건형",
+    "game.end.wincount":"승리 횟수 {0}",
+    "game.end.takedamage":"상대방에게 준 데미지 {0}점",
+    "game.end.damangereceived":"상대방에게 받은 데미지 {0}점",
+    "game.end.accuracyrate":"명중율 {0}%"
 }

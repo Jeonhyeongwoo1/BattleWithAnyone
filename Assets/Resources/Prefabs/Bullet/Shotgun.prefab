@@ -5016,7 +5016,6 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1
 --- !u!114 &3866836416284949171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14978,7 +14977,6 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1
 --- !u!114 &4270603338694048071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34745,7 +34743,6 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1
 --- !u!114 &7445799219353775837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34902,7 +34899,6 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1
 --- !u!114 &2084077369088638810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39931,7 +39927,7 @@ MonoBehaviour:
     shotgun:
       fwdForce: 35
       damage: 3
-      vAngle: {x: 5, y: 8, z: 5}
+      vAngle: {x: 3, y: 8, z: 3}
       pelletLifeTime: 2
       pellets:
       - {fileID: 219085026045097760}
@@ -49940,7 +49936,6 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1
 --- !u!114 &6710096278530839454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59861,7 +59856,6 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1
 --- !u!114 &8267898417484488123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64900,7 +64894,6 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1
 --- !u!114 &6538781216922229896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74862,7 +74855,6 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1
 --- !u!114 &702908032181929439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99593,7 +99585,6 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1
 --- !u!114 &7113141576154967710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99750,7 +99741,6 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 128
-  m_RayDist: 1
 --- !u!114 &9158945208417362738
 MonoBehaviour:
   m_ObjectHideFlags: 0

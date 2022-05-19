@@ -13,8 +13,9 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
     UnityAction ScenarioPrepared;
     
     public void OnScenarioPrepare(UnityAction done)
-    {
+    {   
         Core.plugs.DefaultEnsure();
+        Core.audioManager.StopBackground();
         if (!PhotonNetwork.IsConnectedAndReady && Core.networkManager.member == null) //DEV
         {
             BattleWtihAnyOneStarter.GetLoading()?.StartLoading();

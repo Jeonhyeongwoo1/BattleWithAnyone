@@ -66,6 +66,7 @@ public class GameTimer : MonoBehaviourPun, IPunObservable, IOnEventCallback
             yield return null;
         }
 
+        m_Timer.text = "0";
         done.Invoke();
     }
 

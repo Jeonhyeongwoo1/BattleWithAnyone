@@ -60,15 +60,23 @@ public class CannonBullet : BulletBase
             for (int i = 0; i < count; i++)
             {
                 GameObject p = PhotonNetwork.Instantiate(XSettings.bulletPath + attribute.junkrat.secondBall.name, transform.position, Quaternion.identity, 0);
-                if(p.TryGetComponent<Pellet>(out var pellet))
+                if (p.TryGetComponent<Pellet>(out var pellet))
                 {
-                    pellet.Shoot(attribute.junkrat.secondBallDamage, direction, attribute.junkrat.maxSecondLifeTime, attribute.junkrat.secondColliderRange, range, attribute.junkrat.secondBallForce, scale, true);
+                    pellet.Shoot(attribute.junkrat.secondBallDamage, direction, attribute.junkrat.maxSecondLifeTime, attribute.junkrat.secondColliderRange, range, attribute.junkrat.secondBallForce, scale, true, UpdateHitCount);
                 }
             }
         }
 
         PlayCollisionEffect();
         BulletDisable();
+    }
+
+    void UpdateHitCount(bool isHit)
+    {
+        if (isHit)
+        {
+            Core.state.totalBulletHitCount += (1 / attribute.junkrat.secondBallCount);
+        }
     }
 
     void BulletDisable()
@@ -86,11 +94,14 @@ public class CannonBullet : BulletBase
 
     void OnHit(PlayerController player)
     {
-        if(player.TryGetComponent<PhotonView>(out var view))
+        if (player.TryGetComponent<PhotonView>(out var view))
         {
-            if(!view.IsMine)
+            if (!view.IsMine)
             {
-                photonView.RPC(nameof(TakeDamange), RpcTarget.Others, m_CannonAttirbute.damage);
+                int damage = m_CannonAttirbute.damage;
+                Core.state.totalTakeDamange += damage;
+                Core.state.totalBulletHitCount++;
+                photonView.RPC(nameof(TakeDamange), RpcTarget.Others, damage);
             }
         }
     }
@@ -181,11 +192,11 @@ public class CannonBullet : BulletBase
 
     private void OnCollisionEnter(Collision other)
     {
-        if(other.transform.TryGetComponent<PhotonView>(out var view))
+        if (other.transform.TryGetComponent<PhotonView>(out var view))
         {
             if (view.IsMine) { return; }
         }
-        
+
         if (other.rigidbody != null) //Debug
         {
             other.rigidbody.velocity = Vector3.zero;

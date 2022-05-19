@@ -34,12 +34,21 @@ public class Wildwest : MonoBehaviour, IModel
         if (!PhotonNetwork.IsConnected) { return; }
         m_InteractableItem.CreateHelpableItems();
         m_ModelSkybox.SetupSkybox(false);
+        if (Camera.main.TryGetComponent<FadeBlockingObject>(out var fadingModel))
+        {
+            fadingModel.StartCheckBlockingObject();
+        }
         done?.Invoke();
     }
 
     public void UnLoadModel(UnityAction done = null)
     {
         m_ModelSkybox.SetupSkybox(true);
+        if (Camera.main.TryGetComponent<FadeBlockingObject>(out var fadingModel))
+        {
+            fadingModel.StopCheckBlockingObject();
+        }
+        
         done?.Invoke();
     }
 

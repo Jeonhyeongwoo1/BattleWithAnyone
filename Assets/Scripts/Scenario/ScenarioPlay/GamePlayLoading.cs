@@ -83,6 +83,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
         float value = 0;
         Slider progress = PhotonNetwork.IsMasterClient ? m_MasterBar : m_PlayerBar;
         bool isUpdated = false;
+        int maxWaitTime = 10;
         while (value < 1)
         {
             elapsed += Time.deltaTime;
@@ -93,6 +94,11 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
             {
                 photonView.RPC(nameof(UpdateLoadingProgress), RpcTarget.Others, 0.5f);
                 isUpdated = true;
+            }
+
+            if(elapsed > maxWaitTime)
+            {
+                Photon.Pun.PhotonNetwork.Disconnect();
             }
 
             yield return null;

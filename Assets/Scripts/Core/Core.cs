@@ -13,6 +13,7 @@ public class Core : Singleton<Core>
     static public ObjectPoolManager poolManager => Core.I?.m_ObjectPoolManager;
     static public XState state => Core.I?.m_XState;
     static public XEvent xEvent => Core.I?.m_XEvent;
+    static public AudioManager audioManager => Core.I?.m_AudioManager;
 
     [SerializeField] ModelDirector m_ModelDirector = null;
     [SerializeField] ScenarioDirector m_ScenarioDirector = null;
@@ -23,6 +24,7 @@ public class Core : Singleton<Core>
     [SerializeField] ObjectPoolManager m_ObjectPoolManager = null;
     [SerializeField] XState m_XState = null;
     [SerializeField] XEvent m_XEvent = null;
+    [SerializeField] AudioManager m_AudioManager = null;
 
     static UnityEvent m_EnsureDone = new UnityEvent();
 
@@ -79,6 +81,7 @@ public class Core : Singleton<Core>
         EnsureCore<ObjectPoolManager>(ref m_ObjectPoolManager);
         EnsureCore<XState>(ref m_XState);
         EnsureCore<XEvent>(ref m_XEvent);
+        EnsureCore<AudioManager>(ref m_AudioManager);
 
         Debug.Log("Core Initialized.");
     }

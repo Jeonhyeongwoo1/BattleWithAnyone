@@ -818,6 +818,7 @@ MonoBehaviour:
   m_Content: {fileID: 567090530}
   m_Frame: {fileID: 955255600}
   m_NoticeOpenTime: 1
+  m_OpenCloseDuration: 0.3
   m_Curve:
     serializedVersion: 2
     m_Curve:
@@ -1114,7 +1115,7 @@ MonoBehaviour:
   m_Confirm: {fileID: 2114516025}
   m_Content: {fileID: 907205496}
   m_Frame: {fileID: 1931031546}
-  m_ConfirmOpenTime: 0.3
+  m_OpenCloseDuration: 0.3
   m_Curve:
     serializedVersion: 2
     m_Curve:
@@ -1229,6 +1230,7 @@ GameObject:
   - component: {fileID: 2114516027}
   - component: {fileID: 2114516026}
   - component: {fileID: 2114516025}
+  - component: {fileID: 2114516028}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1339,3 +1341,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2114516023}
   m_CullTransparentMesh: 1
+--- !u!114 &2114516028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2114516023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 771d76fe491034a66bec814a804b5a84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uIType: 1

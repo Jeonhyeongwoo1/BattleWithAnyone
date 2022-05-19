@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public float speed
     {
-        get=> m_COption.movingSpeed;
+        get => m_COption.movingSpeed;
         private set => m_COption.movingSpeed = value;
     }
 
@@ -35,8 +35,17 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     }
 
     public bool roomCharacter = false;
-    public bool isReloading = false;
-    public bool isAttacking = false;
+    public bool isReloading
+    {
+        get => m_IsReloading;
+        private set => m_IsReloading = value;
+    }
+
+    public bool isAttacking
+    {
+        get => m_IsAttacking;
+        private set => m_IsAttacking = value;
+    }
 
     [SerializeField] cameraType m_CameraType;
     [SerializeField] State m_State;
@@ -52,46 +61,34 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField] bool m_IsGround = false;
     [SerializeField] float m_GroundCheckRadius;
     [SerializeField] int m_BulletCreateCount = 10;
+    [SerializeField] float m_FootStepInterval = 2f;
     [SerializeField] BulletBase m_Bullet;
     [SerializeField] BulletCollisionEffect m_CollisionEffect;
+    [SerializeField] AudioSource m_PlayerAudio;
+    [SerializeField] AudioSource m_WeaponAudio;
+    [SerializeField] AudioClip m_WeaponAttackClip;
+    [SerializeField] AudioClip m_ReloadClip;
+    [SerializeField] AudioClip m_DieClip;
 
     PlayerActionsScript m_PlayerActions;
     Vector3 m_NormalizedMove;
     Vector3 m_NoramlizedRotate;
     Vector3 m_TouchStartPos;
     Vector2 m_MoveParam;
-    
+    RaycastHit m_RaycastHit = new RaycastHit();
+
     float m_ScreenHalf = 0;
     float m_DeltaTime = 0f;
     float m_JumpCoolTime = 0;
+    float m_FootStepCycle = 0;
     bool m_TakeDamangeByResidualFire = false;
-
-    [PunRPC]
-    public void NotifyResetState()
-    {
-        m_Animator.SetTrigger(m_AniParam.idle);
-        m_State = State.IDLE;
-        Core.state.health = 100;
-        Core.state.bulletCount = m_COption.bulletCount;
-        m_NoramlizedRotate = Vector3.zero;
-        m_NormalizedMove = Vector3.zero;
-        m_MoveParam = Vector2.zero;
-    }
-
-    [PunRPC]
-    public void SetParent(bool isMaster)
-    {
-        IModel model = Core.models.Get();
-        Transform[] players = model.playerCreatePoints;
-        int index = isMaster ? 0 : 1;
-        transform.SetParent(players[index].parent);
-        transform.name = index == 0 ? "Master" : "Player";
-    }
+    bool m_IsReloading = false;
+    bool m_IsAttacking = false;
 
     public void UpdateHealth(int amount)
     {
         int health = Core.state.health;
-        
+
         health += amount;
         if (health > 100)
         {
@@ -105,7 +102,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         float origin = speed;
         speed = amount;
-        StartCoroutine(ApplyingItemEffect(duration, () => speed = origin));
+        m_FootStepInterval *= 2;
+        StartCoroutine(ApplyingItemEffect(duration, () => { speed = origin; m_FootStepInterval *= 0.5f; }));
     }
 
     public CinemachineVirtualCamera GetCamera() => m_CameraType == cameraType.TP ? m_TPCamera.camera : m_FPCamera.camera;
@@ -169,12 +167,14 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
             Vector3 screenCenter = GetScreenCenterPosition();
             Vector3 dir = (screenCenter - m_ShootPoint.position).normalized;
             bullet.Shoot(dir, m_ShootPoint.position, m_ShootPoint.rotation);
+            photonView.RPC(nameof(NotifyWeaponSound), RpcTarget.All, "Attack");
             Core.state.bulletCount--;
+            Core.state.totalShootBulletCount++;
         }
 
-        if(m_GunfireEffect != null)
+        if (m_GunfireEffect != null)
         {
-            if(m_GunfireEffect.isPlaying)
+            if (m_GunfireEffect.isPlaying)
             {
                 m_GunfireEffect.Stop();
             }
@@ -199,6 +199,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
         m_Animator.SetTrigger(m_AniParam.reload);
         isReloading = true;
+        photonView.RPC(nameof(NotifyWeaponSound), RpcTarget.All, "Reload");
         StartCoroutine(AnimationProgressing(m_AniParam.reload, 1, () =>
         {
             isReloading = false;
@@ -257,7 +258,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         m_State = State.DIE;
         m_Animator.SetTrigger(m_AniParam.die);
-        
+        m_PlayerAudio.PlayOneShot(m_DieClip);
         object content = PhotonNetwork.IsMasterClient;
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
         PhotonNetwork.RaiseEvent((byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE, content, raiseEventOptions, SendOptions.SendReliable);
@@ -281,6 +282,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         if (Core.state.health <= 0) { return; }
 
         Core.state.health -= amount;
+        Core.state.totalDamangeReceived += amount;
         if (Core.state.health <= 0)
         {
             Die();
@@ -296,7 +298,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
             m_NoramlizedRotate = Vector3.Lerp(m_NoramlizedRotate, new Vector2(Input.GetAxisRaw("Mouse X"), -Input.GetAxisRaw("Mouse Y")), m_DeltaTime * 50);
         }
 
-        if(Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonUp(1))
         {
             m_NoramlizedRotate = Vector3.zero;
         }
@@ -326,6 +328,23 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         m_RBody.velocity = new Vector3(dir.x, m_RBody.velocity.y, dir.z);
     }
 
+    void PlayFootStepSound()
+    {
+        if (m_IsGround && m_State == State.RUN)
+        {
+            m_FootStepCycle += m_RBody.velocity.magnitude * m_DeltaTime;
+            if (m_FootStepCycle > m_FootStepInterval)
+            {
+                if (m_RaycastHit.collider == null) { return; }
+                m_FootStepCycle = 0;
+                Transform ground = m_RaycastHit.collider.transform;
+                int groundType = 0;
+                if (ground.TryGetComponent<ModelGroundType>(out var g)) { groundType = (int)g.groundType; }
+                photonView.RPC(nameof(NotifyPlayerSound), RpcTarget.All, "FootStep", groundType);
+            }
+        }
+    }
+
     void CheckDistFromGround()
     {
         Vector3 origin = transform.position + Vector3.up;
@@ -335,10 +354,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         float rayDist = 100f;
         float thrshold = 0.01f;
 
-        bool cast = Physics.SphereCast(ray, m_GroundCheckRadius, out var hit, rayDist, m_COption.jumpOption.groundLayerMask);
-        float distFromGround = cast ? (hit.distance - 1f + m_GroundCheckRadius) : float.MaxValue;
+        bool cast = Physics.SphereCast(ray, m_GroundCheckRadius, out m_RaycastHit, rayDist, m_COption.jumpOption.groundLayerMask);
+        float distFromGround = cast ? (m_RaycastHit.distance - 1f + m_GroundCheckRadius) : float.MaxValue;
         m_IsGround = distFromGround <= m_GroundCheckRadius + thrshold;
-        Core.xEvent.Raise(XTheme.InteractableJump, m_IsGround);
+        XTheme.OnJumpInteravtable = m_IsGround;
     }
 
     void UpdateAniParams()
@@ -383,7 +402,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         if (photonEvent.Code == (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE)
         {
             //Victory
-            if(Core.state.health > 0)
+            if (Core.state.health > 0)
             {
                 Victory();
             }
@@ -459,6 +478,58 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         m_TakeDamangeByResidualFire = false;
     }
 
+
+    [PunRPC]
+    public void NotifyResetState()
+    {
+        m_Animator.SetTrigger(m_AniParam.idle);
+        m_State = State.IDLE;
+        Core.state.health = 100;
+        Core.state.bulletCount = m_COption.bulletCount;
+        m_NoramlizedRotate = Vector3.zero;
+        m_NormalizedMove = Vector3.zero;
+        m_MoveParam = Vector2.zero;
+    }
+
+    [PunRPC]
+    public void SetParent(bool isMaster)
+    {
+        IModel model = Core.models.Get();
+        Transform[] players = model.playerCreatePoints;
+        int index = isMaster ? 0 : 1;
+        transform.SetParent(players[index].parent);
+        transform.name = index == 0 ? "Master" : "Player";
+    }
+
+    [PunRPC]
+    void NotifyWeaponSound(string soundType)
+    {
+        switch (soundType)
+        {
+            case "Attack":
+                m_WeaponAudio.PlayOneShot(m_WeaponAttackClip);
+                break;
+            case "Reload":
+                m_WeaponAudio.PlayOneShot(m_ReloadClip);
+                break;
+        }
+    }
+
+    [PunRPC]
+    void NotifyPlayerSound(string soundType, int groundType)
+    {
+        switch (soundType)
+        {
+            case "FootStep":
+                AudioClip footStep = Core.audioManager.GetFootStepAudio((AudioManager.GroundType)groundType);
+                if (footStep != null)
+                {
+                    m_PlayerAudio.PlayOneShot(footStep);
+                }
+                break;
+        }
+    }
+
     public override void OnEnable()
     {
         if (roomCharacter) { return; }
@@ -520,6 +591,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         Rotation();
         UpdateAniParams();
         GetScreenCenterPosition();
+        PlayFootStepSound();
 
         if (m_JumpCoolTime > 0)
         {
@@ -534,5 +606,4 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         Core.state.health = 0;
         Die();
     }
-
 }

@@ -3,8 +3,8 @@ using Photon.Realtime;
 
 public class DevPhotonNetwork
 {
-	string m_RoomTitle = "TestRoom";
-	string m_MapTitle = "Mansion";
+	string m_RoomTitle = "TestRoom2";
+	string m_MapTitle = nameof(Mansion);
 	int m_NumberOfRound = 3;
 	int m_RoundTime = 150;
 

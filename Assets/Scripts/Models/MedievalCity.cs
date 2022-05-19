@@ -34,6 +34,10 @@ public class MedievalCity : MonoBehaviour, IModel
         if (!PhotonNetwork.IsConnected) { return; }
         m_InteractableItem.CreateHelpableItems();
         m_ModelSkybox.SetupSkybox(false);
+        if (Camera.main.TryGetComponent<FadeBlockingObject>(out var fadingModel))
+        {
+            fadingModel.StartCheckBlockingObject();
+        }
        // Core.gameManager?.lightEnvironment?.SetDayOrNight(true, false);
 
         done?.Invoke();
@@ -42,6 +46,11 @@ public class MedievalCity : MonoBehaviour, IModel
 	public void UnLoadModel(UnityAction done = null)
 	{
         m_ModelSkybox.SetupSkybox(true);
+        if (Camera.main.TryGetComponent<FadeBlockingObject>(out var fadingModel))
+        {
+            fadingModel.StopCheckBlockingObject();
+        }
+        
         done?.Invoke();
 	}
 
