@@ -43,7 +43,7 @@ public class Popups : MonoBehaviour, IPlugable
 
     public bool IsOpened<T>() where T : BasePopup
     {
-        foreach (BasePopup p in m_Popups)
+        foreach (BasePopup p in m_IsOpenedPopups)
         {
             if (p is T) { return true; }
         }

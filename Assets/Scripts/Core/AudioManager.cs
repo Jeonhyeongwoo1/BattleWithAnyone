@@ -93,7 +93,50 @@ public class AudioManager : MonoBehaviour
 
         return m_DefaultFootStep;
     }
-    
 
+    void OnSoundMute(string key, object o)
+    {
+        bool mute = (bool)o;
+        switch (key)
+        {
+            case "Audio.Effect.Mute":
+                m_UIAudioSource.mute = mute;
+            break;
+            case "Audio.Background.Mute":
+                m_BackgroundSource.mute = mute;
+            break;
+        }
+    }
+
+    void OnVolumChanged(string key, object o)
+    {
+        float volume = (float)o;
+
+        switch (key)
+        {
+            case "Audio.Effect.Volume":
+                m_UIAudioSource.volume = volume;
+                break;
+            case "Audio.Background.Volume":
+                m_BackgroundSource.volume = volume;
+                break;
+        }
+    }
+
+    private void OnEnable()
+    {
+        Core.xEvent?.Watch("Audio.Effect.Volume", OnVolumChanged);
+        Core.xEvent?.Watch("Audio.Background.Volume", OnVolumChanged);
+        Core.xEvent?.Watch("Audio.Effect.Mute", OnSoundMute);
+        Core.xEvent?.Watch("Audio.Background.Mute", OnSoundMute);
+    }
+
+    private void OnDisable()
+    {
+        Core.xEvent?.Stop("Audio.Effect.Volume", OnVolumChanged);
+        Core.xEvent?.Stop("Audio.Background.Volume", OnVolumChanged);
+        Core.xEvent?.Stop("Audio.Effect.Mute", OnSoundMute);
+        Core.xEvent?.Stop("Audio.Background.Mute", OnSoundMute);
+    }
 
 }

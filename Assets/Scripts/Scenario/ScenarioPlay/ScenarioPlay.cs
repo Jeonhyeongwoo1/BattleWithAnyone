@@ -8,7 +8,6 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
     public string scenarioName => nameof(ScenarioPlay);
     
     [SerializeField] GamePlayLoading m_GameLoading;
-    [SerializeField] Button m_GoHome;
 
     UnityAction ScenarioPrepared;
     
@@ -98,7 +97,6 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
     private void Awake()
     {
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
-        m_GoHome.onClick.AddListener(GoHome);
     }
 
 }

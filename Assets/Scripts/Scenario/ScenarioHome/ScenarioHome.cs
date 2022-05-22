@@ -11,6 +11,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     public RoomMenu roomMenu;
 
     [SerializeField] Button m_Exit;
+    [SerializeField] Button m_Settings;
 
     public void OnScenarioPrepare(UnityAction done)
     {
@@ -70,6 +71,17 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     {
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
         m_Exit.onClick.AddListener(() => Application.Quit());
+        m_Settings.onClick.AddListener(OpenSettingsPopup);
+    }
+
+    void OpenSettingsPopup()
+    {
+        Popups popups = Core.plugs.Get<Popups>();
+        print(popups.IsOpened<GameSettings>());
+        if(!popups.IsOpened<GameSettings>())
+        {
+            popups.OpenPopupAsync<GameSettings>();
+        }
     }
 
 }

@@ -7,13 +7,23 @@ using System;
 
 public class GamePlayLoading : MonoBehaviourPunCallbacks
 {
+
+    [Serializable]
+    public struct Backgrounds
+    {
+        public string name;
+        public Sprite sprite;
+    }
+
     [SerializeField] Text m_Title;
     [SerializeField] Text m_Master;
     [SerializeField] Text m_Player;
     [SerializeField] Slider m_MasterBar;
     [SerializeField] Slider m_PlayerBar;
     [SerializeField] TextAnimator m_TextAnimator;
+    [SerializeField] Image m_Background;
     [SerializeField, Range(0, 5)] float m_MinLoadingDuration;
+    [SerializeField] Backgrounds[] m_BackgroundDatas;
 
     float m_TotalCompletedCount = 4;
     public Transform masterTestCharacter;
@@ -21,26 +31,17 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
 
     public void Prepare()
     {
-        m_Title.text = Core.state.mapPreferences?.mapName;
+        string mapName = Core.state.mapPreferences?.mapName;
+        m_Title.text = mapName;
         m_Master.text = PhotonNetwork.MasterClient.NickName;
         m_Player.text = PhotonNetwork.IsMasterClient ? PhotonNetwork.MasterClient.NickName : PhotonNetwork.NickName;
         m_MasterBar.value = 0;
         m_PlayerBar.value = 0;
+        SetBackground(mapName);
 
         if (!gameObject.activeSelf)
         {
             gameObject.SetActive(true);
-        }
-
-        //test
-        if (String.IsNullOrEmpty(m_Player.text))
-        {
-            m_Player.text = "TESTer";
-        }
-
-        if (String.IsNullOrEmpty(m_Master.text))
-        {
-            m_Master.text = MemberFactory.Get().mbr_id;
         }
     }
 
@@ -152,6 +153,18 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
         }
 
         done?.Invoke();
+    }
+
+    void SetBackground(string mapName)
+    {
+        foreach (Backgrounds background in m_BackgroundDatas)
+        {
+            if (background.name == mapName)
+            {
+                m_Background.sprite = background.sprite;
+                break;
+            }
+        }
     }
 
     [PunRPC]

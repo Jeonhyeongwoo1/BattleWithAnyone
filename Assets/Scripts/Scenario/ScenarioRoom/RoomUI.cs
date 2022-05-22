@@ -36,6 +36,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	[SerializeField] Button m_KickPlayer;
 	[SerializeField] GameObject m_Ready;
 	[SerializeField] Button m_MapSetting;
+	[SerializeField] Button m_GameSetting;
 	[SerializeField] Transform m_SelectedPlayerCharacter;
 	[SerializeField] Transform m_SelectedMasterCharacter;
 	[SerializeField] Text m_PlayerName;
@@ -318,7 +319,39 @@ public class RoomUI : MonoBehaviourPunCallbacks
 		photonView.RPC(nameof(OnLoadScenarioPlay), RpcTarget.All);
 	}
 
-	[PunRPC]
+    void OpenGameSetting()
+    {
+        Popups popup = Core.plugs.Get<Popups>();
+        if (!popup.IsOpened<GameSettings>())
+        {
+            popup.OpenPopupAsync<GameSettings>();
+        }
+    }
+
+    void UpdateMapSetting()
+    {
+        XState.MapPreferences preferences = Core.state.mapPreferences;
+        string mapName = preferences.mapName;
+        int numberOfRound = preferences.numberOfRound;
+        int roundTime = preferences.roundTime;
+
+        photonView.RPC(nameof(RoomMapSetInfo), RpcTarget.All, mapName, numberOfRound, roundTime);
+
+        string[] LobbyOptions = new string[4];
+        LobbyOptions[0] = "RoomManager";
+        LobbyOptions[1] = "Map";
+        LobbyOptions[2] = "NumberOfRound";
+        LobbyOptions[3] = "RoundTime";
+        ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
+                                            { "RoomManager", PhotonNetwork.MasterClient.NickName },
+                                            { "Map", mapName },
+                                            { "NumberOfRound", numberOfRound},
+                                            { "RoundTime", roundTime }};
+        //Room 정보가 변경되므로 ScearnioHome RoomListUpdate가 호출된다.
+        PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
+    }
+
+    [PunRPC]
 	void SetPlayersCharacter()
     {
 		Core.state.playerCharacter = m_SelectedCharacter.model;
@@ -329,29 +362,6 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	{
 		Core.scenario.OnLoadScenario(nameof(ScenarioPlay));
 		gameObject.SetActive(false);
-	}
-
-	void UpdateMapSetting()
-	{
-		XState.MapPreferences preferences = Core.state.mapPreferences;
-		string mapName = preferences.mapName;
-		int numberOfRound = preferences.numberOfRound;
-		int roundTime = preferences.roundTime;
-
-		photonView.RPC(nameof(RoomMapSetInfo), RpcTarget.All, mapName, numberOfRound, roundTime);
-
-		string[] LobbyOptions = new string[4];
-		LobbyOptions[0] = "RoomManager";
-		LobbyOptions[1] = "Map";
-		LobbyOptions[2] = "NumberOfRound";
-		LobbyOptions[3] = "RoundTime";
-		ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
-											{ "RoomManager", PhotonNetwork.MasterClient.NickName },
-											{ "Map", mapName },
-											{ "NumberOfRound", numberOfRound},
-											{ "RoundTime", roundTime }};
-		//Room 정보가 변경되므로 ScearnioHome RoomListUpdate가 호출된다.
-		PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
 	}
 
 	[PunRPC]
@@ -419,6 +429,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 		m_GameStart.onClick.AddListener(GameStart);
 		m_CharacterSelect.onClick.AddListener(SelectCharacter);
 		m_MapSetting.onClick.AddListener(OpenMapSetting);
+        m_GameSetting.onClick.AddListener(OpenGameSetting);
 
 		Init();
 		//Init 한번만 할지 계속 만들지 고민..

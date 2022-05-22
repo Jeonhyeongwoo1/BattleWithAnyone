@@ -20,11 +20,9 @@ public class Shotgun : BulletBase
         m_PelletHit.Add(isHit);
         if (attribute.shotgun.pellets.Length == m_RecoupPellet)
         {
-            print("TESt");
             bool ishit = m_PelletHit.Find((v)=> v == true);
             if(ishit)
             {
-                print(ishit);
                 Core.state.totalBulletHitCount++;
             }
 

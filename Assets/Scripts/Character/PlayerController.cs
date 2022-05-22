@@ -47,6 +47,30 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         private set => m_IsAttacking = value;
     }
 
+    public float rotationSpeed
+    {
+        get => m_CameraType == cameraType.TP ? m_TPCamera.rotationSpeed : m_FPCamera.rotationSpeed;
+        private set
+        {
+            if(m_CameraType == cameraType.TP)
+            {
+                m_TPCamera.rotationSpeed = value;
+            }
+            else
+            {
+                m_FPCamera.rotationSpeed = value;
+            }
+
+        }
+    }
+
+    void OnRotSensitivityChanged(string key, object o)
+    {
+        float value = (float)o; //0~1
+        if (value <= 1f) { value = 1; }
+        rotationSpeed = value;
+    }
+
     [SerializeField] cameraType m_CameraType;
     [SerializeField] State m_State;
     [SerializeField] CharacterOption m_COption;
@@ -530,11 +554,40 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
+    void OnVolumChanged(string key, object o)
+    {
+        float volume = (float)o;
+        switch (key)
+        {
+            case "Audio.Effect.Volume":
+                m_PlayerAudio.volume = volume;
+                m_WeaponAudio.volume = volume;
+                break;
+        }
+    }
+
+    void OnSoundMute(string key, object o)
+    {
+        bool mute = (bool)o;
+        switch (key)
+        {
+            case "Audio.Effect.Mute":
+                m_PlayerAudio.mute = mute;
+                m_WeaponAudio.mute = mute;
+                break;
+        }
+    }
+
     public override void OnEnable()
     {
         if (roomCharacter) { return; }
         m_PlayerActions.Player.Enable();
         PhotonNetwork.AddCallbackTarget(this);
+        Core.xEvent?.Watch("Audio.Effect.Volume", OnVolumChanged);
+        Core.xEvent?.Watch("Audio.Background.Volume", OnVolumChanged);
+        Core.xEvent?.Watch("Audio.Effect.Mute", OnSoundMute);
+        Core.xEvent?.Watch("Audio.Background.Mute", OnSoundMute);
+        Core.xEvent?.Watch("Player.Sensitivity", OnRotSensitivityChanged);
     }
 
     public override void OnDisable()
@@ -542,6 +595,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         if (roomCharacter) { return; }
         m_PlayerActions.Player.Disable();
         PhotonNetwork.RemoveCallbackTarget(this);
+        Core.xEvent?.Stop("Audio.Effect.Volume", OnVolumChanged);
+        Core.xEvent?.Stop("Audio.Background.Volume", OnVolumChanged);
+        Core.xEvent?.Stop("Audio.Effect.Mute", OnSoundMute);
+        Core.xEvent?.Stop("Audio.Background.Mute", OnSoundMute);
+        Core.xEvent?.Stop("Player.Sensitivity", OnRotSensitivityChanged);
     }
 
     void Awake()
