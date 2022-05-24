@@ -69,7 +69,7 @@ public class RoomMenu : MonoBehaviourPunCallbacks
             bool o = roomInfo.Key.Contains(roomName);
             if (o)
             {
-                OtherCreateRoom(roomInfo.Value, m_SearchedRoomContent);
+                OnCreateRoomInLobby(roomInfo.Value, m_SearchedRoomContent);
                 count++;
             }
         }
@@ -140,8 +140,11 @@ public class RoomMenu : MonoBehaviourPunCallbacks
             {
                 if (roomInfo.PlayerCount == 0) { continue; }
                 if (roomInfo.MaxPlayers == roomInfo.PlayerCount) { continue; } //풀방일 경우
+                
+                bool startGame = (bool)roomInfo.CustomProperties["StartGame"];
+                if (startGame) { continue; }
 
-                OtherCreateRoom(roomInfo, m_RoomContent);
+                OnCreateRoomInLobby(roomInfo, m_RoomContent);
                 m_CachedRoomList.Add(roomInfo.Name, roomInfo);
             }
         }
@@ -153,7 +156,7 @@ public class RoomMenu : MonoBehaviourPunCallbacks
 
     }
 
-    void OtherCreateRoom(RoomInfo roomInfo, Transform parent)
+    void OnCreateRoomInLobby(RoomInfo roomInfo, Transform parent)
     {
         string roomManager = (string)roomInfo.CustomProperties["RoomManager"];
         string mapTitle = (string)roomInfo.CustomProperties["Map"];
@@ -189,7 +192,9 @@ public class RoomMenu : MonoBehaviourPunCallbacks
                                             { "RoomManager", Core.networkManager.member.mbr_id },
                                             { "Map", map },
                                             { "NumberOfRound", numberOfRound},
-                                            { "RoundTime", roundTime }};
+                                            { "RoundTime", roundTime },
+                                            { "GameStart", false}
+                                            };
 
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.IsVisible = true;
@@ -219,7 +224,7 @@ public class RoomMenu : MonoBehaviourPunCallbacks
 
         foreach (KeyValuePair<string, RoomInfo> roomInfo in m_CachedRoomList)
         {
-            OtherCreateRoom(roomInfo.Value, m_RoomContent);
+            OnCreateRoomInLobby(roomInfo.Value, m_RoomContent);
             yield return new WaitForSeconds(0.2f);
         }
 

@@ -170,8 +170,7 @@ public class XTheme : MonoBehaviour, IPlugable
 
     void DoAttack()
     {
-		m_Attack.interactable = false;
-		player.Attack(()=> m_Attack.interactable = true);
+		player.Attack(null);
     }
 
     void DoRoll()

@@ -37,7 +37,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioSource m_BackgroundSource;
     [SerializeField] AudioClip m_DefaultFootStep;
 
-    public void PlayBackground(BackgroundType type)
+    public void PlayBackground(BackgroundType type, bool PlayOneShot = false)
     {
         if(BackgroundType.NONE == type) { return;}
 
@@ -48,8 +48,15 @@ public class AudioManager : MonoBehaviour
             {
                 AudioClip audioClip = m_BackgroundAudio[i].audio;
                 if (audioClip == null) { break; }
-                m_BackgroundSource.clip = audioClip;
-                m_BackgroundSource.Play();
+                if(PlayOneShot)
+                {
+                    m_BackgroundSource.PlayOneShot(audioClip);
+                }
+                else
+                {
+                    m_BackgroundSource.clip = audioClip;
+                    m_BackgroundSource.Play();
+                }
             }
         }
     }

@@ -43,6 +43,9 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
         {
             gameObject.SetActive(true);
         }
+
+        BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
+        BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
     }
 
     public void StartLoading(UnityAction done)

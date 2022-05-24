@@ -39,13 +39,6 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
 		done?.Invoke();
 	}
 
-    //Local 
-    void JoinLobby()
-    {
-        Core.networkManager.member = MemberFactory.Get();
-        PhotonNetwork.JoinLobby();
-    }
-
     public void OnScenarioStop(UnityAction done)
     {
         StopAllCoroutines();
@@ -62,6 +55,22 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         Core.audioManager.PlayBackground(AudioManager.BackgroundType.HOME);
     }
 
+    //Local 
+    void JoinLobby()
+    {
+        Core.networkManager.member = MemberFactory.Get();
+        PhotonNetwork.JoinLobby();
+    }
+
+    void OpenSettingsPopup()
+    {
+        Popups popups = Core.plugs.Get<Popups>();
+        if (!popups.IsOpened<GameSettings>())
+        {
+            popups.OpenPopupAsync<GameSettings>();
+        }
+    }
+
     private void Start()
     {
         Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
@@ -72,16 +81,6 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
         m_Exit.onClick.AddListener(() => Application.Quit());
         m_Settings.onClick.AddListener(OpenSettingsPopup);
-    }
-
-    void OpenSettingsPopup()
-    {
-        Popups popups = Core.plugs.Get<Popups>();
-        print(popups.IsOpened<GameSettings>());
-        if(!popups.IsOpened<GameSettings>())
-        {
-            popups.OpenPopupAsync<GameSettings>();
-        }
     }
 
 }
