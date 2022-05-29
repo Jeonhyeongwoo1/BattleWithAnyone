@@ -24,7 +24,7 @@ public class FadeBlockingObject : MonoBehaviour
 
     public void StartCheckBlockingObject()
     {
-        StartCoroutine(CheckingBlockingObject());
+    //    StartCoroutine(CheckingBlockingObject());
     }
 
     public void StopCheckBlockingObject()
@@ -122,7 +122,6 @@ public class FadeBlockingObject : MonoBehaviour
 
     IEnumerator Fadeout(FadingModel fadingModel)
     {
-        print(fadingModel.name);
         float fValue = 1 / m_FPS;
         int materialsCount = fadingModel.materials.Count;
         for (int i = 0; i < materialsCount; i++)
