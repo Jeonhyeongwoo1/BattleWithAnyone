@@ -1,16 +1,20 @@
+using System.Collections.Generic;
+using System.Collections;
 using UnityEngine.Events;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Realtime;
 
 public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
 {
     public string scenarioName => nameof(ScenarioPlay);
-    
+
     [SerializeField] GamePlayLoading m_GameLoading;
 
     UnityAction ScenarioPrepared;
-    
+    private bool m_IsScenarioStarted = false;
+
     public void OnScenarioPrepare(UnityAction done)
     {   
         Core.plugs.DefaultEnsure();
@@ -44,7 +48,7 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
 	public void OnScenarioStart(UnityAction done)
     {
         Core.gameManager.OnGamePrepare();
-		done?.Invoke();
+        done?.Invoke();
     }
 
     public void OnScenarioStop(UnityAction done)
@@ -75,12 +79,25 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
         m_GameLoading.StartLoading(OnLoadedGame);
     }
 
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        StartCoroutine(WaitUntilGameStart(() => OnGameEnd(otherPlayer.NickName)));
+    }
+
+    void OnGameEnd(string name)
+    {
+        if (Core.gameManager.state != GamePlayManager.State.GameDone)
+        {
+            NoticePopup.content = string.Format(MessageCommon.Get("game.player.leftroom"), name);
+            Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>(() => Core.gameManager.OnGameDoneByPlayerLeftRoom());
+        }
+    }
+
     void OnLoadedGame()
     {
         Debug.Log("OnLoaded Game");
         m_GameLoading.EndLoading();
-        ScenarioPrepared?.Invoke();
-        
+        ScenarioPrepared?.Invoke();   
     }
 
     void GoHome()
@@ -97,6 +114,12 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
     private void Awake()
     {
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
+    }
+
+    IEnumerator WaitUntilGameStart(UnityAction done)
+    {
+        while (!m_IsScenarioStarted) { yield return null; }
+        done?.Invoke();
     }
 
 }

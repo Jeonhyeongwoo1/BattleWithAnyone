@@ -141,7 +141,8 @@ public class RoomMenu : MonoBehaviourPunCallbacks
                 if (roomInfo.PlayerCount == 0) { continue; }
                 if (roomInfo.MaxPlayers == roomInfo.PlayerCount) { continue; } //풀방일 경우
                 
-                bool startGame = (bool)roomInfo.CustomProperties["StartGame"];
+                bool startGame = (bool)roomInfo.CustomProperties["GameStart"];
+                print(startGame);
                 if (startGame) { continue; }
 
                 OnCreateRoomInLobby(roomInfo, m_RoomContent);
@@ -177,11 +178,12 @@ public class RoomMenu : MonoBehaviourPunCallbacks
 
     void UserCreateRoom(string roomName)
     {
-        string[] LobbyOptions = new string[4];
+        string[] LobbyOptions = new string[5];
         LobbyOptions[0] = "RoomManager";
         LobbyOptions[1] = "Map";
         LobbyOptions[2] = "NumberOfRound";
         LobbyOptions[3] = "RoundTime";
+        LobbyOptions[4] = "GameStart";
 
         XState.MapPreferences preferences = Core.state.mapPreferences;
         string map = preferences.mapName;

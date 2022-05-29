@@ -69,7 +69,22 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 		});
 	}
 
-	void OnGamePrepared()
+    public void OnGameDoneByPlayerLeftRoom()
+    {
+        int numberOfRound = Core.state.mapPreferences.numberOfRound;
+        Core.state.masterWinCount = numberOfRound;
+		m_CurRound = numberOfRound;
+		StopAllCoroutines();
+        Popups popups = Core.plugs.Get<Popups>();
+		popups.StopAllCoroutines();
+        Round round = popups.Get<Round>();
+		round.StopAllCoroutines();
+		round.Close();
+		
+		OnRoundDone();
+	}
+
+    void OnGamePrepared()
 	{
 		Log("Game ready");
 		m_State = State.Prepared;
@@ -103,9 +118,7 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 	IEnumerator GamePlaying(UnityAction done)
 	{
 		Log("Game Playing");
-
 		while (m_State == State.RoundPlaying) { yield return null; }
-
 		done?.Invoke();
 	}
 
@@ -139,16 +152,19 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
 	}
 
-	void OnGameDone()
-	{
-		Log("Game Done");
-		m_State = State.GameDone;
-		int winCount = PhotonNetwork.IsMasterClient ? Core.state.masterWinCount : Core.state.playerWinCount;
-		Core.xEvent.Raise(winCount == Core.state.mapPreferences.numberOfRound ? GameEndUI.Victory : GameEndUI.Lose, true);
-		StartCoroutine(WaitingGameEnd(GameEnd));
-	}
+    void OnGameDone()
+    {
+        Log("Game Done");
+        m_State = State.GameDone;
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+        PhotonNetwork.RaiseEvent((byte)PhotonEventCode.GAME_END, null, raiseEventOptions, SendOptions.SendReliable);
 
-	IEnumerator WaitingGameEnd(UnityAction done)
+        Core.poolManager.Remove(nameof(Bullet));
+        Core.poolManager.Remove(nameof(BulletCollisionEffect));
+        StartCoroutine(WaitingGameEnd(GameEnd));
+    }
+
+    IEnumerator WaitingGameEnd(UnityAction done)
 	{
 		while (m_State == State.GameDone) { yield return null; }
 		done?.Invoke();
@@ -164,13 +180,12 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 	{
 		Log("Game End");
 
-		m_CurRound = 0;
+        m_State = State.None;
+        m_CurRound = 0;
         Core.state.masterWinCount = 0;
         Core.state.playerWinCount = 0;
 		Core.state.totalDamangeReceived = 0;
 		Core.state.totalTakeDamange = 0;
-		Core.state.totalBulletHitCount = 0;
-		Core.state.totalShootBulletCount = 0;
         Core.state.masterCharacter = null;
         Core.state.playerCharacter = null;
         Core.state.mapPreferences = null;
@@ -180,5 +195,6 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
         PhotonNetwork.LeaveRoom();
 		Core.networkManager.WaitStateToConnectedToMasterServer(() => Core.scenario.OnLoadScenario(nameof(ScenarioHome)));
+        BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(true);
 	}
 }

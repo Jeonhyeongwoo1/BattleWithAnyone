@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.Events;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -112,6 +113,37 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             success?.Invoke(data);
             request.Dispose();
         }
+    }
+
+    public IEnumerator OnOtherPlayerDisconnectedDuringLoading()
+    {
+        //강제로 제어....
+        Scene scene = SceneManager.GetSceneByName(nameof(ScenarioRoom));
+        if (scene != null)
+        {
+            SceneManager.UnloadSceneAsync(nameof(ScenarioRoom));
+        }
+
+        scene = SceneManager.GetSceneByName(nameof(ScenarioPlay));
+        if (scene != null)
+        {
+            SceneManager.UnloadSceneAsync(nameof(ScenarioPlay));
+        }
+
+        Core.scenario.previousScenario = null;
+        Core.scenario.currentScenario = null;
+
+        //GameLoading 중에 플레이어가 나가게되면 룸을 떠나고 Home 화면으로 이동한다.
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+
+        NoticePopup.content = MessageCommon.Get("game.player.disconnected");
+        Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+        Core.networkManager.WaitStateToConnectedToMasterServer(() => Core.scenario.OnLoadScenario(nameof(ScenarioHome)));
+        BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(true);
+        yield return null;
     }
 
     public void ConnectPhotonNetwork(UnityAction done)

@@ -314,6 +314,10 @@ public class RoomUI : MonoBehaviourPunCallbacks
 			return;
 		}
 
+        ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
+                                            { "GameStart", true }};
+        PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
+
 		Core.state.masterCharacter = m_SelectedCharacter.model;
         photonView.RPC(nameof(SetPlayersCharacter), RpcTarget.Others);
 		photonView.RPC(nameof(OnLoadScenarioPlay), RpcTarget.All);
@@ -360,6 +364,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	[PunRPC]
 	void OnLoadScenarioPlay()
 	{
+		BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(true);
 		Core.scenario.OnLoadScenario(nameof(ScenarioPlay));
 		gameObject.SetActive(false);
 	}

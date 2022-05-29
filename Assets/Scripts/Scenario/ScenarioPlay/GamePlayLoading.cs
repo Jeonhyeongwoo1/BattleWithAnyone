@@ -25,6 +25,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
     [SerializeField, Range(0, 5)] float m_MinLoadingDuration;
     [SerializeField] Backgrounds[] m_BackgroundDatas;
 
+    float m_OtherPlayerLoadingProcess = 0f;
     float m_TotalCompletedCount = 4;
     public Transform masterTestCharacter;
     public Transform playerTestCharacter;
@@ -100,7 +101,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
                 isUpdated = true;
             }
 
-            if(elapsed > maxWaitTime)
+            if (elapsed > maxWaitTime)
             {
                 Photon.Pun.PhotonNetwork.Disconnect();
             }
@@ -116,9 +117,22 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
             controller.photonView.RPC(nameof(controller.SetParent), RpcTarget.All, PhotonNetwork.IsMasterClient);
         }
 
+        //completed
         photonView.RPC(nameof(UpdateLoadingProgress), RpcTarget.Others, 1.0f);
+        elapsed = 0;
+        while (m_OtherPlayerLoadingProcess < 1)
+        {
+            if (elapsed > maxWaitTime)
+            {
+                StartCoroutine(Core.networkManager.OnOtherPlayerDisconnectedDuringLoading());
+                yield break;
+            }
 
-        yield return new WaitForSeconds(2f);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1f);
         done?.Invoke();
     }
 
@@ -175,5 +189,6 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
     {
         Slider slider = PhotonNetwork.IsMasterClient ? m_PlayerBar : m_MasterBar;
         slider.value = value;
+        m_OtherPlayerLoadingProcess = value;
     }
 }
