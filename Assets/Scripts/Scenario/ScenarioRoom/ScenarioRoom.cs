@@ -19,6 +19,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 		BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
 		BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
 		Core.plugs.DefaultEnsure();
+        TouchInput.use = true;
 		done?.Invoke();
 	}
 
@@ -63,6 +64,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 	{
 		roomChat.DisConnect();
 		PhotonNetwork.EnableCloseConnection = false;
+        TouchInput.use = false;
 		done?.Invoke();
 	}
 
@@ -158,7 +160,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 
 	IEnumerator WaitingScnearioUnloaded(UnityAction done)
 	{
-        while (Core.scenario.GetPreScenario() != null) { yield return null; }
+        while (Core.scenario.previousScenario != null) { yield return null; }
 		done?.Invoke();
 	}
 

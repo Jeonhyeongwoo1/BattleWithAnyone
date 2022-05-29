@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         get => m_CameraType == cameraType.TP ? m_TPCamera.rotationSpeed : m_FPCamera.rotationSpeed;
         private set
         {
-            if(m_CameraType == cameraType.TP)
+            if (m_CameraType == cameraType.TP)
             {
                 m_TPCamera.rotationSpeed = value;
             }
@@ -62,13 +62,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
             }
 
         }
-    }
-
-    void OnRotSensitivityChanged(string key, object o)
-    {
-        float value = (float)o; //0~1
-        if (value <= 1f) { value = 1; }
-        rotationSpeed = value;
     }
 
     [SerializeField] cameraType m_CameraType;
@@ -175,7 +168,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void Attack(UnityAction done)
     {
-        if (!photonView.IsMine || Core.state.bulletCount <= 0 || isReloading || m_State == State.ROLLING || m_State == State.DIE || m_State == State.VICTORY)
+        if (!photonView.IsMine || Core.state.bulletCount <= 0 || isReloading || isAttacking || m_State == State.ROLLING || m_State == State.DIE || m_State == State.VICTORY)
         {
             done?.Invoke();
             return;
@@ -191,9 +184,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
             Vector3 screenCenter = GetScreenCenterPosition();
             Vector3 dir = (screenCenter - m_ShootPoint.position).normalized;
             bullet.Shoot(dir, m_ShootPoint.position, m_ShootPoint.rotation);
-            photonView.RPC(nameof(NotifyWeaponSound), RpcTarget.All, "Attack");
+            photonView.RPC(nameof(NotifyPlayWeaponSound), RpcTarget.All, "Attack");
             Core.state.bulletCount--;
-            Core.state.totalShootBulletCount++;
         }
 
         if (m_GunfireEffect != null)
@@ -215,15 +207,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void Reload(UnityAction done)
     {
-        if (!photonView.IsMine || isAttacking || m_State == State.DIE || m_State == State.VICTORY)
+        if (!photonView.IsMine || isAttacking || isReloading || m_State == State.DIE || m_State == State.VICTORY)
         {
             done?.Invoke();
             return;
         }
 
-        m_Animator.SetTrigger(m_AniParam.reload);
         isReloading = true;
-        photonView.RPC(nameof(NotifyWeaponSound), RpcTarget.All, "Reload");
+        m_Animator.SetTrigger(m_AniParam.reload);
+        photonView.RPC(nameof(NotifyPlayWeaponSound), RpcTarget.All, "Reload");
         StartCoroutine(AnimationProgressing(m_AniParam.reload, 1, () =>
         {
             isReloading = false;
@@ -304,12 +296,21 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     public void TakeDamange(int amount)
     {
         if (Core.state.health <= 0) { return; }
-
+        
         Core.state.health -= amount;
-        Core.state.totalDamangeReceived += amount;
-        if (Core.state.health <= 0)
+        if(Core.state.health <= 0)
         {
             Die();
+        }
+
+        Core.state.totalDamangeReceived += amount;
+        photonView.RPC(nameof(NotifyUpdateTotalDamage), RpcTarget.Others, amount);
+
+        if (Core.state.health < 0)
+        {
+            amount = Core.state.health;
+            Core.state.totalDamangeReceived += amount;
+            photonView.RPC(nameof(NotifyUpdateTotalDamage), RpcTarget.Others, amount);
         }
     }
 
@@ -423,14 +424,35 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void OnEvent(EventData photonEvent)
     {
-        if (photonEvent.Code == (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE)
+        switch (photonEvent.Code)
         {
-            //Victory
-            if (Core.state.health > 0)
-            {
-                Victory();
-            }
+            case (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE:
+                //Victory
+                if (m_State != State.DIE && photonView.IsMine)
+                {
+                    Victory();
+                }
+            break;
+            case (byte)PhotonEventCode.GAME_END:
+                if (!photonView.IsMine) { break; }
+            
+                int winCount = PhotonNetwork.IsMasterClient ? Core.state.masterWinCount : Core.state.playerWinCount;
+                if (winCount == Core.state.mapPreferences.numberOfRound)
+                {
+                    Victory();
+                }
+                else
+                {
+                    m_State = State.DIE;
+                    m_Animator.SetTrigger(m_AniParam.die);
+                    m_PlayerAudio.PlayOneShot(m_DieClip);
+                }
+                
+                m_Animator.SetFloat(m_AniParam.horizontal, 0);
+                m_Animator.SetFloat(m_AniParam.vertical, 0);
+            break;
         }
+        
     }
 
     IEnumerator ApplyingItemEffect(float duration, UnityAction done = null)
@@ -502,6 +524,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         m_TakeDamangeByResidualFire = false;
     }
 
+    [PunRPC]
+    void NotifyUpdateTotalDamage(int value)
+    {
+        Core.state.totalTakeDamange += value;
+    }
 
     [PunRPC]
     public void NotifyResetState()
@@ -526,7 +553,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     }
 
     [PunRPC]
-    void NotifyWeaponSound(string soundType)
+    void NotifyPlayWeaponSound(string soundType)
     {
         switch (soundType)
         {
@@ -576,6 +603,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
                 m_WeaponAudio.mute = mute;
                 break;
         }
+    }
+
+    void OnRotSensitivityChanged(string key, object o)
+    {
+        float value = (float)o; //0~1
+        if (value <= 1f) { value = 1; }
+        rotationSpeed = value;
     }
 
     public override void OnEnable()

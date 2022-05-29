@@ -21,6 +21,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
         BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
         Core.plugs.DefaultEnsure();
+        TouchInput.use = true;
         done?.Invoke();
     }
 

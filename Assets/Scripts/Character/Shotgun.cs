@@ -7,25 +7,17 @@ using Photon.Realtime;
 public class Shotgun : BulletBase
 {
     int m_RecoupPellet = 0;
-    List<bool> m_PelletHit = new List<bool>();
 
     public override void Shoot(Vector3 dir, Vector3 position, Quaternion rotation)
     {
-       photonView.RPC(nameof(Shooting), RpcTarget.All, dir, position, rotation);
+        photonView.RPC(nameof(Shooting), RpcTarget.All, dir, position, rotation);
     }
 
     void RecoupPellet(bool isHit)
     {
         m_RecoupPellet++;
-        m_PelletHit.Add(isHit);
         if (attribute.shotgun.pellets.Length == m_RecoupPellet)
         {
-            bool ishit = m_PelletHit.Find((v)=> v == true);
-            if(ishit)
-            {
-                Core.state.totalBulletHitCount++;
-            }
-
             photonView.RPC(nameof(NotifyObjDisappeared), RpcTarget.All);
         }
     }
@@ -79,7 +71,7 @@ public class Shotgun : BulletBase
 
         if (lifeTime < 0)
         {
-           // photonView.RPC(nameof(NotifyObjDisappeared), RpcTarget.All);
+            photonView.RPC(nameof(NotifyObjDisappeared), RpcTarget.All);
         }
     }
 

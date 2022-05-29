@@ -23,9 +23,8 @@ public class Pellet : MonoBehaviourPunCallbacks
     float m_SecondColliderRange;
     UnityAction<bool> m_Despawn;
  
-    public void Shoot(int damage, Vector3 direction, float lifeTime, float coliderRange, float range, float force, float scale, bool isExplode, UnityAction<bool> hitedTarget)
+    public void Shoot(int damage, Vector3 direction, float lifeTime, float coliderRange, float range, float force, float scale, bool isExplode)
     {
-        m_Despawn = hitedTarget;
         photonView.RPC(nameof(Shooting), RpcTarget.All, damage, direction, lifeTime, coliderRange, range, force, scale, isExplode);
     }
 
@@ -73,7 +72,6 @@ public class Pellet : MonoBehaviourPunCallbacks
             {
                 if (!view.IsMine)
                 {
-                    Core.state.totalTakeDamange += m_Damage;
                     photonView.RPC(nameof(TakeDamange), RpcTarget.Others, m_Damage);
                 }
             }
@@ -103,7 +101,7 @@ public class Pellet : MonoBehaviourPunCallbacks
             GameObject go = PhotonNetwork.Instantiate(XSettings.bulletImpactPath + m_Effect.name, transform.position, transform.rotation, 0);
             if(go.transform.TryGetComponent<BulletCollisionEffect>(out var effect))
             {
-                effect.PlayEffect(transform.position, transform.rotation, () => m_Despawn?.Invoke(m_IsHit));
+                effect.PlayEffect(transform.position, transform.rotation);
             }
             photonView.RPC(nameof(NotifyObjDisappeared), RpcTarget.All, true);
         }

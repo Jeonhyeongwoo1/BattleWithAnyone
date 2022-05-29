@@ -18,6 +18,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
         BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
         Core.plugs.DefaultEnsure();
+        TouchInput.use = true;
         done?.Invoke();
     }
 

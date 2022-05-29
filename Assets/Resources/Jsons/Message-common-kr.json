@@ -42,5 +42,7 @@
     "game.end.wincount":"승리 횟수 {0}",
     "game.end.takedamage":"상대방에게 준 데미지 {0}점",
     "game.end.damangereceived":"상대방에게 받은 데미지 {0}점",
-    "game.end.accuracyrate":"명중율 {0}%"
+    "game.end.accuracyrate":"명중율 {0}%",
+    "game.player.leftroom":"{0}님이 나갔습니다.",
+    "game.player.disconnected":"상대방과 연결이 끊겼습니다."
 }

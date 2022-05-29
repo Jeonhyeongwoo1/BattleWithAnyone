@@ -745,7 +745,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomCharacter: 0
   m_CameraType: 1
-  m_State: 0
+  m_State: 5
   m_COption:
     health: 100
     movingSpeed: 5
@@ -878,7 +878,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ObservedComponentsFoldoutOpen: 1
   Group: 0
-  prefixField: -1
+  prefixField: 0
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2

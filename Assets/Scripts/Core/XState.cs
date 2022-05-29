@@ -89,8 +89,6 @@ public partial class XState : States
 
     int m_TotalDamangeReceived; //총 받은 데미지
     int m_TotalTakeDamange; //총 입힌 데미지
-    int m_TotalShootBulletCount;
-    float m_TotalBulletHitCount;
 
     void SilentListen()
     {

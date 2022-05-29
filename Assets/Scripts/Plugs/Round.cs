@@ -25,6 +25,12 @@ public class Round : BasePopup
 		StartCoroutine(CoUtilize.Lerp((v) => m_CanvasGroup.alpha = v, 1, 0, m_OpenCloseDuration, () => Closed(done), m_Curve));
 	}
 
+    public void Close(UnityAction done = null)
+    {
+        m_CanvasGroup.alpha = 0;
+        Closed(done);
+    }
+
 	public void ShowRoundInfo(UnityAction done)
 	{
 		StartCoroutine(ShowingInfo(() => CloseAsync(done)));

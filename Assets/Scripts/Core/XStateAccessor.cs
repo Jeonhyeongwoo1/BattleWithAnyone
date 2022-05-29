@@ -19,7 +19,5 @@ public partial class XState
     //Not Observered
     public int totalDamangeReceived { get => m_TotalDamangeReceived; set { m_TotalDamangeReceived = value; } }
     public int totalTakeDamange { get => m_TotalTakeDamange; set { m_TotalTakeDamange = value; } }
-    public int totalShootBulletCount { get=> m_TotalShootBulletCount; set { m_TotalShootBulletCount = value;}}
-    public float totalBulletHitCount { get => m_TotalBulletHitCount; set { m_TotalBulletHitCount = value; } }
 
 }

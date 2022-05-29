@@ -131,7 +131,7 @@ public class ObjectPoolManager : MonoBehaviourPunCallbacks
         ObjectPool pool = null;
         if (!m_ObjectPoolManager.TryGetValue(key, out pool))
         {
-            Debug.LogError(string.Format("There isn't {0}", key));
+            Debug.LogWarning(string.Format("There isn't {0}", key));
             return;
         }
 

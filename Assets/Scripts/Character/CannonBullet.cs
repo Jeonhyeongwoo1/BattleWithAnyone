@@ -62,21 +62,13 @@ public class CannonBullet : BulletBase
                 GameObject p = PhotonNetwork.Instantiate(XSettings.bulletPath + attribute.junkrat.secondBall.name, transform.position, Quaternion.identity, 0);
                 if (p.TryGetComponent<Pellet>(out var pellet))
                 {
-                    pellet.Shoot(attribute.junkrat.secondBallDamage, direction, attribute.junkrat.maxSecondLifeTime, attribute.junkrat.secondColliderRange, range, attribute.junkrat.secondBallForce, scale, true, UpdateHitCount);
+                    pellet.Shoot(attribute.junkrat.secondBallDamage, direction, attribute.junkrat.maxSecondLifeTime, attribute.junkrat.secondColliderRange, range, attribute.junkrat.secondBallForce, scale, true);
                 }
             }
         }
 
         PlayCollisionEffect();
         BulletDisable();
-    }
-
-    void UpdateHitCount(bool isHit)
-    {
-        if (isHit)
-        {
-            Core.state.totalBulletHitCount += (1 / attribute.junkrat.secondBallCount);
-        }
     }
 
     void BulletDisable()
@@ -99,8 +91,6 @@ public class CannonBullet : BulletBase
             if (!view.IsMine)
             {
                 int damage = m_CannonAttirbute.damage;
-                Core.state.totalTakeDamange += damage;
-                Core.state.totalBulletHitCount++;
                 photonView.RPC(nameof(TakeDamange), RpcTarget.Others, damage);
             }
         }

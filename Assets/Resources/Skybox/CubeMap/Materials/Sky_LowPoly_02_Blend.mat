@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Sky_LowPoly_02_Blend
   m_Shader: {fileID: 4800000, guid: 7705790d9e8e16344ad5d7960c568904, type: 3}
-  m_ShaderKeywords: _ENABLEROTATION_ON
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -61,13 +61,13 @@ Material:
     - _Blend: 0
     - _BumpScale: 1
     - _CubemapPosition: 0
-    - _CubemapTransition: 0.2
+    - _CubemapTransition: 0
     - _Cubemapp: 1
     - _Cull: 2
     - _Cutoff: 0.5
     - _DstBlend: 0
     - _EnableFog: 0
-    - _EnableRotation: 1
+    - _EnableRotation: 0
     - _EnvironmentReflections: 1
     - _Exposure: 1.19
     - _FogFill: 0
@@ -88,8 +88,8 @@ Material:
     - _OcclusionStrength: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Rotation: 60
-    - _RotationSpeed: 2
+    - _Rotation: 0
+    - _RotationSpeed: 0
     - _Rotationn: 1
     - _SkyboxExtended: 1
     - _Smoothness: 0.5

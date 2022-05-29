@@ -5,13 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class ScenarioDirector : MonoBehaviour
 {
-	public static bool scenarioReady { get; set; }
+    public static bool scenarioReady { get; set; }
 
+    public IScenario currentScenario { get => m_CurrentScenario; set => m_CurrentScenario = value; }
+    public IScenario previousScenario { get => m_PreviousScenario; set => m_PreviousScenario = value; }
 	public bool logSetting = true;
+
 	IScenario m_PreviousScenario = null;
 	IScenario m_CurrentScenario = null;
 
-	public void OnScenarioAwaked(IScenario scenario)
+    public string GetCurScenarioName() => m_CurrentScenario.scenarioName;
+
+    public void OnScenarioAwaked(IScenario scenario)
 	{
 		if (scenarioReady)
 		{
@@ -36,11 +41,6 @@ public class ScenarioDirector : MonoBehaviour
 		m_PreviousScenario = m_CurrentScenario;
 		OnScenarioPrepare(m_PreviousScenario, scenario);
 	}
-
-	public IScenario GetCurScenario() => m_CurrentScenario;
-	public IScenario GetPreScenario() => m_PreviousScenario;
-
-	public string GetCurScenarioName() => m_CurrentScenario.scenarioName;
 
 	void OnScenarioPrepare(IScenario from, IScenario to)
 	{

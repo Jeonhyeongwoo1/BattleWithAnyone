@@ -100,8 +100,6 @@ public class Bullet : BulletBase
                         if(!view.IsMine)
                         {
                             int damage = attribute.pistol.damage;
-                            Core.state.totalTakeDamange += damage;
-                            Core.state.totalBulletHitCount++;
                             photonView.RPC(nameof(TakeDamange), RpcTarget.Others, damage);
                         }
                     }

@@ -24,7 +24,7 @@ public class Signup : MonoBehaviour
 	[SerializeField] Text m_CheckTelephone;
 
 	bool m_IsCheckedUserId = false;
-
+	
 	public void Open()
 	{
 		gameObject.SetActive(true);

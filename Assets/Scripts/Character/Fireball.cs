@@ -46,8 +46,6 @@ public class Fireball : BulletBase
             if (!view.IsMine)
             {
                 BulletAttribute.Fireball f = attribute.fireball;
-                Core.state.totalTakeDamange += f.damage;
-                Core.state.totalBulletHitCount++;
                 photonView.RPC(nameof(TakeDamange), RpcTarget.Others, attribute.fireball.damage, f.residualfireDuration, f.residualfireDamage, f.residualfireDamageInterval);
             }
         }

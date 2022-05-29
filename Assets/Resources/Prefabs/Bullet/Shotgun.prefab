@@ -39927,7 +39927,7 @@ MonoBehaviour:
     shotgun:
       fwdForce: 35
       damage: 3
-      vAngle: {x: 3, y: 8, z: 3}
+      vAngle: {x: 4, y: 8, z: 3}
       pelletLifeTime: 2
       pellets:
       - {fileID: 219085026045097760}
