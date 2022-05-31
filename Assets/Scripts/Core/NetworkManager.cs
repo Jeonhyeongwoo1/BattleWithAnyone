@@ -10,25 +10,29 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
 
     private Member m_Member;
-	public Member member
-	{
-		get => m_Member;
-		set
-		{
+    public Member member
+    {
+        get => m_Member;
+        set
+        {
             m_Member = value;
-			PhotonNetwork.NickName = member.mbr_id;
-		}
-	}
+            PhotonNetwork.NickName = member.mbr_id;
+        }
+    }
 
-	float m_NetworkMaxWaitTime = 10f;
-	bool m_IsConnectSuccessed = false;
+    float m_NetworkMaxWaitTime = 10f;
+    bool m_IsConnectSuccessed = false;
 
-	public void Log(string message)
-	{
-		Debug.Log(message);
-	}
+    public void Log(string message)
+    {
+        if (XSettings.networkManagerLog)
+        {
+            Debug.Log(message);
+        }
 
-	public void ReqFindId(string email, string userName, UnityAction<string> success, UnityAction<string> fail)
+    }
+
+    public void ReqFindId(string email, string userName, UnityAction<string> success, UnityAction<string> fail)
     {
         string url = Core.settings.url + "/findId/" + email + "/" + userName;
 
@@ -246,25 +250,25 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator WaitingConnectedToMasterServer(UnityAction done)
-	{
-		float elapsed = 0;
-		while (PhotonNetwork.NetworkClientState != ClientState.ConnectedToMasterServer)
-		{
-			if (elapsed > m_NetworkMaxWaitTime)
-			{
-				NoticePopup.content = MessageCommon.Get("network.failed");
-				Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-				Core.scenario.OnLoadScenario(nameof(ScenarioLogin));
-				BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
-				yield break;
-			}
+    {
+        float elapsed = 0;
+        while (PhotonNetwork.NetworkClientState != ClientState.ConnectedToMasterServer)
+        {
+            if (elapsed > m_NetworkMaxWaitTime)
+            {
+                NoticePopup.content = MessageCommon.Get("network.failed");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                Core.scenario.OnLoadScenario(nameof(ScenarioLogin));
+                BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
+                yield break;
+            }
 
-			elapsed += Time.deltaTime;
-			yield return null;
-		}
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
 
-		done?.Invoke();
-	}
+        done?.Invoke();
+    }
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.

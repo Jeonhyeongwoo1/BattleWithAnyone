@@ -21,6 +21,14 @@ public class ModelDirector : MonoBehaviour
     IModel m_LoadedModel = null;
     UnityAction<Scene, LoadSceneMode> m_SceneLoaded;
 
+    void Log(string message)
+    {
+        if(XSettings.modelDirectorLog)
+        {
+            Debug.Log(message);
+        }
+    }
+
     public void Ensure(IModel model, UnityAction done = null)
     {
         string name = nameof(model);
@@ -28,7 +36,7 @@ public class ModelDirector : MonoBehaviour
         Scene scene = SceneManager.GetSceneByName(name);
         if (scene.isLoaded)
         {
-            Debug.Log("Model :" + name + " Is Loaded");
+            Log("Model :" + name + " Is Loaded");
             return;
         }
 
@@ -37,7 +45,7 @@ public class ModelDirector : MonoBehaviour
 
     public void OnLoaded(IModel model)
     {
-        Debug.Log("Model : " + model + "loaded");
+        Log("Model : " + model + "loaded");
         SceneManager.sceneLoaded -= m_SceneLoaded;
         m_LoadedModel = model;
         model.LoadedModel();
@@ -45,7 +53,7 @@ public class ModelDirector : MonoBehaviour
 
     public void Unloaded(IModel model)
     {
-        Debug.Log("Model : " + model + "Unloaded");
+        Log("Model : " + model + "Unloaded");
         m_LoadedModel = null;
         model.UnLoadModel();
     }
@@ -68,7 +76,7 @@ public class ModelDirector : MonoBehaviour
         Scene scene = SceneManager.GetSceneByName(name);
         if (!scene.isLoaded)
         {
-            Debug.Log("Model :" + name + " Is Unloaded");
+            Log("Model :" + name + " Is Unloaded");
             done?.Invoke();
             return;
         }
@@ -92,7 +100,7 @@ public class ModelDirector : MonoBehaviour
         Scene scene = SceneManager.GetSceneByName(name);
         if (!scene.isLoaded)
         {
-            Debug.Log("Model :" + name + " Is Unloaded");
+            Log("Model :" + name + " Is Unloaded");
             return;
         }
 

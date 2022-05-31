@@ -56,13 +56,13 @@ public class PlugDirector : MonoBehaviour
     public bool Has<T>() where T : IPlugable => Has(typeof(T).Name);
     public void Loaded(IPlugable plugable)
     {
-        Debug.Log("On Loaded Plugable : " + plugable.plugName);
+        Log("On Loaded Plugable : " + plugable.plugName);
         m_Loaded.Add(plugable);
     }
 
     public void Unloaded(IPlugable plugable)
     {
-        Debug.Log("On Unloaded plugable : " + plugable.plugName);
+        Log("On Unloaded plugable : " + plugable.plugName);
         m_Loaded.Remove(plugable);
     }
 
@@ -94,6 +94,14 @@ public class PlugDirector : MonoBehaviour
     {
         IPlugable plugable = m_Loaded.Find((v) => v.plugName == name);
         return plugable != null;
+    }
+
+    void Log(string message)
+    {
+        if(XSettings.plugDirectorLog)
+        {
+            Debug.Log(message);
+        }
     }
 
     IEnumerator UnloadingSceneAsync(string name, UnityAction done = null)

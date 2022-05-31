@@ -23,7 +23,10 @@ public class RoomChat : MonoBehaviour, IChatClientListener
 
     public void Log(string message)
     {
-        Debug.Log(message);
+        if (XSettings.roomChatLog)
+        {
+            Debug.Log(message);
+        }
     }
 
     public void OnSendMessage(string message)

@@ -15,6 +15,13 @@ public class XSettings : MonoBehaviour
 	public string url => profile == Profile.dev ? m_DevUrl : m_LocalUrl;
 	public Profile profile;
 
+	public static bool scenarioDirectorLog = false;
+	public static bool gamePlayManagerLog = false;
+	public static bool modelDirectorLog = false;
+	public static bool plugDirectorLog = false;
+	public static bool networkManagerLog = false;
+	public static bool roomChatLog = false;
+
     public const string messageCommonPath = "Jsons/Message-common-kr";
 
     /*

@@ -28,7 +28,6 @@ public class Core : Singleton<Core>
 
     static UnityEvent m_EnsureDone = new UnityEvent();
 
-    // static methods
     static public void Ensure(UnityAction done = null)
     {
         if (Core.I)
@@ -38,6 +37,7 @@ public class Core : Singleton<Core>
         }
 
         if (done != null) { m_EnsureDone.AddListener(done); }
+        // Core Loaded가 항상되어있다.
         /*
                 Scene coreScene = SceneManager.GetSceneByName(nameof(Core));
                 if (coreScene == null || !coreScene.IsValid())

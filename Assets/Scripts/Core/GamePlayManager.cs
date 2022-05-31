@@ -51,9 +51,12 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 		}
 	}
 	
-	public void Log(string message)
+	void Log(string message)
 	{
-		Debug.Log(message);
+		if(XSettings.gamePlayManagerLog)
+		{
+            Debug.Log(message);
+		}
 	}
 
 	//GamePlay Routine

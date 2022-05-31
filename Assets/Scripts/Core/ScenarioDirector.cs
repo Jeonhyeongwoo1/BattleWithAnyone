@@ -9,8 +9,7 @@ public class ScenarioDirector : MonoBehaviour
 
     public IScenario currentScenario { get => m_CurrentScenario; set => m_CurrentScenario = value; }
     public IScenario previousScenario { get => m_PreviousScenario; set => m_PreviousScenario = value; }
-	public bool logSetting = true;
-
+	
 	IScenario m_PreviousScenario = null;
 	IScenario m_CurrentScenario = null;
 
@@ -133,7 +132,7 @@ public class ScenarioDirector : MonoBehaviour
 
 	void Log(string message)
 	{
-		if (logSetting)
+		if (XSettings.scenarioDirectorLog)
 		{
 			Debug.Log(message);
 		}
