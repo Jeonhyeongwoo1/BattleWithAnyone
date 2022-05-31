@@ -18,6 +18,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
         BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
         Core.plugs.DefaultEnsure();
+        Core.plugs.Load<HomeBackground>(() => { Core.plugs.Get<HomeBackground>()?.Open(); });
         TouchInput.use = true;
         done?.Invoke();
     }
@@ -43,17 +44,22 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     public void OnScenarioStop(UnityAction done)
     {
         StopAllCoroutines();
+        Core.plugs.Unload<HomeBackground>();
         done?.Invoke();
     }
 
     public override void OnJoinedLobby()
     {
         BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
-        roomMenu.gameObject.SetActive(true);
-        userInfo.SetUserInfo(Core.networkManager.member.mbr_id);
-        userInfo.gameObject.SetActive(true);
-        m_Exit.gameObject.SetActive(true);
-        Core.audioManager.PlayBackground(AudioManager.BackgroundType.HOME);
+        Core.plugs.Get<HomeBackground>()?.ShootStandbyCamera(() =>
+        {
+            roomMenu.gameObject.SetActive(true);
+            userInfo.SetUserInfo(Core.networkManager.member.mbr_id);
+            userInfo.gameObject.SetActive(true);
+            m_Exit.gameObject.SetActive(true);
+            m_Settings.gameObject.SetActive(true);
+            Core.audioManager.PlayBackground(AudioManager.BackgroundType.HOME);
+        });
     }
 
     //Local 

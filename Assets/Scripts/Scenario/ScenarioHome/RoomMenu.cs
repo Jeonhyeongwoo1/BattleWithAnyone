@@ -142,7 +142,6 @@ public class RoomMenu : MonoBehaviourPunCallbacks
                 if (roomInfo.MaxPlayers == roomInfo.PlayerCount) { continue; } //풀방일 경우
                 
                 bool startGame = (bool)roomInfo.CustomProperties["GameStart"];
-                print(startGame);
                 if (startGame) { continue; }
 
                 OnCreateRoomInLobby(roomInfo, m_RoomContent);

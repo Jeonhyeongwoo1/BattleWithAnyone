@@ -56,6 +56,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Models/TrainingModel.unity
     guid: e4fbf8669e6424c4695b43247618c7de
+  - enabled: 1
+    path: Assets/Scenes/Plugs/HomeBackground.unity
+    guid: b6aa63cb439874815b5f1015ac4df5c9
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 7dba8cac8b0114c9592725a8d50feca4,
       type: 2}
