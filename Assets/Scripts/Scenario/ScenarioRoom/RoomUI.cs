@@ -319,6 +319,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
 
 		Core.state.masterCharacter = m_SelectedCharacter.model;
+		photonView.RPC(nameof(UpdatePlayerNames), RpcTarget.All);
         photonView.RPC(nameof(SetPlayersCharacter), RpcTarget.Others);
 		photonView.RPC(nameof(OnLoadScenarioPlay), RpcTarget.All);
 	}
@@ -365,11 +366,16 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	void OnLoadScenarioPlay()
 	{
 		BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(true);
-		Core.scenario.OnLoadScenario(nameof(ScenarioPlay));
-		gameObject.SetActive(false);
+		Core.scenario.OnLoadScenario(nameof(ScenarioPlay), ()=> gameObject.SetActive(false));
 	}
 
-	[PunRPC]
+    [PunRPC]
+    void UpdatePlayerNames()
+    {
+        Core.gameManager.playerName = PhotonNetwork.PlayerList[1]?.NickName;
+    }
+
+    [PunRPC]
 	public void RoomMapSetInfo(string map, int numberOfRound, int roundTime) => m_RoomMapInfo.SetInfo(map, numberOfRound, roundTime);
 
 	[PunRPC]

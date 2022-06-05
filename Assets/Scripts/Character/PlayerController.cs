@@ -273,11 +273,14 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     public void Die()
     {
         m_State = State.DIE;
-        m_Animator.SetTrigger(m_AniParam.die);
+        m_Animator.SetBool(m_AniParam.die, true);
         m_PlayerAudio.PlayOneShot(m_DieClip);
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.Others };
+        PhotonNetwork.RaiseEvent((byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE, null, raiseEventOptions, SendOptions.SendReliable);
+
         object content = PhotonNetwork.IsMasterClient;
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-        PhotonNetwork.RaiseEvent((byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE, content, raiseEventOptions, SendOptions.SendReliable);
+        RaiseEventOptions raiseEvent = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        PhotonNetwork.RaiseEvent((byte)PhotonEventCode.ROUNDDONE, content, raiseEvent, SendOptions.SendReliable);
     }
 
     public void Victory()
@@ -428,7 +431,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             case (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE:
                 //Victory
-                if (m_State != State.DIE && photonView.IsMine)
+                if (photonView.IsMine)
                 {
                     Victory();
                 }
@@ -444,7 +447,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
                 else
                 {
                     m_State = State.DIE;
-                    m_Animator.SetTrigger(m_AniParam.die);
+                    m_Animator.SetBool(m_AniParam.die, true);
                     m_PlayerAudio.PlayOneShot(m_DieClip);
                 }
                 
@@ -533,13 +536,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     [PunRPC]
     public void NotifyResetState()
     {
-        m_Animator.SetTrigger(m_AniParam.idle);
         m_State = State.IDLE;
         Core.state.health = 100;
         Core.state.bulletCount = m_COption.bulletCount;
         m_NoramlizedRotate = Vector3.zero;
         m_NormalizedMove = Vector3.zero;
         m_MoveParam = Vector2.zero;
+        m_Animator.SetBool(m_AniParam.die, false);
     }
 
     [PunRPC]

@@ -15,12 +15,12 @@ public class XSettings : MonoBehaviour
 	public string url => profile == Profile.dev ? m_DevUrl : m_LocalUrl;
 	public Profile profile;
 
-	public static bool scenarioDirectorLog = false;
-	public static bool gamePlayManagerLog = false;
-	public static bool modelDirectorLog = false;
-	public static bool plugDirectorLog = false;
-	public static bool networkManagerLog = false;
-	public static bool roomChatLog = false;
+	public static bool scenarioDirectorLog = true;
+	public static bool gamePlayManagerLog = true;
+	public static bool modelDirectorLog = true;
+	public static bool plugDirectorLog = true;
+	public static bool networkManagerLog = true;
+	public static bool roomChatLog = true;
 
     public const string messageCommonPath = "Jsons/Message-common-kr";
 
@@ -29,7 +29,7 @@ public class XSettings : MonoBehaviour
 	*	PhotonNetwork Resource Path
 	*   -------------------------------------------------------
 	*/
-    public const string chracterPath = "Prefabs/Character/";
+    public const string chracterPath = "Prefabs/Characters/";
 	public const string bulletPath = "Prefabs/Bullet/";
 	public const string bulletImpactPath = "Prefabs/BulletImpact/";
 	public const string itemPath = "Prefabs/InteractableItem/";

@@ -2613,6 +2613,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1362e55f271fcaf4aafe84eff1832d2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAppleSignup: 0
   m_Id: {fileID: 746516719}
   m_Password: {fileID: 1031931351}
   m_UserName: {fileID: 6123402}
@@ -10482,11 +10483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88028528945ac4b2da762650c2cca7f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  appleUser: 
-  idToken: 
-  authCode: 
-  rawNonce: 
-  nonce: 
+  m_Signup: {fileID: 555856245}
 --- !u!114 &414791308346633949
 MonoBehaviour:
   m_ObjectHideFlags: 0

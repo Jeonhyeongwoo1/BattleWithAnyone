@@ -18,9 +18,12 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(false);
         BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
         Core.plugs.DefaultEnsure();
-        Core.plugs.Load<HomeBackground>(() => { Core.plugs.Get<HomeBackground>()?.Open(); });
         TouchInput.use = true;
-        done?.Invoke();
+        Core.plugs.Load<HomeBackground>(() =>
+        {
+            Core.plugs.Get<HomeBackground>()?.Open();
+            done?.Invoke();
+        });
     }
 
     public void OnScenarioStandbyCamera(UnityAction done)
@@ -30,7 +33,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
 
 	public void OnScenarioStart(UnityAction done)
 	{
-		if (Core.networkManager.member != null && PhotonNetwork.IsConnected)
+        if (Core.networkManager.member != null && PhotonNetwork.IsConnected)
 		{
 			Core.networkManager.WaitStateToConnectedToMasterServer(() => PhotonNetwork.JoinLobby());
 			done?.Invoke();
@@ -54,6 +57,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         Core.plugs.Get<HomeBackground>()?.ShootStandbyCamera(() =>
         {
             roomMenu.gameObject.SetActive(true);
+            roomMenu.OnEnableRoomMenu();
             userInfo.SetUserInfo(Core.networkManager.member.mbr_id);
             userInfo.gameObject.SetActive(true);
             m_Exit.gameObject.SetActive(true);
@@ -65,7 +69,12 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     //Local 
     void JoinLobby()
     {
-        Core.networkManager.member = MemberFactory.Get();
+        if(XSettings.Profile.local == Core.settings.profile)
+        {
+            Core.networkManager.member = MemberFactory.Get();
+        }
+       
+        PhotonNetwork.NickName = Core.networkManager.member.mbr_id;
         PhotonNetwork.JoinLobby();
     }
 

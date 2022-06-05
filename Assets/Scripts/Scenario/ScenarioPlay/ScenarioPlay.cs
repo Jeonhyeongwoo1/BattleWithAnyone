@@ -19,7 +19,7 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
     {   
         Core.plugs.DefaultEnsure();
         Core.audioManager.StopBackground();
-        if (!PhotonNetwork.IsConnectedAndReady && Core.networkManager.member == null) //DEV
+        if (!PhotonNetwork.IsConnectedAndReady && Core.networkManager.member == null)
         {
             BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
             Core.networkManager.ConnectPhotonNetwork(() => PhotonNetwork.JoinLobby());
@@ -47,6 +47,7 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
 
 	public void OnScenarioStart(UnityAction done)
     {
+        Core.gameManager.onGameStarted += () => m_IsScenarioStarted = true;
         Core.gameManager.OnGamePrepare();
         done?.Invoke();
     }
@@ -68,8 +69,11 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
 
     public override void OnJoinedLobby()
     {
-        DevPhotonNetwork dev = new DevPhotonNetwork();
-        dev.CreateRoom();
+        if(XSettings.Profile.local == Core.settings.profile)
+        {
+            DevPhotonNetwork dev = new DevPhotonNetwork();
+            dev.CreateRoom();
+        }
     }
 
     public override void OnCreatedRoom()

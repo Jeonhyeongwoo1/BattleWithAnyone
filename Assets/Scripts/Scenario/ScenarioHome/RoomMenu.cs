@@ -20,6 +20,7 @@ public class RoomMenu : MonoBehaviourPunCallbacks
     [SerializeField] Transform m_Room;
     [SerializeField] Button m_CreateRoom;
     [SerializeField] Transform m_RoomContent;
+    [SerializeField] GameObject m_Form;
 
     bool m_IsRefreshing = false;
     Dictionary<string, RoomInfo> m_CachedRoomList = new Dictionary<string, RoomInfo>();
@@ -27,12 +28,13 @@ public class RoomMenu : MonoBehaviourPunCallbacks
 
     public void OnEnableRoomMenu()
     {
+        m_Form.SetActive(true);
         m_Room.gameObject.SetActive(true);
         m_CreateRoom.gameObject.SetActive(true);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
-    {
+    {       
         if (m_IsRefreshing)
         {
             foreach (RoomInfo v in roomList)

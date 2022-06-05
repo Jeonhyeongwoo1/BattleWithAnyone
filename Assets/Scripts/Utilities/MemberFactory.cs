@@ -27,11 +27,15 @@ public class MemberFactory
 {
 	public static Member Get()
 	{
+		LocalMember member = null;
 		switch (Core.settings.profile)
 		{
 			case XSettings.Profile.local:
-				LocalMember member = new LocalMember("testMaster", "1234", "010-1234-1234", "guddn1234k@naver.com", "testPlayer");
+				member = new LocalMember("testMaster", "1234", "010-1234-1234", "guddn1234k@naver.com", "testPlayer");
 				return member.Get();
+            case XSettings.Profile.dev:
+                member = new LocalMember("testMaster", "1234", "010-1234-1234", "guddn1234k@naver.com", "testPlayer");
+                return member.Get();
 			default:
 				return null;
 		}

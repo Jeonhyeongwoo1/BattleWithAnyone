@@ -73,8 +73,6 @@ public class XTheme : MonoBehaviour, IPlugable
     [SerializeField] Vector3 m_CharacterInfo_Open_Pos = new Vector3(0, -165, 0);
     [SerializeField] Vector3 m_CharacterInfo_Close_Pos = new Vector3(0, -300, 0);
 
-    public const string InteractableJump = "Jump";
-
     public void SetPlayersName(string master, string player)
     {
         m_MasterName.text = master;

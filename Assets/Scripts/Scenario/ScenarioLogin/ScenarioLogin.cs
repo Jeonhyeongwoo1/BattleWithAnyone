@@ -57,12 +57,12 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         string id = m_Id.text;
         string password = m_Password.text;
 
-        if (Core.settings.profile == XSettings.Profile.local)
-        {
-			Core.networkManager.member = MemberFactory.Get();
-            Core.scenario.OnLoadScenario(nameof(ScenarioHome));
-            return;
-        }
+        // if (Core.settings.profile == XSettings.Profile.local)
+        // {
+		// 	Core.networkManager.member = MemberFactory.Get();
+        //     Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+        //     return;
+        // }
 
         Popups popups = Core.plugs.Get<Popups>();
         NoticePopup notice = popups.Get<NoticePopup>();
@@ -82,7 +82,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
-
+        
         Core.networkManager.ReqLogin(id, password, LoginSuccessed, LoginFailed);
     }
 
@@ -105,13 +105,9 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         //Error
         m_Id.text = null;
         m_Password.text = null;
-    }
 
-    void OnAppleLoginSuccessed()
-    {
-		Core.networkManager.member = MemberFactory.Get(); //우선은 더미데이터로 설정
-        Core.audioManager.StopBackground();
-        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+        NoticePopup.content = MessageCommon.Get("login.failed");
+        Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
     }
 
     private void Start()
@@ -124,7 +120,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
         m_LoginBtn.onClick.AddListener(OnLogin);
 #if UNITY_IOS
-        m_AppleLogin.GetComponent<Button>().onClick.AddListener(() => m_AppleLogin.Login(OnAppleLoginSuccessed));
+        m_AppleLogin.GetComponent<Button>().onClick.AddListener(() => m_AppleLogin.Login());
 #endif
     }
 }

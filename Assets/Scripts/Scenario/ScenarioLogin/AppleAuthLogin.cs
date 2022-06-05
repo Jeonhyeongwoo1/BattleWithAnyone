@@ -7,20 +7,14 @@ using AppleAuth.Native;
 using System.Collections;
 using UnityEngine;
 using System.Text;
-using System.Security.Cryptography;
 using UnityEngine.Events;
+using System;
 
 public class AppleAuthLogin : MonoBehaviour
 {
-    public string appleUser;
-    public string idToken;
-    public string authCode;
-    public string rawNonce;
-    public string nonce;
+    [SerializeField] Signup m_Signup;
 
-    IAppleAuthManager m_AppleAuthManager;
-
-    public void Login(UnityAction done)
+    public void Login()
     {
         if (!AppleAuthManager.IsCurrentPlatformSupported)
         {
@@ -30,127 +24,94 @@ public class AppleAuthLogin : MonoBehaviour
         }
 
         var deserializer = new PayloadDeserializer();
-        m_AppleAuthManager = new AppleAuthManager(deserializer);
-
-        if (m_AppleAuthManager == null) { return; }
-
-        m_AppleAuthManager.SetCredentialsRevokedCallback(result =>
+        IAppleAuthManager appleAuthManager = new AppleAuthManager(deserializer);
+        appleAuthManager.SetCredentialsRevokedCallback(result =>
         {
             NoticePopup.content = MessageCommon.Get("login.apple.failed");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             Debug.LogError("Received revoke callback " + result);
         });
 
-        StartCoroutine(LoginProcess(done));
-    }
-
-    // Nonce는 SHA256으로 만들어서 전달해야함
-    private static string GenerateNonce(string _rawNonce)
-    {
-        SHA256 sha = new SHA256Managed();
-        StringBuilder sb = new StringBuilder();
-        byte[] hash = sha.ComputeHash(Encoding.ASCII.GetBytes(_rawNonce));
-        foreach (var b in hash) sb.Append(b.ToString("x2"));
-        return sb.ToString();
-    }
-
-    IEnumerator LoginProcess(UnityAction done)
-    {
-        var quickLoginArgs = new AppleAuthQuickLoginArgs();
-        bool isSuccessed = false;
-        bool isDone = false;
-
-        rawNonce = System.Guid.NewGuid().ToString();
-        nonce = GenerateNonce(rawNonce);
-
-        m_AppleAuthManager.QuickLogin(
-            quickLoginArgs,
-            credential =>
-            {
-                var appleIdCredential = credential as IAppleIDCredential;
-                if (appleIdCredential != null)
-                {
-                    appleUser = appleIdCredential.User;
-                    authCode = Encoding.UTF8.GetString(appleIdCredential.AuthorizationCode);
-                    idToken = Encoding.UTF8.GetString(appleIdCredential.IdentityToken);
-                    isSuccessed = true;
-                }
-                else
-                {
-                    isSuccessed = false;
-                }
-
-                isDone = true;
-            },
-            error =>
-            {
-                var authorizationErrorCode = error.GetAuthorizationErrorCode();
-                NoticePopup.content = MessageCommon.Get("login.apple.failed");
-                Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
-                Debug.LogError("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
-                isSuccessed = false;
-                isDone = true;
-            });
-
-        while (!isDone) { yield return null; }
-
-        if (isSuccessed)
-        {
-            Core.networkManager.member = MemberFactory.Get();
-            done?.Invoke();
-            yield break;
-        }
-
-        isDone = false;
-
         var loginArgs = new AppleAuthLoginArgs(LoginOptions.IncludeEmail | LoginOptions.IncludeFullName);
-
-        m_AppleAuthManager.LoginWithAppleId(
+        Core.networkManager.appleAuthManager = appleAuthManager;
+        appleAuthManager.LoginWithAppleId(
             loginArgs,
             credential =>
             {
                 var appleIdCredential = credential as IAppleIDCredential;
-                if (appleIdCredential != null)
-                {
-                    appleUser = appleIdCredential.User;
-                    authCode = Encoding.UTF8.GetString(appleIdCredential.AuthorizationCode);
-                    idToken = Encoding.UTF8.GetString(appleIdCredential.IdentityToken);
-                    isSuccessed = true;
-                }
-                else
-                {
-                    isSuccessed = false;
-                }
-
+                NetworkManager.AppleAuth appleAuth = new NetworkManager.AppleAuth();
+                appleAuth.appleUser = appleIdCredential.User;
+                appleAuth.authCode = Encoding.UTF8.GetString(appleIdCredential.AuthorizationCode);
+                appleAuth.idToken = Encoding.UTF8.GetString(appleIdCredential.IdentityToken);
+                Core.networkManager.appleAuth = appleAuth;
+                Core.networkManager.ReqLoginAppleAuth(appleAuth.appleUser, LoginSuccessed, LoginFailed);
             },
             error =>
             {
                 NoticePopup.content = MessageCommon.Get("login.apple.failed");
                 Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
-                Debug.LogWarning("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
-                isSuccessed = false;
-                isDone = true;
+                Core.networkManager.appleAuthManager = null;
+                Debug.LogError("Apple Login Error : " + authorizationErrorCode);
             });
-
-        while (!isDone) { yield return null; }
-
-        if (isSuccessed)
-        {
-            Core.networkManager.member = MemberFactory.Get();
-            done?.Invoke();
-            yield break;
-        }
     }
 
-    private void Update()
+    public void LoginSuccessed(string data)
     {
-        if (m_AppleAuthManager != null)
+        if (string.IsNullOrEmpty(data))
         {
-            m_AppleAuthManager.Update();
+            NoticePopup.content = MessageCommon.Get("find.failedmember");
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
+            return;
         }
+
+        try
+        {
+            Member member = JsonUtility.FromJson<Member>(data);
+            Core.networkManager.member = member;
+            print(member.mbr_id);
+        }
+        catch (Exception e)
+        {
+            NoticePopup.content = MessageCommon.Get("login.apple.failed");
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
+            Debug.LogError("Apple Login Error: " + e);
+            return;
+        }
+
+        Core.networkManager.ReqUpdateAppleToken(Core.networkManager.appleAuth.idToken, Core.networkManager.appleAuth.appleUser, UpdateTokenSuccessed, UpdateTokenFailed);
     }
 
+    void UpdateTokenFailed(string error)
+    {
+        Core.networkManager.member = null;
+        NoticePopup.content = MessageCommon.Get("login.apple.failed");
+        Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
+        Debug.LogError("Apple Login Failed : " + error);
+    }
+
+    void UpdateTokenSuccessed(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            NoticePopup.content = MessageCommon.Get("login.apple.failed");
+            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
+            Debug.LogError("Apple Login Failed : " + data);
+            return;
+        }
+
+        Core.audioManager.StopBackground();
+        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+    }
+
+    public void LoginFailed(string error)
+    {
+        //Create new memeber
+        NoticePopup.content = MessageCommon.Get("login.createmember");
+        Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
+        m_Signup.gameObject.SetActive(true);
+        m_Signup.isAppleSignup = true;
+    }
 
 }
 #endif

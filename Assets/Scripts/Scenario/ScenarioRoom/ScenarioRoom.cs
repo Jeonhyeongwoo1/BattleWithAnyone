@@ -87,9 +87,12 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 
 	public override void OnJoinedLobby()
 	{
-		devPhotonNetwork = new DevPhotonNetwork();
-		devPhotonNetwork.CreateRoom();
-	}
+        if (XSettings.Profile.local == Core.settings.profile)
+        {
+            DevPhotonNetwork dev = new DevPhotonNetwork();
+            dev.CreateRoom();
+        }
+    }
 
 	public override void OnCreatedRoom()
 	{

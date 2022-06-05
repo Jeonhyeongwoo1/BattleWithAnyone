@@ -6,12 +6,20 @@ using System;
 using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
+using UnityEngine.SceneManagement;
 
 public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
 	public enum State { None, Prepare, Prepared, RoundPlaying, RoundDone, GameDone, GameEnd }
 
     public string roomName { get; set; }
+
+    string m_PlayerName;
+    public string playerName
+    {
+        get => m_PlayerName;
+        set => m_PlayerName = value;
+    }
 
     State m_State;
 	public State state
@@ -20,11 +28,17 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
         set => m_State = value;
     }
 
+    UnityAction m_OnGameStarted;
+    public UnityAction onGameStarted
+    {
+        get => m_OnGameStarted;
+        set => m_OnGameStarted = value;
+    }
+
 	public DayAndNight lightEnvironment => m_LightEnvironment;
 
 	[SerializeField] float m_CharacterDieWaitTime = 3f;
 	[SerializeField] DayAndNight m_LightEnvironment;
-	int m_CurRound = 0;
 
 	public void OnEvent(EventData photonEvent)
 	{
@@ -34,7 +48,7 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 				m_State = State.RoundDone;
                 Core.state.masterWinCount++; //타임아웃일 경우에는 방장이 승리한다.
                 break;
-			case (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE:
+			case (byte)PhotonEventCode.ROUNDDONE:
                 object data = photonEvent.CustomData;
                 bool isMaster = (bool)data;
                 if (isMaster)
@@ -76,7 +90,6 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         int numberOfRound = Core.state.mapPreferences.numberOfRound;
         Core.state.masterWinCount = numberOfRound;
-		m_CurRound = numberOfRound;
 		StopAllCoroutines();
         Popups popups = Core.plugs.Get<Popups>();
 		popups.StopAllCoroutines();
@@ -86,6 +99,42 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 		
 		OnRoundDone();
 	}
+
+    public void OnOtherPlayerDisconnectedDuringLoading()
+    {
+        //강제로 제어....
+        Scene scene = SceneManager.GetSceneByName(nameof(ScenarioRoom));
+        if (scene != null)
+        {
+            SceneManager.UnloadSceneAsync(nameof(ScenarioRoom));
+        }
+
+        scene = SceneManager.GetSceneByName(nameof(ScenarioPlay));
+        if (scene != null)
+        {
+            SceneManager.UnloadSceneAsync(nameof(ScenarioPlay));
+        }
+
+        Core.scenario.previousScenario = null;
+        Core.scenario.currentScenario = null;
+
+        //GameLoading 중에 플레이어가 나가게되면 룸을 떠나고 Home 화면으로 이동한다.
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+
+        if (Core.models.Has())
+        {
+            IModel model = Core.models.Get();
+            Core.models.Unload(model.Name);
+        }
+
+        NoticePopup.content = MessageCommon.Get("game.player.disconnected");
+        Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+        Core.networkManager.WaitStateToConnectedToMasterServer(() => Core.scenario.OnLoadScenario(nameof(ScenarioHome)));
+        BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(true);
+    }
 
     void OnGamePrepared()
 	{
@@ -103,7 +152,7 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 			theme.bullet = player.bulletCount.ToString();
         }
 		
-		theme.SetPlayersName(PhotonNetwork.MasterClient.NickName, PhotonNetwork.IsMasterClient ? PhotonNetwork.MasterClient.NickName : PhotonNetwork.NickName);
+		theme.SetPlayersName(PhotonNetwork.MasterClient?.NickName, m_PlayerName);
 		Core.plugs.Get<XTheme>().Open(OnGameStart);
 	}
 
@@ -111,10 +160,10 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 	{
 		Log("Game Start");
 		m_State = State.RoundPlaying;
-		m_CurRound++;
 		XTheme theme = Core.plugs.Get<XTheme>();
 		theme.Crosshair.SetActive(true);
 		theme.gameTimer.StartTimer();
+		m_OnGameStarted?.Invoke();
 		StartCoroutine(GamePlaying(OnRoundDone));
 	}
 
@@ -133,12 +182,15 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
 		XTheme theme = Core.plugs.Get<XTheme>();
 		theme.Close();
-		if (m_CurRound < numberOfRound)
+		int playerWinCount = Core.state.playerWinCount;
+		int masterWinCount = Core.state.masterWinCount;
+		int round = playerWinCount > masterWinCount ? playerWinCount : masterWinCount;
+		if (round < numberOfRound)
 		{
 			IModel model = Core.models.Get();
 			Transform[] createPoints = model.playerCreatePoints;
 			Transform tr = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter : Core.state.playerCharacter;
-            int index = PhotonNetwork.IsMasterClient ? 0 : 1;
+			int index = PhotonNetwork.IsMasterClient ? 0 : 1;
             tr.SetPositionAndRotation(createPoints[index].position, createPoints[index].rotation);
             if (tr.TryGetComponent<PlayerController>(out var player))
             {
@@ -184,7 +236,6 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 		Log("Game End");
 
         m_State = State.None;
-        m_CurRound = 0;
         Core.state.masterWinCount = 0;
         Core.state.playerWinCount = 0;
 		Core.state.totalDamangeReceived = 0;
@@ -192,8 +243,11 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
         Core.state.masterCharacter = null;
         Core.state.playerCharacter = null;
         Core.state.mapPreferences = null;
-		string model = Core.models.Get().Name;
+		string model = Core.models.Get()?.Name;
 		Core.models.Unload(model);
+
+		XTheme xTheme = Core.plugs.Get<XTheme>();
+		xTheme.gameTimer?.StopTimer();
 		Core.plugs.Unload<XTheme>();
 
         PhotonNetwork.LeaveRoom();

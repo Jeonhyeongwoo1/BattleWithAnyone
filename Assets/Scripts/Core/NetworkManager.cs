@@ -5,23 +5,42 @@ using Photon.Realtime;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using AppleAuth;
+using System;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+
+    [Serializable]
+    public class AppleAuth
+    {
+        public string appleUser;
+        public string authCode;
+        public string idToken;
+    }
+
+    AppleAuth m_AppleAuth;
+    public AppleAuth appleAuth
+    {
+        get => m_AppleAuth;
+        set => m_AppleAuth = value;
+    }
 
     private Member m_Member;
     public Member member
     {
         get => m_Member;
-        set
-        {
-            m_Member = value;
-            PhotonNetwork.NickName = member.mbr_id;
-        }
+        set => m_Member = value;
     }
 
-    float m_NetworkMaxWaitTime = 10f;
-    bool m_IsConnectSuccessed = false;
+    IAppleAuthManager m_AppleAuthManager;
+    public IAppleAuthManager appleAuthManager
+    {
+        get => m_AppleAuthManager;
+        set => m_AppleAuthManager = value;
+    }
+
+    [SerializeField] float m_CheckTokenValueTime = 30f;
 
     public void Log(string message)
     {
@@ -30,6 +49,29 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log(message);
         }
 
+    }
+
+    public void ReqUpdateAppleToken(string token, string id, UnityAction<string> success, UnityAction<string> fail)
+    {
+        string url = Core.settings.url + "/appleUpdateToken";
+
+        WWWForm form = new WWWForm();
+        form.AddField("token", token);
+        form.AddField("id", id);
+
+        UnityWebRequest request = UnityWebRequest.Post(url, form);
+        StartCoroutine(RequestData(request, success, fail));
+    }
+
+    public void ReqLoginAppleAuth(string appleUser, UnityAction<string> success, UnityAction<string> fail)
+    {
+        string url = Core.settings.url + "/appleLogin";
+
+        WWWForm form = new WWWForm();
+        form.AddField("id", appleUser);
+
+        UnityWebRequest request = UnityWebRequest.Post(url, form);
+        StartCoroutine(RequestData(request, success, fail));
     }
 
     public void ReqFindId(string email, string userName, UnityAction<string> success, UnityAction<string> fail)
@@ -53,6 +95,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         string url = Core.settings.url + "/checkId/" + id;
 
         UnityWebRequest request = UnityWebRequest.Get(url);
+        StartCoroutine(RequestData(request, success, fail));
+    }
+
+    public void ReqAppleSignup(string id, string password, string email, string phoneNumber, string name, UnityAction<string> success, UnityAction<string> fail)
+    {
+        //if (appleAuth == null) { return; }
+
+        string url = Core.settings.url + "/appleSignup";
+
+        WWWForm form = new WWWForm();
+        form.AddField("id", id);
+        form.AddField("pw", password);
+        form.AddField("email", email);
+        form.AddField("phoneNumber", phoneNumber);
+        form.AddField("name", name);
+        form.AddField("appleUser", appleAuth.appleUser);
+        form.AddField("authCode", appleAuth.authCode);
+        form.AddField("idToken", appleAuth.idToken);
+
+        UnityWebRequest request = UnityWebRequest.Post(url, form);
         StartCoroutine(RequestData(request, success, fail));
     }
 
@@ -119,45 +181,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public IEnumerator OnOtherPlayerDisconnectedDuringLoading()
-    {
-        //강제로 제어....
-        Scene scene = SceneManager.GetSceneByName(nameof(ScenarioRoom));
-        if (scene != null)
-        {
-            SceneManager.UnloadSceneAsync(nameof(ScenarioRoom));
-        }
-
-        scene = SceneManager.GetSceneByName(nameof(ScenarioPlay));
-        if (scene != null)
-        {
-            SceneManager.UnloadSceneAsync(nameof(ScenarioPlay));
-        }
-
-        Core.scenario.previousScenario = null;
-        Core.scenario.currentScenario = null;
-
-        //GameLoading 중에 플레이어가 나가게되면 룸을 떠나고 Home 화면으로 이동한다.
-        if (PhotonNetwork.InRoom)
-        {
-            PhotonNetwork.LeaveRoom();
-        }
-
-        NoticePopup.content = MessageCommon.Get("game.player.disconnected");
-        Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-        Core.networkManager.WaitStateToConnectedToMasterServer(() => Core.scenario.OnLoadScenario(nameof(ScenarioHome)));
-        BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(true);
-        yield return null;
-    }
-
     public void ConnectPhotonNetwork(UnityAction done)
     {
+        if (PhotonNetwork.IsConnected)
+        {
+            NoticePopup.content = MessageCommon.Get("network.alreadyconnected");
+            Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+            return;
+        }
+
         StartCoroutine(ConnectingNetwork(done));
     }
 
     public void WaitStateToConnectedToMasterServer(UnityAction done)
     {
         StartCoroutine(WaitingConnectedToMasterServer(done));
+    }
+
+    public void CheckTokenValue()
+    {
+        StartCoroutine(CheckingTokenValue());
     }
 
     public override void OnDisconnected(DisconnectCause cause)
@@ -176,7 +219,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        m_IsConnectSuccessed = true;
         Log("OnConnectedToMaster");
     }
 
@@ -231,17 +273,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     IEnumerator ConnectingNetwork(UnityAction done)
     {
         float elapsed = 0;
+        float m_NetworkMaxWaitTime = 10f;
         bool o = PhotonNetwork.ConnectUsingSettings();
 
         if (!o) { Log("Failed to Network Connect. Check User Settings"); }
 
-        while (!m_IsConnectSuccessed)
+        while (!PhotonNetwork.IsConnected)
         {
             if (elapsed > m_NetworkMaxWaitTime && !o)
             {
                 Log("Failed to Network Connect");
+                NoticePopup.content = MessageCommon.Get("network.failed");
+                Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
                 yield break;
             }
+
             elapsed += Time.deltaTime;
             yield return null;
         }
@@ -252,6 +298,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     IEnumerator WaitingConnectedToMasterServer(UnityAction done)
     {
         float elapsed = 0;
+        float m_NetworkMaxWaitTime = 10f;
+
         while (PhotonNetwork.NetworkClientState != ClientState.ConnectedToMasterServer)
         {
             if (elapsed > m_NetworkMaxWaitTime)
@@ -270,11 +318,42 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         done?.Invoke();
     }
 
-    /// <summary>
-    /// Awake is called when the script instance is being loaded.
-    /// </summary>
-    void Awake()
+    IEnumerator CheckingTokenValue()
     {
+        WaitForSeconds waitForSeconds = new WaitForSeconds(m_CheckTokenValueTime);
+        
+        string token = appleAuth.idToken;
+        string url = Core.settings.url + "/CheckToken" + token;
+
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        while(true)
+        {
+            yield return request.SendWebRequest();
+
+            if (request.isDone)
+            {
+                string value = request.downloadHandler.text;
+                if(token != value)
+                {
+                    NoticePopup.content = MessageCommon.Get("network.duplicatelogin");
+                    Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                    request.Dispose();
+                    yield return new WaitForSeconds(1f);
+                    Application.Quit();
+                }
+            }
+
+            yield return waitForSeconds;
+        }
+
+    }
+
+    private void Update()
+    {
+        if (m_AppleAuthManager != null)
+        {
+            m_AppleAuthManager.Update();
+        }
     }
 
 }

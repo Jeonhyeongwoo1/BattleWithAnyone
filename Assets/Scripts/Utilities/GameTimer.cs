@@ -44,7 +44,7 @@ public class GameTimer : MonoBehaviourPun, IPunObservable, IOnEventCallback
     {
         switch (photonEvent.Code)
         {
-            case (byte)PhotonEventCode.ROUNDDONE_CHARACTER_DIE:
+            case (byte)PhotonEventCode.ROUNDDONE:
                 StopTimer();
                 break;
         }

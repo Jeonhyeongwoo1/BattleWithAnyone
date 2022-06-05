@@ -1306,6 +1306,156 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 103270532}
     m_Modifications:
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeLayers.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.size
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[0].Name
+      value: Horizontal
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[0].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[1].Name
+      value: Vertical
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[1].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[2].Name
+      value: Reload
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[2].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[3].Name
+      value: ReloadingSpeed
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[3].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[4].Name
+      value: Victory
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[4].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[5].Name
+      value: RollingFWD
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[5].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].Name
+      value: RollingLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[7].Name
+      value: RollingBWD
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[7].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[8].Name
+      value: RollingRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[8].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[9].Name
+      value: Attack
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[9].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[10].Name
+      value: IsGrounded
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[10].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[11].Name
+      value: Jump
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[11].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[12].Name
+      value: Die
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[12].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685302692453505049, guid: e400179c2a0e4400693258e9d9a6c39c,
+        type: 3}
+      propertyPath: m_SynchronizeLayers.Array.data[1].LayerIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3919569644868839160, guid: e400179c2a0e4400693258e9d9a6c39c,
         type: 3}
       propertyPath: m_Target
@@ -1725,6 +1875,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 103270532}
     m_Modifications:
+    - target: {fileID: -2663154170498452283, guid: 14fd324e440834c358554636b43656d6,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2895482006511773223, guid: 14fd324e440834c358554636b43656d6,
         type: 3}
       propertyPath: sceneViewId
@@ -3423,6 +3578,156 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeLayers.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.size
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[0].Name
+      value: Horizontal
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[0].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[1].Name
+      value: Vertical
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[1].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[2].Name
+      value: Reload
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[2].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[3].Name
+      value: ReloadingSpeed
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[3].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[4].Name
+      value: Victory
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[4].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[5].Name
+      value: RollingFWD
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[5].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].Name
+      value: RollingLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[7].Name
+      value: RollingBWD
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[7].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[8].Name
+      value: RollingRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[8].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[9].Name
+      value: Attack
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[9].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[10].Name
+      value: IsGrounded
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[10].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[11].Name
+      value: Jump
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[11].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[12].Name
+      value: Die
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[12].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4429156858071824269, guid: f9aea054ee9be466c8565dabfbe705de,
+        type: 3}
+      propertyPath: m_SynchronizeLayers.Array.data[1].LayerIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5499384140822910037, guid: f9aea054ee9be466c8565dabfbe705de,
         type: 3}
       propertyPath: m_RBody
@@ -4414,6 +4719,8 @@ PrefabInstance:
     - {fileID: 8122665533693688215, guid: e0e02c39bf2994a4c817ac2da6175020, type: 3}
     - {fileID: 7847316773120854224, guid: e0e02c39bf2994a4c817ac2da6175020, type: 3}
     - {fileID: 494281969782606677, guid: e0e02c39bf2994a4c817ac2da6175020, type: 3}
+    - {fileID: 2110438436198646656, guid: e0e02c39bf2994a4c817ac2da6175020, type: 3}
+    - {fileID: 7455377296537085439, guid: e0e02c39bf2994a4c817ac2da6175020, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e0e02c39bf2994a4c817ac2da6175020, type: 3}
 --- !u!4 &1258451508 stripped
 Transform:
@@ -4650,6 +4957,156 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 103270532}
     m_Modifications:
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeLayers.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.size
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[0].Name
+      value: Horizontal
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[0].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[1].Name
+      value: Vertical
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[1].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[2].Name
+      value: Reload
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[2].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[3].Name
+      value: ReloadingSpeed
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[3].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[4].Name
+      value: Victory
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[4].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[5].Name
+      value: RollingFWD
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[5].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].Name
+      value: RollingLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[7].Name
+      value: RollingBWD
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[7].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[8].Name
+      value: RollingRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[8].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[9].Name
+      value: Attack
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[9].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[10].Name
+      value: IsGrounded
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[10].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[11].Name
+      value: Jump
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[11].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[12].Name
+      value: Die
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[12].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420101772709101478, guid: 686071031083a44f4b27768aadec11fb,
+        type: 3}
+      propertyPath: m_SynchronizeLayers.Array.data[1].LayerIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6879992076478072085, guid: 686071031083a44f4b27768aadec11fb,
         type: 3}
       propertyPath: sceneViewId
@@ -5687,6 +6144,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 103270532}
     m_Modifications:
+    - target: {fileID: 3244738921940625568, guid: 510c6384b133f42799e180988041981f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3731713114564367785, guid: 510c6384b133f42799e180988041981f,
         type: 3}
       propertyPath: m_Name

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -35,7 +36,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
         string mapName = Core.state.mapPreferences?.mapName;
         m_Title.text = mapName;
         m_Master.text = PhotonNetwork.MasterClient.NickName;
-        m_Player.text = PhotonNetwork.IsMasterClient ? PhotonNetwork.MasterClient.NickName : PhotonNetwork.NickName;
+        m_Player.text = Core.gameManager.playerName;
         m_MasterBar.value = 0;
         m_PlayerBar.value = 0;
         SetBackground(mapName);
@@ -124,7 +125,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
         {
             if (elapsed > maxWaitTime)
             {
-                StartCoroutine(Core.networkManager.OnOtherPlayerDisconnectedDuringLoading());
+                Core.gameManager.OnOtherPlayerDisconnectedDuringLoading();
                 yield break;
             }
 

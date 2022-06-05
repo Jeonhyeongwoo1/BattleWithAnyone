@@ -112,6 +112,8 @@ public class ModelDirector : MonoBehaviour
         return typeof(T).Name == m_LoadedModel.Name;
     }
 
+    public bool Has() => m_LoadedModel != null;
+
     public IModel Get() => m_LoadedModel;
 
     void UnloadScene(string name, UnityAction done = null)
