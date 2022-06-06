@@ -114,6 +114,8 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
         if (player.TryGetComponent<PlayerController>(out var controller))
         {
             controller.rotationSpeed = Core.state.playerRotSensitivity;
+            controller.OnVolumChanged(nameof(Core.state.playerSound), Core.state.playerSound);
+            controller.OnSoundMute(nameof(Core.state.playerSoundMute), Core.state.playerSoundMute);
             controller.CreateBullet();
             controller.CreateCollisionEffect();
             controller.photonView.RPC(nameof(controller.SetParent), RpcTarget.All, PhotonNetwork.IsMasterClient);

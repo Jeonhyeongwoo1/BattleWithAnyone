@@ -581,24 +581,24 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
-    void OnVolumChanged(string key, object o)
+    public void OnVolumChanged(string key, object o)
     {
         float volume = (float)o;
         switch (key)
         {
-            case "Audio.Effect.Volume":
+            case nameof(Core.state.playerSound):
                 m_PlayerAudio.volume = volume;
                 m_WeaponAudio.volume = volume;
                 break;
         }
     }
 
-    void OnSoundMute(string key, object o)
+    public void OnSoundMute(string key, object o)
     {
         bool mute = (bool)o;
         switch (key)
         {
-            case "Audio.Effect.Mute":
+            case nameof(Core.state.playerSoundMute):
                 m_PlayerAudio.mute = mute;
                 m_WeaponAudio.mute = mute;
                 break;
@@ -617,11 +617,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         if (roomCharacter) { return; }
         m_PlayerActions.Player.Enable();
         PhotonNetwork.AddCallbackTarget(this);
-        Core.xEvent?.Watch("Audio.Effect.Volume", OnVolumChanged);
-        Core.xEvent?.Watch("Audio.Background.Volume", OnVolumChanged);
-        Core.xEvent?.Watch("Audio.Effect.Mute", OnSoundMute);
-        Core.xEvent?.Watch("Audio.Background.Mute", OnSoundMute);
-        Core.state?.Listen("Player.Sensitivity", OnRotSensitivityChanged);
+        Core.state?.Listen(nameof(Core.state.playerSound), OnVolumChanged);
+        Core.state?.Listen(nameof(Core.state.playerSoundMute), OnSoundMute);
+        Core.state?.Listen(nameof(Core.state.playerRotSensitivity), OnRotSensitivityChanged);
     }
 
     public override void OnDisable()
@@ -629,11 +627,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         if (roomCharacter) { return; }
         m_PlayerActions.Player.Disable();
         PhotonNetwork.RemoveCallbackTarget(this);
-        Core.xEvent?.Stop("Audio.Effect.Volume", OnVolumChanged);
-        Core.xEvent?.Stop("Audio.Background.Volume", OnVolumChanged);
-        Core.xEvent?.Stop("Audio.Effect.Mute", OnSoundMute);
-        Core.xEvent?.Stop("Audio.Background.Mute", OnSoundMute);
-        Core.state?.Stop("Player.Sensitivity", OnRotSensitivityChanged);
+        Core.xEvent?.Stop(nameof(Core.state.playerSound), OnVolumChanged);
+        Core.xEvent?.Stop(nameof(Core.state.playerSoundMute), OnSoundMute);
+        Core.state?.Stop(nameof(Core.state.playerRotSensitivity), OnRotSensitivityChanged);
     }
 
     void Awake()

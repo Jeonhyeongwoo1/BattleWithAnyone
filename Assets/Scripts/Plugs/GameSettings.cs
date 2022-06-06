@@ -49,11 +49,32 @@ public class GameSettings : BasePopup
     //Player
     [SerializeField] Slider m_PlayerSensitivity;
     [SerializeField] Text m_PlayerSensitivityValue;
+    [SerializeField] Slider m_PlayerSound;
+    [SerializeField] Transform m_PlayerSoundMute;
+    [SerializeField] Image m_PlayerSoundFill;
+    [SerializeField] Image m_PlayerSoundHandle;
 
     [SerializeField] float m_MuteOffPosX = -40;
     [SerializeField] float m_MuteOnPosX = 40;
     [SerializeField, Range(0, 1)] float m_SoundOnOffDuration = 0.3f;
     [SerializeField] AnimationCurve m_Curve;
+
+    public void OnMutePlayerSound(bool mute)
+    {
+        float start = mute ? m_MuteOffPosX : m_MuteOnPosX;
+        float end = mute ? m_MuteOnPosX : m_MuteOffPosX;
+
+        if (m_PlayerSoundMute.TryGetComponent<Image>(out var image))
+        {
+            image.sprite = mute ? m_MuteOn : m_MuteOff;
+        }
+
+        StartCoroutine(CoUtilize.Lerp((v) => m_PlayerSoundMute.localPosition = new Vector3(v, 0, 0), start, end, m_SoundOnOffDuration, null, m_Curve));
+        m_PlayerSound.enabled = mute;
+        m_PlayerSoundFill.sprite = mute ? m_FillMuteOn : m_FillMuteOff;
+        m_PlayerSoundHandle.sprite = mute ? m_HandleMuteOn : m_HandleMuteOff;
+        Core.state.playerSoundMute = !mute;
+    }
 
     public void OnMuteBgm(bool mute)
     {
@@ -69,7 +90,7 @@ public class GameSettings : BasePopup
         m_BGM.enabled = mute;
         m_BGMFill.sprite = mute ? m_FillMuteOn : m_FillMuteOff;
         m_BGMHandle.sprite = mute ? m_HandleMuteOn : m_HandleMuteOff;
-        Core.xEvent.Raise("Audio.Background.Mute", !mute);
+        Core.xEvent?.Raise("Audio.Background.Mute", !mute);
     }
 
     public void OnMuteEffect(bool mute)
@@ -86,7 +107,7 @@ public class GameSettings : BasePopup
         m_EffectSound.enabled = mute;
         m_EffectFill.sprite = mute ? m_FillMuteOn : m_FillMuteOff;
         m_EffectHandle.sprite = mute ? m_HandleMuteOn : m_HandleMuteOff;
-        Core.xEvent.Raise("Audio.Effect.Mute", !mute);
+        Core.xEvent?.Raise("Audio.Effect.Mute", !mute);
     }
     
     
@@ -138,7 +159,7 @@ public class GameSettings : BasePopup
         }
 
         m_PlayerSensitivityValue.text = string.Format("{0:0.0}", sensitivity);
-        Core.state?.Set("Player.Sensitivity", sensitivity);
+        Core.state.playerRotSensitivity = sensitivity;
     }
 
     private void Awake()
@@ -149,6 +170,7 @@ public class GameSettings : BasePopup
         m_High.onValueChanged.AddListener((on) => { if (on) OnChangeGraphicsLevel(5); });
         m_BGM.onValueChanged.AddListener((v) => Core.xEvent?.Raise("Audio.Background.Volume", v));
         m_EffectSound.onValueChanged.AddListener((v) => Core.xEvent?.Raise("Audio.Effect.Volume", v));
+        m_PlayerSound.onValueChanged.AddListener((v) => Core.state.playerSound = v);
         m_PlayerSensitivity.onValueChanged.AddListener(OnPlayerSensitivityChanged);
     }
 

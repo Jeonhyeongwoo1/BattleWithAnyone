@@ -91,6 +91,8 @@ public partial class XState : States
     int m_TotalTakeDamange; //총 입힌 데미지
 
     float m_PlayerRotSensitivity = 5;
+    float m_PlayerSound;
+    bool m_PlayerSoundMute;
 
     void SilentListen()
     {

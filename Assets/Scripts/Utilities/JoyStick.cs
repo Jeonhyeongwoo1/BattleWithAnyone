@@ -18,21 +18,6 @@ public class JoyStick : MonoBehaviour
         transform.position = value;
     }
 
-    private void Update()
-    {
-#if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0))
-        {
-            transform.position = Input.mousePosition;
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            m_JoyStick.anchoredPosition = m_DefaultLeftStickPos;
-        }
-#endif
-    }
-
     void ReturnOriginJoystickPosition(string key, object o)
     {
         switch (key)
