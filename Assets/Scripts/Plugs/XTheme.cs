@@ -45,6 +45,7 @@ public class XTheme : MonoBehaviour, IPlugable
 
     [SerializeField] RectTransform m_StageInfo;
     [SerializeField] RectTransform m_CharacterInfo;
+    [SerializeField] Button m_GameSettings;
 
     [Header("[Stage Info]")]
     [SerializeField] Text m_MasterName;
@@ -111,7 +112,7 @@ public class XTheme : MonoBehaviour, IPlugable
 
     void Init()
     {
-        m_Joystick.transform.localScale = Vector3.zero;
+//        m_Joystick.transform.localScale = Vector3.zero;
         m_Roll.transform.localScale = Vector3.zero;
         m_Attack.transform.localScale = Vector3.zero;
         m_Reload.transform.localScale = Vector3.zero;
@@ -166,6 +167,15 @@ public class XTheme : MonoBehaviour, IPlugable
         }
     }
 
+    void OpenGameSetting()
+    {
+        Popups popup = Core.plugs.Get<Popups>();
+        if (!popup.IsOpened<GameSettings>())
+        {
+            popup.OpenPopupAsync<GameSettings>();
+        }
+    }
+
     void DoAttack()
     {
 		player.Attack(null);
@@ -191,11 +201,12 @@ public class XTheme : MonoBehaviour, IPlugable
 
     void Awake()
     {
-        //	transform.GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(0).gameObject.SetActive(false);
         m_Roll.onClick.AddListener(DoRoll);
         m_Reload.onClick.AddListener(DoReload);
         m_Attack.onClick.AddListener(DoAttack);
         m_Jump.onClick.AddListener(DoJump);
+        m_GameSettings.onClick.AddListener(OpenGameSetting);
     }
 
     // Start is called before the first frame update

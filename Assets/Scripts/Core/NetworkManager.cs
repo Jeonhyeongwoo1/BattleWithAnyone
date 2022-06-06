@@ -4,7 +4,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.Events;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 using AppleAuth;
 using System;
 
@@ -206,10 +205,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         Log("DisConnected" + cause);
-
+        ConfirmPopup.content = MessageCommon.Get("network.disconnect");
+        Core.plugs?.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>(() => Application.Quit());
+/*
         NoticePopup.content = MessageCommon.Get("network.disconnect");
         Core.plugs?.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
         Core.scenario?.OnLoadScenario(nameof(ScenarioLogin));
+
+        //in ScenarioPlay..
+        XTheme xTheme = Core.plugs?.Get<XTheme>();
+        if(xTheme != null)
+        {
+            Core.plugs?.Unload<XTheme>();
+        }
+
+        if (Core.models.Has())
+        {
+            //Bug Fix
+            Core.models.UnloadCurModel();
+        }
+*/
     }
 
     public override void OnConnected()
@@ -291,7 +306,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             elapsed += Time.deltaTime;
             yield return null;
         }
-
+        
         done?.Invoke();
     }
 

@@ -16,6 +16,8 @@ public partial class XState
     public int bulletCount { get => m_BulletCount; set { m_BulletCount = value; Set(nameof(bulletCount), value); } }
     public int health { get => m_Health; set { m_Health = value; Set(nameof(health), value); } }
 
+    public float playerRotSensitivity { get => m_PlayerRotSensitivity; set { m_PlayerRotSensitivity = value; Set(nameof(playerRotSensitivity), value); } }
+
     //Not Observered
     public int totalDamangeReceived { get => m_TotalDamangeReceived; set { m_TotalDamangeReceived = value; } }
     public int totalTakeDamange { get => m_TotalTakeDamange; set { m_TotalTakeDamange = value; } }

@@ -4,53 +4,63 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class JoyStick : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
+public class JoyStick : MonoBehaviour
 {
-	public RectTransform playPosition;
-	RectTransform m_RectTransform;
+    [SerializeField] Vector2 m_DefaultLeftStickPos = new Vector2(180, 143);
+    [SerializeField] RectTransform m_JoyStick;
 
-	[SerializeField] float m_Range;
-    private Vector2 m_PointerDownPos;
-    private Vector3 m_StartPos;
+    PlayerActionScripts m_PlayerActions;
+    float m_ScreenHalf;
 
-    public void OnBeginDrag(PointerEventData eventData)
-	{
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(transform.parent.GetComponentInParent<RectTransform>(), eventData.position, eventData.pressEventCamera, out m_PointerDownPos);
-
-        //	Vector3 position = GetPosition(eventData.position);
-        //	playPosition.anchoredPosition = position;
+    void OnMovePosition(Vector2 value)
+    {
+        if (value.x > m_ScreenHalf) { return; }
+        transform.position = value;
     }
 
-	public void OnDrag(PointerEventData eventData)
-	{
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(transform.parent.GetComponentInParent<RectTransform>(), eventData.position, eventData.pressEventCamera, out var position);
-        var delta = position - m_PointerDownPos;
+    private void Update()
+    {
+#if UNITY_EDITOR
+        if (Input.GetMouseButtonDown(0))
+        {
+            transform.position = Input.mousePosition;
+        }
 
-        delta = Vector2.ClampMagnitude(delta, m_Range);
-        ((RectTransform)transform).anchoredPosition = m_StartPos + (Vector3)delta;
-
-        var newPos = new Vector2(delta.x / m_Range, delta.y / m_Range);
-		playPosition.anchoredPosition = newPos;
-
-        //	Vector3 position = GetPosition(eventData.position);
-        //	playPosition.anchoredPosition = position;
+        if (Input.GetMouseButtonUp(0))
+        {
+            m_JoyStick.anchoredPosition = m_DefaultLeftStickPos;
+        }
+#endif
     }
 
-	public void OnEndDrag(PointerEventData eventData)
-	{
-		playPosition.anchoredPosition = Vector2.zero;
-	}
+    void ReturnOriginJoystickPosition(string key, object o)
+    {
+        switch (key)
+        {
+            case "Move.Stop":
+                m_JoyStick.anchoredPosition = m_DefaultLeftStickPos;
+                break;
+        }
+    }
 
-	Vector2 GetPosition(Vector3 inputPosition)
-	{
-		Vector2 input = inputPosition - transform.position;
-		return input.magnitude < m_Range ? input : input.normalized * m_Range;
-	}
+    void OnEnable()
+    {
+        m_PlayerActions?.Player.Enable();
+        Core.xEvent?.Watch("Move.Stop", ReturnOriginJoystickPosition);
+    }
 
-	// Start is called before the first frame update
-	void Start()
-	{
-		m_RectTransform = GetComponent<RectTransform>();
-	}
+    void OnDisable()
+    {
+        m_PlayerActions?.Player.Disable();
+        Core.xEvent?.Stop("Move.Stop", ReturnOriginJoystickPosition);
+    }
+
+
+    private void Awake()
+    {
+        m_ScreenHalf = Screen.width * 0.5f;
+        m_PlayerActions = new PlayerActionScripts();
+        m_PlayerActions.Player.Touch.performed += ctx => OnMovePosition(ctx.ReadValue<Vector2>());
+    }
 
 }

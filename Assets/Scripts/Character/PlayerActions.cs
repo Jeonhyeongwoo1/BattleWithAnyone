@@ -15,10 +15,10 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
+public partial class @PlayerActionScripts : IInputActionCollection2, IDisposable
 {
     public InputActionAsset asset { get; }
-    public @PlayerActionsScript()
+    public @PlayerActionScripts()
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""PlayerActions"",
@@ -205,9 +205,9 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""96ef4347-c0b7-4406-b21e-607e12cd56c4"",
-                    ""path"": ""<Touchscreen>/touch0/delta"",
+                    ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": ""NormalizeVector2"",
+                    ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Look"",
                     ""isComposite"": false,
@@ -306,8 +306,8 @@ public partial class @PlayerActionsScript : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Touch;
     public struct PlayerActions
     {
-        private @PlayerActionsScript m_Wrapper;
-        public PlayerActions(@PlayerActionsScript wrapper) { m_Wrapper = wrapper; }
+        private @PlayerActionScripts m_Wrapper;
+        public PlayerActions(@PlayerActionScripts wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;

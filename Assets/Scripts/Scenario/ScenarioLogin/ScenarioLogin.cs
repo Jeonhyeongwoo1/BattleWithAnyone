@@ -57,12 +57,12 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         string id = m_Id.text;
         string password = m_Password.text;
 
-        // if (Core.settings.profile == XSettings.Profile.local)
-        // {
-		// 	Core.networkManager.member = MemberFactory.Get();
-        //     Core.scenario.OnLoadScenario(nameof(ScenarioHome));
-        //     return;
-        // }
+        if (Core.settings.profile == XSettings.Profile.local)
+        {
+			Core.networkManager.member = MemberFactory.Get();
+            Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+            return;
+        }
 
         Popups popups = Core.plugs.Get<Popups>();
         NoticePopup notice = popups.Get<NoticePopup>();

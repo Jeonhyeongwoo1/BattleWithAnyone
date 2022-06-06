@@ -183,9 +183,9 @@
                 {
                     "name": "",
                     "id": "96ef4347-c0b7-4406-b21e-607e12cd56c4",
-                    "path": "<Touchscreen>/touch0/delta",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
-                    "processors": "NormalizeVector2",
+                    "processors": "",
                     "groups": "",
                     "action": "Look",
                     "isComposite": false,

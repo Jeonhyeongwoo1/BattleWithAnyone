@@ -113,6 +113,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
         Transform player = PhotonNetwork.IsMasterClient ? Core.state.masterCharacter : Core.state.playerCharacter;
         if (player.TryGetComponent<PlayerController>(out var controller))
         {
+            controller.rotationSpeed = Core.state.playerRotSensitivity;
             controller.CreateBullet();
             controller.CreateCollisionEffect();
             controller.photonView.RPC(nameof(controller.SetParent), RpcTarget.All, PhotonNetwork.IsMasterClient);

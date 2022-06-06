@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     public float rotationSpeed
     {
         get => m_CameraType == cameraType.TP ? m_TPCamera.rotationSpeed : m_FPCamera.rotationSpeed;
-        private set
+        set
         {
             if (m_CameraType == cameraType.TP)
             {
@@ -87,10 +87,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField] AudioClip m_ReloadClip;
     [SerializeField] AudioClip m_DieClip;
 
-    PlayerActionsScript m_PlayerActions;
+    PlayerActionScripts m_PlayerActions;
     Vector3 m_NormalizedMove;
     Vector3 m_NoramlizedRotate;
-    Vector3 m_TouchStartPos;
     Vector2 m_MoveParam;
     RaycastHit m_RaycastHit = new RaycastHit();
 
@@ -299,9 +298,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     public void TakeDamange(int amount)
     {
         if (Core.state.health <= 0) { return; }
-        
+
         Core.state.health -= amount;
-        if(Core.state.health <= 0)
+        if (Core.state.health <= 0)
         {
             Die();
         }
@@ -333,13 +332,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 #endif
 
 #if !UNITY_EDITOR && UNITY_IOS
-    	if (m_ScreenHalf > m_TouchStartPos.x) { return; } //오른쪽 절반만 사용 가능 
+    //	if (m_ScreenHalf > m_TouchStartPos.x) { return; } //오른쪽 절반만 사용 가능 
 #endif
-        Vector2 newValue = m_NoramlizedRotate;
         Vector3 camRot = m_TPCamera.camera.transform.localEulerAngles;
-
-        float axisX = camRot.x + newValue.y * m_TPCamera.rotationSpeed;
-        float axisY = transform.localEulerAngles.y + newValue.x * m_TPCamera.rotationSpeed;
+        float axisX = camRot.x + m_NoramlizedRotate.y * m_TPCamera.rotationSpeed;
+        float axisY = transform.localEulerAngles.y + m_NoramlizedRotate.x * m_TPCamera.rotationSpeed;
         bool isRotable = axisX > 360 + m_TPCamera.lookUpDegree || axisX < m_TPCamera.lookDownDegree;
 
         m_TPCamera.camera.transform.localEulerAngles = Vector3.right * (isRotable ? axisX : camRot.x);
@@ -435,10 +432,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
                 {
                     Victory();
                 }
-            break;
+                break;
             case (byte)PhotonEventCode.GAME_END:
                 if (!photonView.IsMine) { break; }
-            
+
                 int winCount = PhotonNetwork.IsMasterClient ? Core.state.masterWinCount : Core.state.playerWinCount;
                 if (winCount == Core.state.mapPreferences.numberOfRound)
                 {
@@ -450,12 +447,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
                     m_Animator.SetBool(m_AniParam.die, true);
                     m_PlayerAudio.PlayOneShot(m_DieClip);
                 }
-                
+
                 m_Animator.SetFloat(m_AniParam.horizontal, 0);
                 m_Animator.SetFloat(m_AniParam.vertical, 0);
-            break;
+                break;
         }
-        
+
     }
 
     IEnumerator ApplyingItemEffect(float duration, UnityAction done = null)
@@ -624,7 +621,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         Core.xEvent?.Watch("Audio.Background.Volume", OnVolumChanged);
         Core.xEvent?.Watch("Audio.Effect.Mute", OnSoundMute);
         Core.xEvent?.Watch("Audio.Background.Mute", OnSoundMute);
-        Core.xEvent?.Watch("Player.Sensitivity", OnRotSensitivityChanged);
+        Core.state?.Listen("Player.Sensitivity", OnRotSensitivityChanged);
     }
 
     public override void OnDisable()
@@ -636,13 +633,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
         Core.xEvent?.Stop("Audio.Background.Volume", OnVolumChanged);
         Core.xEvent?.Stop("Audio.Effect.Mute", OnSoundMute);
         Core.xEvent?.Stop("Audio.Background.Mute", OnSoundMute);
-        Core.xEvent?.Stop("Player.Sensitivity", OnRotSensitivityChanged);
+        Core.state?.Stop("Player.Sensitivity", OnRotSensitivityChanged);
     }
 
     void Awake()
     {
         if (roomCharacter) { return; }
-        m_PlayerActions = new PlayerActionsScript();
+        m_PlayerActions = new PlayerActionScripts();
         if (TryGetComponent<Rigidbody>(out var body))
         {
             m_RBody = body;
@@ -654,11 +651,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
 
         m_Animator.SetFloat(m_AniParam.reloadingSpeed, m_COption.reloadTime);
         m_PlayerActions.Player.Move.performed += ctx => m_NormalizedMove = ctx.ReadValue<Vector2>();
-        m_PlayerActions.Player.Move.canceled += ctx => m_NormalizedMove = Vector2.zero;
-        m_PlayerActions.Player.Look.performed += ctx => m_NoramlizedRotate = Vector3.Lerp(m_NoramlizedRotate, new Vector2(ctx.ReadValue<Vector2>().x, -ctx.ReadValue<Vector2>().y), m_DeltaTime * 50);
+        m_PlayerActions.Player.Move.canceled += ctx => { m_NormalizedMove = Vector2.zero; Core.xEvent?.Raise("Move.Stop", null); };
+        m_PlayerActions.Player.Look.performed += ctx => m_NoramlizedRotate = Vector3.Lerp(m_NoramlizedRotate, new Vector2(ctx.ReadValue<Vector2>().x, -ctx.ReadValue<Vector2>().y).normalized, m_DeltaTime * 50);
         m_PlayerActions.Player.Look.canceled += ctx => m_NoramlizedRotate = Vector2.zero;
-        m_PlayerActions.Player.Touch.performed += ctx => m_TouchStartPos = ctx.ReadValue<Vector2>();
-        m_PlayerActions.Player.Touch.canceled += ctx => m_TouchStartPos = Vector2.zero;
         m_ScreenHalf = Screen.width / 2;
 #if UNITY_EDITOR
         m_PlayerActions.Player.Jump.started += ctx => Jump(null);

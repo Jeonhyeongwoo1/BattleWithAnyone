@@ -95,6 +95,17 @@ public class ModelDirector : MonoBehaviour
 		OnLoadSceneAsync(name, done);
     }
 
+    public void UnloadCurModel(UnityAction done = null)
+    {
+        if(m_LoadedModel == null)
+        {
+            Debug.LogWarning("There isn't Loaded Model");
+            return;
+        }
+
+        UnloadSceneAsync(m_LoadedModel.Name, done);
+    }
+
     public void Unload(string name, UnityAction done = null)
     {
         Scene scene = SceneManager.GetSceneByName(name);

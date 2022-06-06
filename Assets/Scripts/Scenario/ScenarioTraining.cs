@@ -16,7 +16,7 @@ public class ScenarioTraining : MonoBehaviourPunCallbacks, IScenario
         if (!PhotonNetwork.IsConnectedAndReady && Core.networkManager.member == null) //DEV
         {
             BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
-            Core.networkManager.ConnectPhotonNetwork(() => PhotonNetwork.JoinLobby());
+            Core.networkManager.ConnectPhotonNetwork(() => Core.networkManager.WaitStateToConnectedToMasterServer(()=> PhotonNetwork.JoinLobby()) );
         }
 
         done?.Invoke();

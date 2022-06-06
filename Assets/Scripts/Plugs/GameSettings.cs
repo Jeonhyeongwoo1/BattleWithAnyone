@@ -138,7 +138,7 @@ public class GameSettings : BasePopup
         }
 
         m_PlayerSensitivityValue.text = string.Format("{0:0.0}", sensitivity);
-        Core.xEvent?.Raise("Player.Sensitivity", sensitivity);
+        Core.state?.Set("Player.Sensitivity", sensitivity);
     }
 
     private void Awake()
