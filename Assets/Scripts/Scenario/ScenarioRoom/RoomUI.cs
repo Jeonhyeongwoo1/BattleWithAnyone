@@ -102,7 +102,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 		m_GameReady.gameObject.SetActive(false);
 		m_GameStart.gameObject.SetActive(true);
 		m_KickPlayer.gameObject.SetActive(false);
-		m_MasterName.text = Core.networkManager.member.mbr_id;
+		m_MasterName.text = Core.networkManager.member.mbr_nm;
 		m_PlayerName.text = null;
 		if (m_IsGameReady)
 		{

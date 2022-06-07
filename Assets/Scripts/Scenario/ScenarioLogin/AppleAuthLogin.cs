@@ -4,15 +4,13 @@ using AppleAuth.Enums;
 using AppleAuth.Extensions;
 using AppleAuth.Interfaces;
 using AppleAuth.Native;
-using System.Collections;
 using UnityEngine;
 using System.Text;
-using UnityEngine.Events;
 using System;
 
 public class AppleAuthLogin : MonoBehaviour
 {
-    [SerializeField] Signup m_Signup;
+    [SerializeField] AppleSignup m_Signup;
 
     public void Login()
     {
@@ -69,7 +67,6 @@ public class AppleAuthLogin : MonoBehaviour
         {
             Member member = JsonUtility.FromJson<Member>(data);
             Core.networkManager.member = member;
-            print(member.mbr_id);
         }
         catch (Exception e)
         {
@@ -107,10 +104,9 @@ public class AppleAuthLogin : MonoBehaviour
     public void LoginFailed(string error)
     {
         //Create new memeber
-        NoticePopup.content = Core.language.GetNotifyMessage("login.createmember");
+        NoticePopup.content = Core.language.GetNotifyMessage("login.inputemailandname");
         Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
-        m_Signup.gameObject.SetActive(true);
-        m_Signup.isAppleSignup = true;
+        m_Signup.Open();
     }
 
 }

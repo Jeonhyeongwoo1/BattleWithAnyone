@@ -740,7 +740,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: 0
-  language: 0
+  language: 1
 --- !u!4 &784403390
 Transform:
   m_ObjectHideFlags: 0
@@ -1991,7 +1991,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e35a8202ec49141409b18f86def1c026, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  profile: 0
+  profile: 1
   language: 1
   m_BlockSkybox: {fileID: 971649177}
   m_LoadingAnimation: {fileID: 1582837666}

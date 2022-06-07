@@ -156,7 +156,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 
 	void ConnectRoomChat()
 	{
-		roomChat.Connect(Core.networkManager.member.mbr_id, PhotonNetwork.CurrentRoom.Name);
+		roomChat.Connect(Core.networkManager.member.mbr_nm, PhotonNetwork.CurrentRoom.Name);
 		roomChat.connectCompleted = ConnectCompleted;
 		PhotonNetwork.EnableCloseConnection = true;
 	}

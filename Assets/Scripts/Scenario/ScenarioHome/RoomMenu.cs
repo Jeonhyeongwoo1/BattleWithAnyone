@@ -192,7 +192,7 @@ public class RoomMenu : MonoBehaviourPunCallbacks
         int roundTime = preferences.roundTime;
 
         ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable() {
-                                            { "RoomManager", Core.networkManager.member.mbr_id },
+                                            { "RoomManager", Core.networkManager.member.mbr_nm },
                                             { "Map", map },
                                             { "NumberOfRound", numberOfRound},
                                             { "RoundTime", roundTime },

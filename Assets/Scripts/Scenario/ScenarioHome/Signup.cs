@@ -5,15 +5,10 @@ using System.Text.RegularExpressions;
 
 public class Signup : MonoBehaviour
 {
-    public bool isAppleSignup = false;
-
     [SerializeField] InputField m_Id;
     [SerializeField] InputField m_Password;
     [SerializeField] InputField m_UserName;
     [SerializeField] InputField m_Email;
-    [SerializeField] InputField m_FirstTelephone;
-    [SerializeField] InputField m_MiddleTelephone;
-    [SerializeField] InputField m_LastTelephone;
     [SerializeField] Button m_Signup;
     [SerializeField] Button m_CheckUserId;
     [SerializeField] Button m_Close;
@@ -23,7 +18,6 @@ public class Signup : MonoBehaviour
     [SerializeField] Text m_CheckPassword;
     [SerializeField] Text m_CheckEmail;
     [SerializeField] Text m_CheckUserName;
-    [SerializeField] Text m_CheckTelephone;
 
     bool m_IsCheckedUserId = false;
 
@@ -63,16 +57,12 @@ public class Signup : MonoBehaviour
         m_CheckId.gameObject.SetActive(false);
         m_CheckEmail.gameObject.SetActive(false);
         m_CheckPassword.gameObject.SetActive(false);
-        m_CheckTelephone.gameObject.SetActive(false);
         m_CheckUserName.gameObject.SetActive(false);
 
         string id = m_Id.text;
         string password = m_Password.text;
         string name = m_UserName.text;
         string email = m_Email.text;
-        string first = m_FirstTelephone.text;
-        string middle = m_MiddleTelephone.text;
-        string last = m_LastTelephone.text;
 
         if (string.IsNullOrEmpty(id))
         {
@@ -95,27 +85,10 @@ public class Signup : MonoBehaviour
             return;
         }
 
-        if (string.IsNullOrEmpty(first) || string.IsNullOrEmpty(middle) || string.IsNullOrEmpty(last))
-        {
-            m_CheckTelephone.gameObject.SetActive(true);
-            if (string.IsNullOrEmpty(first)) { m_FirstTelephone.ActivateInputField(); }
-            if (string.IsNullOrEmpty(middle)) { m_MiddleTelephone.ActivateInputField(); }
-            if (string.IsNullOrEmpty(last)) { m_LastTelephone.ActivateInputField(); }
-            return;
-        }
-
         if (string.IsNullOrEmpty(email))
         {
             m_CheckEmail.gameObject.SetActive(true);
             m_Email.ActivateInputField();
-            return;
-        }
-
-        string phoneNumber = first + "-" + middle + "-" + last;
-        Regex number = new Regex(@"^01[01678]-[0-9]{4}-[0-9]{4}$");
-        if (!number.IsMatch(phoneNumber))
-        {
-            m_CheckTelephone.gameObject.SetActive(true);
             return;
         }
 
@@ -127,29 +100,20 @@ public class Signup : MonoBehaviour
             return;
         }
 
-        if (isAppleSignup)
-        {
-            Core.networkManager.ReqAppleSignup(id, password, email, phoneNumber, name, SignupSuccessed, SignupFailed);
-            isAppleSignup = false;
-        }
-        else
-        {
-            Core.networkManager.ReqSignup(id, password, email, phoneNumber, name, SignupSuccessed, SignupFailed);
-        }
-
+        Core.networkManager.ReqSignup(id, password, email, name, SignupSuccessed, SignupFailed);
     }
 
     void CheckUserIdSuccessed(string data)
     {
-        if (!string.IsNullOrEmpty(data))
-        {
-            m_IsCheckedUserId = true;
-            StartCoroutine(ShowAvailableIdPhrases(Core.language.GetNotifyMessage("login.availableid")));
-        }
-        else
+        if(data == "exist")
         {
             m_IsCheckedUserId = false;
             StartCoroutine(ShowAvailableIdPhrases(Core.language.GetNotifyMessage("login.notavailableid")));
+        }
+        else
+        {
+            m_IsCheckedUserId = true;
+            StartCoroutine(ShowAvailableIdPhrases(Core.language.GetNotifyMessage("login.availableid")));
         }
     }
 
@@ -185,8 +149,6 @@ public class Signup : MonoBehaviour
     void SignupFailed(string error)
     {
         Init();
-		Core.networkManager.appleAuth = null;
-		Core.networkManager.appleAuthManager = null;
         NoticePopup.content = Core.language.GetNotifyMessage("signup.signupfailed");
         Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
     }
@@ -196,17 +158,12 @@ public class Signup : MonoBehaviour
         m_CheckId.gameObject.SetActive(false);
         m_CheckEmail.gameObject.SetActive(false);
         m_CheckPassword.gameObject.SetActive(false);
-        m_CheckTelephone.gameObject.SetActive(false);
         m_CheckUserName.gameObject.SetActive(false);
 
         m_Id.text = null;
         m_Password.text = null;
         m_UserName.text = null;
         m_Email.text = null;
-        m_FirstTelephone.text = null;
-        m_MiddleTelephone.text = null;
-        m_LastTelephone.text = null;
-
     }
 
     private void OnEnable()

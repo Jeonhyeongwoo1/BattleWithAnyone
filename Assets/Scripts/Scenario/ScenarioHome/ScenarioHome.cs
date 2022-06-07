@@ -59,7 +59,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         {
             roomMenu.gameObject.SetActive(true);
             roomMenu.OnEnableRoomMenu();
-            userInfo.SetUserInfo(Core.networkManager.member.mbr_id);
+            userInfo.SetUserInfo(Core.networkManager.member.mbr_nm);
             userInfo.gameObject.SetActive(true);
             m_Exit.gameObject.SetActive(true);
             m_Settings.gameObject.SetActive(true);
@@ -76,7 +76,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
             Core.networkManager.member = MemberFactory.Get();
         }
        
-        PhotonNetwork.NickName = Core.networkManager.member.mbr_id;
+        PhotonNetwork.NickName = Core.networkManager.member.mbr_nm;
         PhotonNetwork.JoinLobby();
     }
 

@@ -12,6 +12,7 @@
     "login.apple.failed": "Apple 로그인에 실패하였습니다.",
     "login.failed": "로그인에 실패했습니다.",
     "login.createmember": "회원가입을 해주세요.",
+    "login.inputemailandname": "이름과 이메일을 입력해주세요.",
     "network.duplicatelogin": "중복 로그인이 감지되었습니다.",
     "network.alreadyconnected": "네트워크 연결이 이미 되어있습니다.",
     "network.disconnect": "네트워크 연결이 끊겼습니다.",

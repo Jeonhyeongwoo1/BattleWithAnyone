@@ -73,9 +73,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(RequestData(request, success, fail));
     }
 
-    public void ReqFindId(string email, string userName, UnityAction<string> success, UnityAction<string> fail)
+    public void ReqFindId(string email, UnityAction<string> success, UnityAction<string> fail)
     {
-        string url = Core.settings.url + "/findId/" + email + "/" + userName;
+        string url = Core.settings.url + "/findId/" + email;
 
         UnityWebRequest request = UnityWebRequest.Get(url);
         StartCoroutine(RequestData(request, success, fail));
@@ -97,17 +97,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(RequestData(request, success, fail));
     }
 
-    public void ReqAppleSignup(string id, string password, string email, string phoneNumber, string name, UnityAction<string> success, UnityAction<string> fail)
+    public void ReqAppleSignup(string email, string name, UnityAction<string> success, UnityAction<string> fail)
     {
         //if (appleAuth == null) { return; }
-
         string url = Core.settings.url + "/appleSignup";
 
         WWWForm form = new WWWForm();
-        form.AddField("id", id);
-        form.AddField("pw", password);
         form.AddField("email", email);
-        form.AddField("phoneNumber", phoneNumber);
         form.AddField("name", name);
         form.AddField("appleUser", appleAuth.appleUser);
         form.AddField("authCode", appleAuth.authCode);
@@ -117,7 +113,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(RequestData(request, success, fail));
     }
 
-    public void ReqSignup(string id, string password, string email, string phoneNumber, string name, UnityAction<string> success, UnityAction<string> fail)
+    public void ReqSignup(string id, string password, string email, string name, UnityAction<string> success, UnityAction<string> fail)
     {
         string url = Core.settings.url + "/signup";
 
@@ -125,7 +121,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         form.AddField("id", id);
         form.AddField("pw", password);
         form.AddField("email", email);
-        form.AddField("phoneNumber", phoneNumber);
         form.AddField("name", name);
 
         UnityWebRequest request = UnityWebRequest.Post(url, form);

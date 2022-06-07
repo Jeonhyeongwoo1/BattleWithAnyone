@@ -12,6 +12,7 @@
     "login.apple.failed": "Apple login failed.",
     "login.failed": "Login failed.",
     "login.createmember": "Please sign up.",
+    "login.inputemailandname":"Input your email and name",
     "network.duplicatelogin": "Duplicate login detected.",
     "network.alreadyconnected": "A network connection is already established.",
     "network.disconnect": "The network connection has been lost.",

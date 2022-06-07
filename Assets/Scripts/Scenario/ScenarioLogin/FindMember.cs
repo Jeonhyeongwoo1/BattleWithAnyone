@@ -16,7 +16,6 @@ public class FindMember : MonoBehaviour
 	[Space, Header("[FindId]")]
 	[SerializeField] Button m_FindId_Close;
 	[SerializeField] InputField m_FindId_Email;
-	[SerializeField] InputField m_FindId_UserName;
 	[SerializeField] Button m_FindId;
 
 	[Space, Header("[FindPassword]")]
@@ -38,7 +37,6 @@ public class FindMember : MonoBehaviour
 	void FindId()
 	{
 		string email = m_FindId_Email.text;
-		string userName = m_FindId_UserName.text;
 
 		if (string.IsNullOrEmpty(email))
 		{
@@ -48,15 +46,7 @@ public class FindMember : MonoBehaviour
 			return;
 		}
 
-		if (string.IsNullOrEmpty(userName))
-		{
-			NoticePopup.content = Core.language.GetNotifyMessage("login.inputname");
-			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
-			m_FindId_UserName.ActivateInputField();
-			return;
-		}
-
-		Core.networkManager.ReqFindId(email, userName, FindIdSuccessed, FindIdFailed);
+		Core.networkManager.ReqFindId(email, FindIdSuccessed, FindIdFailed);
 	}
 
 	void FindPassword()
@@ -133,13 +123,11 @@ public class FindMember : MonoBehaviour
 		Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 
 		m_FindId_Email.text = null;
-		m_FindId_UserName.text = null;
 	}
 
 	void CloseFindIdForm()
 	{
 		m_FindId_Email.text = null;
-		m_FindId_UserName.text = null;
 		m_IdForm.SetActive(false);
 	}
 
