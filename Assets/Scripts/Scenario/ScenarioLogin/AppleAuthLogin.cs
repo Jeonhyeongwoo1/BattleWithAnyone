@@ -18,7 +18,7 @@ public class AppleAuthLogin : MonoBehaviour
     {
         if (!AppleAuthManager.IsCurrentPlatformSupported)
         {
-            NoticePopup.content = MessageCommon.Get("login.apple.platfromsupport");
+            NoticePopup.content = Core.language.GetNotifyMessage("login.apple.platfromsupport");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -27,7 +27,7 @@ public class AppleAuthLogin : MonoBehaviour
         IAppleAuthManager appleAuthManager = new AppleAuthManager(deserializer);
         appleAuthManager.SetCredentialsRevokedCallback(result =>
         {
-            NoticePopup.content = MessageCommon.Get("login.apple.failed");
+            NoticePopup.content = Core.language.GetNotifyMessage("login.apple.failed");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             Debug.LogError("Received revoke callback " + result);
         });
@@ -48,7 +48,7 @@ public class AppleAuthLogin : MonoBehaviour
             },
             error =>
             {
-                NoticePopup.content = MessageCommon.Get("login.apple.failed");
+                NoticePopup.content = Core.language.GetNotifyMessage("login.apple.failed");
                 Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
                 Core.networkManager.appleAuthManager = null;
@@ -60,7 +60,7 @@ public class AppleAuthLogin : MonoBehaviour
     {
         if (string.IsNullOrEmpty(data))
         {
-            NoticePopup.content = MessageCommon.Get("find.failedmember");
+            NoticePopup.content = Core.language.GetNotifyMessage("find.failedmember");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -73,7 +73,7 @@ public class AppleAuthLogin : MonoBehaviour
         }
         catch (Exception e)
         {
-            NoticePopup.content = MessageCommon.Get("login.apple.failed");
+            NoticePopup.content = Core.language.GetNotifyMessage("login.apple.failed");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             Debug.LogError("Apple Login Error: " + e);
             return;
@@ -85,7 +85,7 @@ public class AppleAuthLogin : MonoBehaviour
     void UpdateTokenFailed(string error)
     {
         Core.networkManager.member = null;
-        NoticePopup.content = MessageCommon.Get("login.apple.failed");
+        NoticePopup.content = Core.language.GetNotifyMessage("login.apple.failed");
         Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
         Debug.LogError("Apple Login Failed : " + error);
     }
@@ -94,7 +94,7 @@ public class AppleAuthLogin : MonoBehaviour
     {
         if (string.IsNullOrEmpty(data))
         {
-            NoticePopup.content = MessageCommon.Get("login.apple.failed");
+            NoticePopup.content = Core.language.GetNotifyMessage("login.apple.failed");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             Debug.LogError("Apple Login Failed : " + data);
             return;
@@ -107,7 +107,7 @@ public class AppleAuthLogin : MonoBehaviour
     public void LoginFailed(string error)
     {
         //Create new memeber
-        NoticePopup.content = MessageCommon.Get("login.createmember");
+        NoticePopup.content = Core.language.GetNotifyMessage("login.createmember");
         Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
         m_Signup.gameObject.SetActive(true);
         m_Signup.isAppleSignup = true;

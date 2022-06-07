@@ -71,6 +71,10 @@ MonoBehaviour:
   - NotifyPlayerSound
   - NotifyWeaponSound
   - UpdateAudioMax
+  - NotifyPlayWeaponSound
+  - NotifyUpdateTotalDamageByResidualFire
+  - NotifyUpdateTotalDamage
+  - UpdatePlayerNames
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

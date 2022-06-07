@@ -7527,7 +7527,7 @@ MonoBehaviour:
     m_ActionName: Player/MousePosition[/Mouse/rightButton]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: d0d1aeaf-3217-40ac-8b27-60483a35d4aa
+    m_ActionId: 2fe94540-2e28-4c28-a156-be8543ad5da2
     m_ActionName: Player/Touch
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 

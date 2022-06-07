@@ -108,7 +108,7 @@ public class MapSettings : MonoBehaviour, IPlugable
 
         if (!PhotonNetwork.IsConnected)
         {
-            NoticePopup.content = MessageCommon.Get("network.disconnect");
+            NoticePopup.content = Core.language.GetNotifyMessage("network.disconnect");
             popups?.OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -116,7 +116,7 @@ public class MapSettings : MonoBehaviour, IPlugable
         m_Preferences.mapName = m_SelectedMap?.mapTitle;
         if (string.IsNullOrEmpty(m_Preferences.mapName))
         {
-            NoticePopup.content = MessageCommon.Get("map.selectmap");
+            NoticePopup.content = Core.language.GetNotifyMessage("map.selectmap");
             popups?.OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -127,7 +127,7 @@ public class MapSettings : MonoBehaviour, IPlugable
             roomName = m_RoomTitle.text;
             if (string.IsNullOrEmpty(roomName))
             {
-                NoticePopup.content = MessageCommon.Get("map.inputtitle");
+                NoticePopup.content = Core.language.GetNotifyMessage("map.inputtitle");
                 popups?.OpenPopupAsync<NoticePopup>();
                 return;
             }
@@ -135,7 +135,7 @@ public class MapSettings : MonoBehaviour, IPlugable
             Regex regex = new Regex(m_NotContainSpecial);
             if (regex.IsMatch(roomName))
             {
-                NoticePopup.content = MessageCommon.Get("map.notcontain");
+                NoticePopup.content = Core.language.GetNotifyMessage("map.notcontain");
                 popups?.OpenPopupAsync<NoticePopup>();
                 m_RoomTitle.text = null;
                 return;

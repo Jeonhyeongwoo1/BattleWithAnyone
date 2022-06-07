@@ -130,7 +130,7 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
             Core.models.Unload(model.Name);
         }
 
-        NoticePopup.content = MessageCommon.Get("game.player.disconnected");
+        NoticePopup.content = Core.language.GetNotifyMessage("game.player.disconnected");
         Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
         Core.networkManager.WaitStateToConnectedToMasterServer(() => Core.scenario.OnLoadScenario(nameof(ScenarioHome)));
         BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(true);
@@ -164,6 +164,7 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 		theme.Crosshair.SetActive(true);
 		theme.gameTimer.StartTimer();
 		m_OnGameStarted?.Invoke();
+        Core.xEvent?.Raise("Move.Stop", null);
 		StartCoroutine(GamePlaying(OnRoundDone));
 	}
 

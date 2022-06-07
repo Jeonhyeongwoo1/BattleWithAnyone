@@ -12,6 +12,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
     [SerializeField] Button m_LoginBtn;
     [SerializeField] Signup m_Signup;
     [SerializeField] FindMember m_FindMember;
+    [SerializeField] Button m_Language;
 #if UNITY_IOS
     [SerializeField] AppleAuthLogin m_AppleLogin;
 #endif
@@ -59,7 +60,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
 
         if (Core.settings.profile == XSettings.Profile.local)
         {
-			Core.networkManager.member = MemberFactory.Get();
+            Core.networkManager.member = MemberFactory.Get();
             Core.scenario.OnLoadScenario(nameof(ScenarioHome));
             return;
         }
@@ -70,7 +71,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         if (string.IsNullOrEmpty(id))
         {
             m_Id.ActivateInputField();
-            NoticePopup.content = MessageCommon.Get("login.checkid");
+            NoticePopup.content = Core.language.GetNotifyMessage("login.checkid");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -78,11 +79,11 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         if (string.IsNullOrEmpty(password))
         {
             m_Password.ActivateInputField();
-            NoticePopup.content = MessageCommon.Get("login.checkpw");
+            NoticePopup.content = Core.language.GetNotifyMessage("login.checkpw");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
-        
+
         Core.networkManager.ReqLogin(id, password, LoginSuccessed, LoginFailed);
     }
 
@@ -106,7 +107,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         m_Id.text = null;
         m_Password.text = null;
 
-        NoticePopup.content = MessageCommon.Get("login.failed");
+        NoticePopup.content = Core.language.GetNotifyMessage("login.failed");
         Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
     }
 
@@ -115,10 +116,21 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
     }
 
+    void OpenLanguagePopup()
+    {
+        Popups popups = Core.plugs.Get<Popups>();
+        if (popups == null) { return; }
+        if (!popups.IsOpened<LanguagePopup>())
+        {
+            popups.OpenPopupAsync<LanguagePopup>();
+        }
+    }
+
     private void Awake()
     {
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
         m_LoginBtn.onClick.AddListener(OnLogin);
+        m_Language.onClick.AddListener(OpenLanguagePopup);
 #if UNITY_IOS
         m_AppleLogin.GetComponent<Button>().onClick.AddListener(() => m_AppleLogin.Login());
 #endif

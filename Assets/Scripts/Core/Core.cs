@@ -14,6 +14,7 @@ public class Core : Singleton<Core>
     static public XState state => Core.I?.m_XState;
     static public XEvent xEvent => Core.I?.m_XEvent;
     static public AudioManager audioManager => Core.I?.m_AudioManager;
+    static public LanguageLocalization language => Core.I?.m_Language;
 
     [SerializeField] ModelDirector m_ModelDirector = null;
     [SerializeField] ScenarioDirector m_ScenarioDirector = null;
@@ -25,6 +26,7 @@ public class Core : Singleton<Core>
     [SerializeField] XState m_XState = null;
     [SerializeField] XEvent m_XEvent = null;
     [SerializeField] AudioManager m_AudioManager = null;
+    [SerializeField] LanguageLocalization m_Language = null;
 
     static UnityEvent m_EnsureDone = new UnityEvent();
 
@@ -82,6 +84,7 @@ public class Core : Singleton<Core>
         EnsureCore<XState>(ref m_XState);
         EnsureCore<XEvent>(ref m_XEvent);
         EnsureCore<AudioManager>(ref m_AudioManager);
+        EnsureCore<LanguageLocalization>(ref m_Language);
 
         Debug.Log("Core Initialized.");
     }

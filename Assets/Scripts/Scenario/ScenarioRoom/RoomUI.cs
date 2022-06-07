@@ -34,6 +34,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	[SerializeField] Button m_GameReady;
 	[SerializeField] Button m_CharacterFormClose;
 	[SerializeField] Button m_KickPlayer;
+	[SerializeField] Button m_Language;
 	[SerializeField] GameObject m_Ready;
 	[SerializeField] Button m_MapSetting;
 	[SerializeField] Button m_GameSetting;
@@ -236,7 +237,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 	{
 		if (m_SelectedCharacter == null)
 		{
-			NoticePopup.content = MessageCommon.Get("room.selectcharacter");
+			NoticePopup.content = Core.language.GetNotifyMessage("room.selectcharacter");
 			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
 			return;
 		}
@@ -263,7 +264,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 		if (m_SelectedCharacter == null)
 		{
-			NoticePopup.content = MessageCommon.Get("room.selectcharacter");
+			NoticePopup.content = Core.language.GetNotifyMessage("room.selectcharacter");
 			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
 			return;
 		}
@@ -295,21 +296,21 @@ public class RoomUI : MonoBehaviourPunCallbacks
 
 		if (!m_IsGameReady)
 		{
-			NoticePopup.content = MessageCommon.Get("room.playerisnotready");
+			NoticePopup.content = Core.language.GetNotifyMessage("room.playerisnotready");
 			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
 			return;
 		}
 
 		if (m_SelectedCharacter == null)
 		{
-			NoticePopup.content = MessageCommon.Get("room.selectcharacter");
+			NoticePopup.content = Core.language.GetNotifyMessage("room.selectcharacter");
 			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
 			return;
 		}
 
 		if (Core.state.mapPreferences == null)
 		{
-			NoticePopup.content = MessageCommon.Get("map.selectmap");
+			NoticePopup.content = Core.language.GetNotifyMessage("map.selectmap");
 			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
 			return;
 		}
@@ -354,6 +355,16 @@ public class RoomUI : MonoBehaviourPunCallbacks
                                             { "RoundTime", roundTime }};
         //Room 정보가 변경되므로 ScearnioHome RoomListUpdate가 호출된다.
         PhotonNetwork.CurrentRoom.SetCustomProperties(customProperties);
+    }
+
+    void OpenLanguagePopup()
+    {
+        Popups popups = Core.plugs.Get<Popups>();
+        if (popups == null) { return; }
+        if (!popups.IsOpened<LanguagePopup>())
+        {
+            popups.OpenPopupAsync<LanguagePopup>();
+        }
     }
 
     [PunRPC]
@@ -441,7 +452,7 @@ public class RoomUI : MonoBehaviourPunCallbacks
 		m_CharacterSelect.onClick.AddListener(SelectCharacter);
 		m_MapSetting.onClick.AddListener(OpenMapSetting);
         m_GameSetting.onClick.AddListener(OpenGameSetting);
-
+        m_Language.onClick.AddListener(OpenLanguagePopup);
 		Init();
 		//Init 한번만 할지 계속 만들지 고민..
 		SetCharacterList();

@@ -1,0 +1,202 @@
+[
+    {
+        "id":"login.find.id",
+        "kor":"아이디를 찾으세요.",
+        "eng":"Find your id."
+    },
+    {
+        "id": "login.login",
+        "kor": "로그인",
+        "eng": "Login"
+    },
+    {
+        "id": "login.find",
+        "kor": "비밀번호/아이디 찾기",
+        "eng": "Find password/ID"
+    },
+    {
+        "id": "login.signup",
+        "kor": "회원가입",
+        "eng": "Signup"
+    },
+    {
+        "id": "login.login",
+        "kor": "로그인",
+        "eng": "Login"
+    },
+    {
+        "id": "login.applelogin",
+        "kor": "애플 로그인",
+        "eng": "Apple Login"
+    },
+    {
+        "id": "login.signup.id",
+        "kor": "아이디",
+        "eng": "Id"
+    },
+    {
+        "id": "login.signup.password",
+        "kor": "비밀번호",
+        "eng": "Pw"
+    },
+    {
+        "id": "login.signup.name",
+        "kor": "이름",
+        "eng": "Name"
+    },
+    {
+        "id": "login.signup.phonenumber",
+        "kor": "전화번호",
+        "eng": "Phone number"
+    },
+    {
+        "id": "login.signup.email",
+        "kor": "이메일",
+        "eng": "E-mail"
+    },
+    {
+        "id": "login.signup.confirm",
+        "kor": "확인",
+        "eng": "Confirm"
+    },
+    {
+        "id": "login.signup.findid",
+        "kor": "아이디 찾기",
+        "eng": "Find your id"
+    },
+    {
+        "id": "login.signup.findpassword",
+        "kor": "비밀번호 찾기",
+        "eng": "Find your password"
+    },
+    {
+        "id": "login.signup.checkid",
+        "kor": "확인",
+        "eng": "Check"
+    },
+    {
+        "id": "login.signup.checkidvalue",
+        "kor": "아이디를 확인해 주세요.",
+        "eng": "Check your ID."
+    },
+    {
+        "id": "login.signup.checkpwvalue",
+        "kor": "비밀번호를 확인해 주세요.",
+        "eng": "Check your PW."
+    },
+    {
+        "id": "login.signup.checknamevalue",
+        "kor": "아이디를 확인해 주세요.",
+        "eng": "Check your ID."
+    },
+    {
+        "id": "login.signup.checkphonenumbervalue",
+        "kor": "전화번호를 확인해 주세요.",
+        "eng": "Check your Phonenumber."
+    },
+    {
+        "id": "login.signup.checkemailvalue",
+        "kor": "이메일을 확인해 주세요.",
+        "eng": "Check your E-mail."
+    },
+    {
+        "id": "home.search.roomtitle",
+        "kor": "방 제목",
+        "eng": "Room Title"
+    },
+    {
+        "id": "home.search",
+        "kor": "검색",
+        "eng": "Search"
+    },
+    {
+        "id": "home.room.noroom",
+        "kor": "방이 없습니다.",
+        "eng": "There isn't room"
+    },
+    {
+        "id": "home.room.player",
+        "kor": "Player : ",
+        "eng": "Player : "
+    },
+    {
+        "id": "home.room.map",
+        "kor": "맵 : ",
+        "eng": "Map : "
+    },
+    {
+        "id": "home.room.roomtitle",
+        "kor": "방 제목 : ",
+        "eng": "Title : "
+    },
+    {
+        "id": "home.room.create",
+        "kor": "방 생성",
+        "eng": "Create"
+    },
+    {
+        "id": "mapsettings.room.title",
+        "kor": "방 제목",
+        "eng": "Room title"
+    },
+    {
+        "id": "mapsettings.room.time",
+        "kor": "라운드 시간",
+        "eng": "Round time"
+    },
+    {
+        "id": "mapsettings.room.numberofround",
+        "kor": "라운드 횟수",
+        "eng": "Number"
+    },
+    {
+        "id": "mapsettings.room.confirm",
+        "kor": "확인",
+        "eng": "confirm"
+    },
+    {
+        "id": "mapsettings.room.cancel",
+        "kor": "취소",
+        "eng": "cancel"
+    },
+    {
+        "id": "mapsettings.room.info",
+        "kor": "적과의 싸움을 진행하세요.",
+        "eng": "the Fight against the enemy."
+    },
+    {
+        "id": "room.selectcharacter",
+        "kor": "캐릭터 선택",
+        "eng": "SELECT"
+    },
+    {
+        "id": "room.start",
+        "kor": "START",
+        "eng": "START"
+    },
+    {
+        "id": "room.select.title",
+        "kor": "캐릭터 선택",
+        "eng": "SELECT CHARACTER"
+    },
+    {
+        "id": "room.select.complete",
+        "kor": "선택 완료",
+        "eng": "Complete"
+    },
+    {
+        "id": "gamesettings.bg",
+        "kor": "배경 음악",
+        "eng": "BG"
+    },
+    {
+        "id": "gamesettings.effect",
+        "kor": "효과음",
+        "eng": "Effect"
+    },
+    {
+        "id": "gamesettings.sensitivity",
+        "kor": "회전 감도",
+        "eng": "Sensitivity"
+    }
+]

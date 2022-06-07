@@ -92,7 +92,7 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
     {
         if (Core.gameManager.state != GamePlayManager.State.GameDone)
         {
-            NoticePopup.content = string.Format(MessageCommon.Get("game.player.leftroom"), name);
+            NoticePopup.content = string.Format(Core.language.GetNotifyMessage("game.player.leftroom"), name);
             Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>(() => Core.gameManager.OnGameDoneByPlayerLeftRoom());
         }
     }

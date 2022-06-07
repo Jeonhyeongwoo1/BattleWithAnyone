@@ -43,7 +43,7 @@ public class Signup : MonoBehaviour
 
         if (string.IsNullOrEmpty(id))
         {
-            NoticePopup.content = MessageCommon.Get("login.inputid");
+            NoticePopup.content = Core.language.GetNotifyMessage("login.inputid");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -55,7 +55,7 @@ public class Signup : MonoBehaviour
     {
         if (!m_IsCheckedUserId)
         {
-            NoticePopup.content = MessageCommon.Get("login.checkid");
+            NoticePopup.content = Core.language.GetNotifyMessage("login.checkid");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -144,12 +144,12 @@ public class Signup : MonoBehaviour
         if (!string.IsNullOrEmpty(data))
         {
             m_IsCheckedUserId = true;
-            StartCoroutine(ShowAvailableIdPhrases(MessageCommon.Get("login.availableid")));
+            StartCoroutine(ShowAvailableIdPhrases(Core.language.GetNotifyMessage("login.availableid")));
         }
         else
         {
             m_IsCheckedUserId = false;
-            StartCoroutine(ShowAvailableIdPhrases(MessageCommon.Get("login.notavailableid")));
+            StartCoroutine(ShowAvailableIdPhrases(Core.language.GetNotifyMessage("login.notavailableid")));
         }
     }
 
@@ -159,7 +159,7 @@ public class Signup : MonoBehaviour
         m_CheckId.gameObject.SetActive(true);
         yield return new WaitForSeconds(2f);
         m_CheckId.gameObject.SetActive(false);
-        m_CheckId.text = MessageCommon.Get("login.checkid");
+        m_CheckId.text = Core.language.GetNotifyMessage("login.checkid");
     }
 
     void CheckUserIdFailed(string error)
@@ -176,7 +176,7 @@ public class Signup : MonoBehaviour
             return;
         }
 
-        ConfirmPopup.content = MessageCommon.Get("signup.signupsucceesd");
+        ConfirmPopup.content = Core.language.GetNotifyMessage("signup.signupsucceesd");
         Core.plugs.Get<Popups>().OpenPopupAsync<ConfirmPopup>();
 
         gameObject.SetActive(false);
@@ -187,7 +187,7 @@ public class Signup : MonoBehaviour
         Init();
 		Core.networkManager.appleAuth = null;
 		Core.networkManager.appleAuthManager = null;
-        NoticePopup.content = MessageCommon.Get("signup.signupfailed");
+        NoticePopup.content = Core.language.GetNotifyMessage("signup.signupfailed");
         Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
     }
 

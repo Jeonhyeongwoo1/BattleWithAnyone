@@ -5,24 +5,50 @@ using UnityEngine.UI;
 
 public class XSettings : MonoBehaviour
 {
-	public enum Profile
-	{
-		local,
-		dev
-	}
+    public enum Profile
+    {
+        local,
+        dev
+    }
 
-	public static bool isCharacterTest = false;
-	public string url => profile == Profile.dev ? m_DevUrl : m_LocalUrl;
-	public Profile profile;
+    public enum Language
+    {
+        KOR,
+        ENG
+    }
 
-	public static bool scenarioDirectorLog = true;
-	public static bool gamePlayManagerLog = true;
-	public static bool modelDirectorLog = true;
-	public static bool plugDirectorLog = true;
-	public static bool networkManagerLog = true;
-	public static bool roomChatLog = true;
+    public static bool isCharacterTest = false;
+    public string url => profile == Profile.dev ? m_DevUrl : m_LocalUrl;
+    public string messageCommonPath => language == Language.KOR ? messageCommonPath_kr : messageCommonPath_en;
+    public Profile profile;
+    public Language language;
+	
+    /*
+    *   -------------------------------------------------------
+    *	Log
+    *   -------------------------------------------------------
+    */
+    public static bool scenarioDirectorLog = true;
+    public static bool gamePlayManagerLog = true;
+    public static bool modelDirectorLog = true;
+    public static bool plugDirectorLog = true;
+    public static bool networkManagerLog = true;
+    public static bool roomChatLog = true;
+    /*
+    *   -------------------------------------------------------
+    */
 
-    public const string messageCommonPath = "Jsons/Message-common-kr";
+    /*
+    *   -------------------------------------------------------
+    *	Language Localization
+    *   -------------------------------------------------------
+    */
+    public readonly string uiMessagePath = "Jsons/UIMessage";
+    private readonly string messageCommonPath_kr = "Jsons/Message-common-kr";
+    private readonly string messageCommonPath_en = "Jsons/Message-common-en";
+    /*
+    *   -------------------------------------------------------
+    */
 
     /*
 	*   -------------------------------------------------------
@@ -30,9 +56,9 @@ public class XSettings : MonoBehaviour
 	*   -------------------------------------------------------
 	*/
     public const string chracterPath = "Prefabs/Characters/";
-	public const string bulletPath = "Prefabs/Bullet/";
-	public const string bulletImpactPath = "Prefabs/BulletImpact/";
-	public const string itemPath = "Prefabs/InteractableItem/";
+    public const string bulletPath = "Prefabs/Bullet/";
+    public const string bulletImpactPath = "Prefabs/BulletImpact/";
+    public const string itemPath = "Prefabs/InteractableItem/";
     /*
 	*   -------------------------------------------------------
 	*/

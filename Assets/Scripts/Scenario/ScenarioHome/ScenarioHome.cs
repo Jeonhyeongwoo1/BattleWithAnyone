@@ -10,6 +10,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     public UserInfo userInfo;
     public RoomMenu roomMenu;
 
+    [SerializeField] Button m_Language;
     [SerializeField] Button m_Exit;
     [SerializeField] Button m_Settings;
 
@@ -62,6 +63,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
             userInfo.gameObject.SetActive(true);
             m_Exit.gameObject.SetActive(true);
             m_Settings.gameObject.SetActive(true);
+            m_Language.gameObject.SetActive(true);
             Core.audioManager.PlayBackground(AudioManager.BackgroundType.HOME);
         });
     }
@@ -87,6 +89,16 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         }
     }
 
+    void OpenLanguagePopup()
+    {
+        Popups popups = Core.plugs.Get<Popups>();
+        if (popups == null) { return; }
+        if (!popups.IsOpened<LanguagePopup>())
+        {
+            popups.OpenPopupAsync<LanguagePopup>();
+        }
+    }
+
     private void Start()
     {
         Core.Ensure(() => Core.scenario.OnLoadedScenario(this));
@@ -97,6 +109,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         Core.Ensure(() => Core.scenario.OnScenarioAwaked(this));
         m_Exit.onClick.AddListener(() => Application.Quit());
         m_Settings.onClick.AddListener(OpenSettingsPopup);
+        m_Language.onClick.AddListener(OpenLanguagePopup);
     }
 
 }

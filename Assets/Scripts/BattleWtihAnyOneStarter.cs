@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class BattleWtihAnyOneStarter : MonoBehaviour
 {
 	public XSettings.Profile profile;
+	public XSettings.Language language;
 
 	[SerializeField] BlockSkybox m_BlockSkybox;
 	[SerializeField] LoadingAnimation m_LoadingAnimation;
@@ -40,13 +41,22 @@ public class BattleWtihAnyOneStarter : MonoBehaviour
 	}
 
 	private void Awake()
-	{
-		Ensure();
+    {
+        Ensure();
 		GetBlockSkybox()?.gameObject.SetActive(false);
 		GetLoading()?.gameObject.SetActive(false);
 	}
 
-	T CopyTo<T>(ref T component) where T : MonoBehaviour
+    private void OnValidate()
+    {
+        if (Core.settings != null)
+        {
+            Core.settings.profile = profile;
+            Core.settings.language = language;
+        }
+    }
+
+    T CopyTo<T>(ref T component) where T : MonoBehaviour
 	{
 		return component as T;
 	}
@@ -64,8 +74,6 @@ public class BattleWtihAnyOneStarter : MonoBehaviour
             Core.scenario.OnLoadScenario(nameof(ScenarioTraining));
             return;
         }
-
-        Core.settings.profile = profile;
 
 		if (ScenarioDirector.scenarioReady)
 		{

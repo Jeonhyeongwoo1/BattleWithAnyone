@@ -49,7 +49,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 		string roomName = Core.gameManager.roomName;
         if (string.IsNullOrEmpty(roomName))
 		{
-			NoticePopup.content = MessageCommon.Get("room.joinroomfailed");
+			NoticePopup.content = Core.language.GetNotifyMessage("room.joinroomfailed");
 			Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
 			StartCoroutine(WaitingScnearioUnloaded(() => Core.scenario.OnLoadScenario(nameof(ScenarioHome))));
 			done?.Invoke();
@@ -105,7 +105,7 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 	{
 		if (roomChat.IsConnect())
 		{
-			roomChat.OnSendMessage(string.Format(MessageCommon.Get("room.playerLeft"), otherPlayer.NickName));
+			roomChat.OnSendMessage(string.Format(Core.language.GetNotifyMessage("room.playerLeft"), otherPlayer.NickName));
 		}
 		roomUI.OnPlayerLeft();
 	}

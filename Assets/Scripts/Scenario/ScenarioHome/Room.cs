@@ -17,9 +17,9 @@ public class Room : MonoBehaviourPunCallbacks, IPointerClickHandler, IPointerEnt
 
     public void SetRoomInfo(string title, string roomManager, string map)
     {
-        m_Title.text = "방 제목 : " + title;
-        m_RoomManagerName.text = "Player : " + roomManager;
-        m_Map.text = "맵 : " + map;
+        m_Title.text = Core.language.GetUIMessage("home.room.roomtitle") + title;
+        m_RoomManagerName.text = Core.language.GetUIMessage("home.room.player") + roomManager;
+        m_Map.text = Core.language.GetUIMessage("home.room.map") + map;
         m_RoomName = title;
     }
 
@@ -27,7 +27,7 @@ public class Room : MonoBehaviourPunCallbacks, IPointerClickHandler, IPointerEnt
     {
         if (!PhotonNetwork.IsConnectedAndReady && !PhotonNetwork.InLobby)
         {
-            NoticePopup.content = MessageCommon.Get("network.disconnect");
+            NoticePopup.content = Core.language.GetNotifyMessage("network.disconnect");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>(() => Core.scenario.OnLoadScenario(nameof(ScenarioLogin)));
             return;
         }

@@ -42,7 +42,7 @@ public class FindMember : MonoBehaviour
 
 		if (string.IsNullOrEmpty(email))
 		{
-			NoticePopup.content = MessageCommon.Get("login.inputemail");
+			NoticePopup.content = Core.language.GetNotifyMessage("login.inputemail");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			m_FindId_Email.ActivateInputField();
 			return;
@@ -50,7 +50,7 @@ public class FindMember : MonoBehaviour
 
 		if (string.IsNullOrEmpty(userName))
 		{
-			NoticePopup.content = MessageCommon.Get("login.inputname");
+			NoticePopup.content = Core.language.GetNotifyMessage("login.inputname");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			m_FindId_UserName.ActivateInputField();
 			return;
@@ -66,7 +66,7 @@ public class FindMember : MonoBehaviour
 
 		if (string.IsNullOrEmpty(id))
 		{
-			NoticePopup.content = MessageCommon.Get("login.inputid");
+			NoticePopup.content = Core.language.GetNotifyMessage("login.inputid");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			m_FindPw_Id.ActivateInputField();
 			return;
@@ -74,7 +74,7 @@ public class FindMember : MonoBehaviour
 
 		if (string.IsNullOrEmpty(email))
 		{
-			NoticePopup.content = MessageCommon.Get("login.inputemail");
+			NoticePopup.content = Core.language.GetNotifyMessage("login.inputemail");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			m_FindPw_Email.ActivateInputField();
 			return;
@@ -87,14 +87,14 @@ public class FindMember : MonoBehaviour
 	{
 		if (string.IsNullOrEmpty(data))
 		{
-			NoticePopup.content = MessageCommon.Get("find.failedmember");
+			NoticePopup.content = Core.language.GetNotifyMessage("find.failedmember");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			return;
 		}
 
 		Member member = JsonUtility.FromJson<Member>(data);
 		string password = member.mbr_pwd;
-		ConfirmPopup.content = string.Format(MessageCommon.Get("find.memberpassword"), password);
+		ConfirmPopup.content = string.Format(Core.language.GetNotifyMessage("find.memberpassword"), password);
 		Core.plugs.Get<Popups>().OpenPopupAsync<ConfirmPopup>();
 
 	}
@@ -103,7 +103,7 @@ public class FindMember : MonoBehaviour
 	{
 		Debug.LogError(error);
 
-		NoticePopup.content = MessageCommon.Get("find.failedmember");
+		NoticePopup.content = Core.language.GetNotifyMessage("find.failedmember");
 		Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 
 		m_FindPw_Email.text = null;
@@ -114,14 +114,14 @@ public class FindMember : MonoBehaviour
 	{
 		if (string.IsNullOrEmpty(data))
 		{
-			NoticePopup.content = MessageCommon.Get("find.failedid");
+			NoticePopup.content = Core.language.GetNotifyMessage("find.failedid");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			return;
 		}
 
 		Member member = JsonUtility.FromJson<Member>(data);
 		string id = member.mbr_id;
-		ConfirmPopup.content = string.Format(MessageCommon.Get("find.memberid"), id);
+		ConfirmPopup.content = string.Format(Core.language.GetNotifyMessage("find.memberid"), id);
 		Core.plugs.Get<Popups>().OpenPopupAsync<ConfirmPopup>();
 	}
 
@@ -129,7 +129,7 @@ public class FindMember : MonoBehaviour
 	{
 		Debug.LogError(error);
 
-		NoticePopup.content = MessageCommon.Get("find.failedid");
+		NoticePopup.content = Core.language.GetNotifyMessage("find.failedid");
 		Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 
 		m_FindId_Email.text = null;

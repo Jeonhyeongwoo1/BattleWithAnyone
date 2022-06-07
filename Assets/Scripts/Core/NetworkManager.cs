@@ -184,7 +184,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected)
         {
-            NoticePopup.content = MessageCommon.Get("network.alreadyconnected");
+            NoticePopup.content = Core.language.GetNotifyMessage("network.alreadyconnected");
             Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
             return;
         }
@@ -205,7 +205,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         Log("DisConnected" + cause);
-        ConfirmPopup.content = MessageCommon.Get("network.disconnect");
+        ConfirmPopup.content = Core.language?.GetNotifyMessage("network.disconnect");
         Core.plugs?.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>(() => Application.Quit());
 /*
         NoticePopup.content = MessageCommon.Get("network.disconnect");
@@ -245,16 +245,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             case (int)PhotonCode.EXIST_ROOM:
                 Core.state.mapPreferences = null;
-                NoticePopup.content = MessageCommon.Get("room.existroom");
+                NoticePopup.content = Core.language.GetNotifyMessage("room.existroom");
                 Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
                 break;
             case (int)PhotonCode.OPERATION_NOTALLOWED_INCURRENT_STATE:
-                ConfirmPopup.content = MessageCommon.Get("pun.states.waiting");
+                ConfirmPopup.content = Core.language.GetNotifyMessage("pun.states.waiting");
                 Core.plugs.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>();
                 break;
             default:
                 Core.state.mapPreferences = null;
-                NoticePopup.content = MessageCommon.Get("room.createfailed");
+                NoticePopup.content = Core.language.GetNotifyMessage("room.createfailed");
                 Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
                 break;
         }
@@ -267,11 +267,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         switch (returnCode)
         {
             case (int)PhotonCode.GAME_FULL:
-                NoticePopup.content = MessageCommon.Get("room.gamefull");
+                NoticePopup.content = Core.language.GetNotifyMessage("room.gamefull");
                 Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
                 break;
             default:
-                NoticePopup.content = MessageCommon.Get("room.joinroomfailed");
+                NoticePopup.content = Core.language.GetNotifyMessage("room.joinroomfailed");
                 Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
                 break;
         }
@@ -298,7 +298,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (elapsed > m_NetworkMaxWaitTime && !o)
             {
                 Log("Failed to Network Connect");
-                NoticePopup.content = MessageCommon.Get("network.failed");
+                NoticePopup.content = Core.language.GetNotifyMessage("network.failed");
                 Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
                 yield break;
             }
@@ -319,7 +319,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             if (elapsed > m_NetworkMaxWaitTime)
             {
-                NoticePopup.content = MessageCommon.Get("network.failed");
+                NoticePopup.content = Core.language.GetNotifyMessage("network.failed");
                 Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
                 Core.scenario.OnLoadScenario(nameof(ScenarioLogin));
                 BattleWtihAnyOneStarter.GetLoading()?.StopLoading();
@@ -350,7 +350,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 string value = request.downloadHandler.text;
                 if(token != value)
                 {
-                    NoticePopup.content = MessageCommon.Get("network.duplicatelogin");
+                    NoticePopup.content = Core.language.GetNotifyMessage("network.duplicatelogin");
                     Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
                     request.Dispose();
                     yield return new WaitForSeconds(1f);

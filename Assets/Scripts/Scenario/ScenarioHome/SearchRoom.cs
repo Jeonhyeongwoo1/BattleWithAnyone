@@ -39,7 +39,7 @@ public class SearchRoom : MonoBehaviour
 	{
 		if (string.IsNullOrEmpty(m_InputedRoomName.text))
 		{
-			NoticePopup.content = MessageCommon.Get("room.inputroomname");
+			NoticePopup.content = Core.language.GetNotifyMessage("room.inputroomname");
 			Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
 			return;
 		}

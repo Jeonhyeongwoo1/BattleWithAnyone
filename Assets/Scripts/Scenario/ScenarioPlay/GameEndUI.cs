@@ -62,9 +62,9 @@ public class GameEndUI : MonoBehaviour, IOnEventCallback
 
     void SetGameInfo()
     {
-        m_WinCount.text = string.Format(MessageCommon.Get("game.end.wincount"), PhotonNetwork.IsMasterClient ? Core.state.masterWinCount : Core.state.playerWinCount);
-        m_DamageReceived.text = string.Format(MessageCommon.Get("game.end.damangereceived"), Core.state.totalDamangeReceived);
-        m_TakeDamange.text = string.Format(MessageCommon.Get("game.end.takedamage"), Core.state.totalTakeDamange);
+        m_WinCount.text = string.Format(Core.language.GetNotifyMessage("game.end.wincount"), PhotonNetwork.IsMasterClient ? Core.state.masterWinCount : Core.state.playerWinCount);
+        m_DamageReceived.text = string.Format(Core.language.GetNotifyMessage("game.end.damangereceived"), Core.state.totalDamangeReceived);
+        m_TakeDamange.text = string.Format(Core.language.GetNotifyMessage("game.end.takedamage"), Core.state.totalTakeDamange);
     }
 
     IEnumerator WaitingTime()
