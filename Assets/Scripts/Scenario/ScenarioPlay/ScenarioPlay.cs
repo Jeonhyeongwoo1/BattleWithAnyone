@@ -22,7 +22,7 @@ public class ScenarioPlay : MonoBehaviourPunCallbacks, IScenario
         if (!PhotonNetwork.IsConnectedAndReady && Core.networkManager.member == null)
         {
             BattleWtihAnyOneStarter.GetLoading()?.StartLoading();
-            Core.networkManager.ConnectPhotonNetwork(() => PhotonNetwork.JoinLobby());
+            Core.networkManager.ConnectPhotonNetwork(() => Core.networkManager.WaitStateToConnectedToMasterServer(() => PhotonNetwork.JoinLobby()));
             ScenarioPrepared = done;
             return;
         }

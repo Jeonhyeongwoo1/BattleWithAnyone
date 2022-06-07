@@ -32,8 +32,8 @@ public class ScenarioRoom : MonoBehaviourPunCallbacks, IScenario
 	{
 		if (!PhotonNetwork.IsConnectedAndReady && Core.networkManager.member == null)
 		{
-			//Room에 바로 진입시(DEV)
-			Core.networkManager.ConnectPhotonNetwork(() => PhotonNetwork.JoinLobby());
+            //Room에 바로 진입시(DEV)
+            Core.networkManager.ConnectPhotonNetwork(() => Core.networkManager.WaitStateToConnectedToMasterServer(()=> PhotonNetwork.JoinLobby()));
 			done?.Invoke();
 			return;
 		}
