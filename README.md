@@ -15,7 +15,7 @@
 
 ## Unity version 
 
- * UnityVersion : 2021.2.4f1
+ * Unity version : 2021.2.4f1
 
 ## Used asset package
 
@@ -42,6 +42,15 @@
   
   * This project is licensed under the Jeon hyeongwoo License
   
+## Used network
+
+  * Photon(Game network server)
+  * Server(Account server) - Node.js
+
+## Used database
+
+  * mysql
+
 ## Picture In Game 
 
   * Login
