@@ -47,9 +47,9 @@
   * Login
   <img width="743" alt="스크린샷 2022-06-08 오후 4 11 52" src="https://user-images.githubusercontent.com/50667930/172554517-96167708-5eff-400b-acce-7e55e83b1526.png">
   * Home
-  <img width="743" alt="스크린샷 2022-06-08 오후 4 11 52" src="https://user-images.githubusercontent.com/50667930/172554517-96167708-5eff-400b-acce-7e55e83b1526.png">
+  <img width="747" alt="스크린샷 2022-06-08 오후 4 13 32" src="https://user-images.githubusercontent.com/50667930/172555631-5e4aaafd-babd-4842-832f-884513d351f6.png">
   * ROOM
-  <img width="743" alt="스크린샷 2022-06-08 오후 4 11 52" src="https://user-images.githubusercontent.com/50667930/172554517-96167708-5eff-400b-acce-7e55e83b1526.png">
+  <img width="742" alt="스크린샷 2022-06-08 오후 4 14 40" src="https://user-images.githubusercontent.com/50667930/172555702-9a6a7cd1-3fff-4496-b201-6f52231377cc.png">
   * Play
-  <img width="743" alt="스크린샷 2022-06-08 오후 4 11 52" src="https://user-images.githubusercontent.com/50667930/172554517-96167708-5eff-400b-acce-7e55e83b1526.png">
+  <img width="743" alt="스크린샷 2022-06-08 오후 4 16 29" src="https://user-images.githubusercontent.com/50667930/172555764-04828687-9c2e-4671-bc8d-b3c6d3bbc603.png">
 
