@@ -15,7 +15,7 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
         public string name;
         public Sprite sprite;
     }
-
+    public bool test = true;
     [SerializeField] Text m_Title;
     [SerializeField] Text m_Master;
     [SerializeField] Text m_Player;
@@ -124,16 +124,20 @@ public class GamePlayLoading : MonoBehaviourPunCallbacks
         //completed
         photonView.RPC(nameof(UpdateLoadingProgress), RpcTarget.Others, 1.0f);
         elapsed = 0;
-        while (m_OtherPlayerLoadingProcess < 1)
+       
+        if(!test)
         {
-            if (elapsed > maxWaitTime)
+            while (m_OtherPlayerLoadingProcess < 1)
             {
-                Core.gameManager.OnOtherPlayerDisconnectedDuringLoading();
-                yield break;
-            }
+                if (elapsed > maxWaitTime)
+                {
+                    Core.gameManager.OnOtherPlayerDisconnectedDuringLoading();
+                    yield break;
+                }
 
-            elapsed += Time.deltaTime;
-            yield return null;
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
         }
 
         yield return new WaitForSeconds(1f);

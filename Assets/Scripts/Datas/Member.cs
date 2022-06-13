@@ -12,3 +12,13 @@ public class Member
 	public string mbr_nm;
 	public string mbr_token;
 }
+
+[Serializable]
+public class AppleLoginAuth
+{
+    public string appleUser;
+    public string authCode;
+    public string idToken;
+    public string email;
+    public string nickName;
+}

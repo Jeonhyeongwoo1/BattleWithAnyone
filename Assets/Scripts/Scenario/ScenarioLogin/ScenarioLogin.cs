@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System;
 
 public class ScenarioLogin : MonoBehaviour, IScenario
 {
@@ -58,12 +59,12 @@ public class ScenarioLogin : MonoBehaviour, IScenario
         string id = m_Id.text;
         string password = m_Password.text;
 
-        if (Core.settings.profile == XSettings.Profile.local)
-        {
-            Core.networkManager.member = MemberFactory.Get();
-            Core.scenario.OnLoadScenario(nameof(ScenarioHome));
-            return;
-        }
+        // if (Core.settings.profile == XSettings.Profile.local)
+        // {
+        //     Core.networkManager.member = MemberFactory.Get();
+        //     Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+        //     return;
+        // }
 
         Popups popups = Core.plugs.Get<Popups>();
         NoticePopup notice = popups.Get<NoticePopup>();
@@ -83,7 +84,7 @@ public class ScenarioLogin : MonoBehaviour, IScenario
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             return;
         }
-
+        
         Core.networkManager.ReqLogin(id, password, LoginSuccessed, LoginFailed);
     }
 
@@ -95,8 +96,18 @@ public class ScenarioLogin : MonoBehaviour, IScenario
             return;
         }
 
-        Member member = JsonUtility.FromJson<Member>(data);
-        Core.networkManager.member = member;
+        try
+        {
+            Member member = JsonUtility.FromJson<Member>(data);
+            Core.networkManager.member = member;
+        }
+        catch (Exception e)
+        {
+            LoginFailed(null);
+            Debug.LogError(e);
+            return;
+        }
+       
         Core.audioManager.StopBackground();
         Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }

@@ -7,13 +7,21 @@ public class ScenarioDirector : MonoBehaviour
 {
     public static bool scenarioReady { get; set; }
 
-    public IScenario currentScenario { get => m_CurrentScenario; set => m_CurrentScenario = value; }
-    public IScenario previousScenario { get => m_PreviousScenario; set => m_PreviousScenario = value; }
-	
-	IScenario m_PreviousScenario = null;
-	IScenario m_CurrentScenario = null;
+    IScenario m_CurrentScenario = null;
+    public IScenario currentScenario
+    {
+        get => m_CurrentScenario;
+        set => m_CurrentScenario = value;
+    }
 
-    public string GetCurScenarioName() => m_CurrentScenario.scenarioName;
+    IScenario m_PreviousScenario = null;
+    public IScenario previousScenario
+    {
+        get => m_PreviousScenario;
+        set => m_PreviousScenario = value;
+    }
+
+    public string GetCurScenarioName() => m_CurrentScenario?.scenarioName;
 
     public void OnScenarioAwaked(IScenario scenario)
 	{
@@ -32,7 +40,6 @@ public class ScenarioDirector : MonoBehaviour
 		scenarioReady = false;
 		if (m_CurrentScenario == null)
 		{
-			m_CurrentScenario = scenario;
 			OnScenarioPrepare(null, scenario);
 			return;
 		}

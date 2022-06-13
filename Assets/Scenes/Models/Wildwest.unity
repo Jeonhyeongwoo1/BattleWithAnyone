@@ -25249,7 +25249,7 @@ MonoBehaviour:
   useAysncFog: 1
   useRenderFog: 0
   fogActivationDuration: 0
-  fogActivationStartTime: 150
+  fogActivationStartTime: 20
   fogActivatingDuration: 30
   fogIntensity: 1
   fogHeight: 0.442

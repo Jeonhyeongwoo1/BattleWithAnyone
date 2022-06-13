@@ -83,8 +83,8 @@ Material:
     - _OcclusionStrength: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Rotation: 60
-    - _RotationSpeed: 2
+    - _Rotation: 0
+    - _RotationSpeed: 0
     - _Rotationn: 1
     - _SkyboxExtended: 1
     - _Smoothness: 0.5

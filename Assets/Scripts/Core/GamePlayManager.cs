@@ -86,6 +86,27 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 		});
 	}
 
+    public void InitForGamePlay()
+    {
+        m_State = State.None;
+        Core.state.masterWinCount = 0;
+        Core.state.playerWinCount = 0;
+        Core.state.totalDamangeReceived = 0;
+        Core.state.totalTakeDamange = 0;
+        Core.state.masterCharacter = null;
+        Core.state.playerCharacter = null;
+        Core.state.mapPreferences = null;
+        string model = Core.models.Get()?.Name;
+        Core.models.Unload(model);
+
+        XTheme xTheme = Core.plugs.Get<XTheme>();
+        xTheme.gameTimer?.StopTimer();
+        Core.plugs.Unload<XTheme>();
+
+        Core.poolManager.Remove(nameof(Bullet));
+        Core.poolManager.Remove(nameof(BulletCollisionEffect));
+    }
+
     public void OnGameDoneByPlayerLeftRoom()
     {
         int numberOfRound = Core.state.mapPreferences.numberOfRound;
@@ -215,8 +236,6 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
         PhotonNetwork.RaiseEvent((byte)PhotonEventCode.GAME_END, null, raiseEventOptions, SendOptions.SendReliable);
 
-        Core.poolManager.Remove(nameof(Bullet));
-        Core.poolManager.Remove(nameof(BulletCollisionEffect));
         StartCoroutine(WaitingGameEnd(GameEnd));
     }
 
@@ -235,24 +254,10 @@ public class GamePlayManager : MonoBehaviourPunCallbacks, IOnEventCallback
 	void GameEnd()
 	{
 		Log("Game End");
-
-        m_State = State.None;
-        Core.state.masterWinCount = 0;
-        Core.state.playerWinCount = 0;
-		Core.state.totalDamangeReceived = 0;
-		Core.state.totalTakeDamange = 0;
-        Core.state.masterCharacter = null;
-        Core.state.playerCharacter = null;
-        Core.state.mapPreferences = null;
-		string model = Core.models.Get()?.Name;
-		Core.models.Unload(model);
-
-		XTheme xTheme = Core.plugs.Get<XTheme>();
-		xTheme.gameTimer?.StopTimer();
-		Core.plugs.Unload<XTheme>();
-
+		InitForGamePlay();
         PhotonNetwork.LeaveRoom();
 		Core.networkManager.WaitStateToConnectedToMasterServer(() => Core.scenario.OnLoadScenario(nameof(ScenarioHome)));
         BattleWtihAnyOneStarter.GetBlockSkybox()?.gameObject.SetActive(true);
 	}
+
 }

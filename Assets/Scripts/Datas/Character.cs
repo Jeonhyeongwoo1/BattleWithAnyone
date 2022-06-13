@@ -46,8 +46,6 @@ public class CameraOption
     public float lookUpDegree;
 	[Tooltip("내려 보기 제한")]
     public float lookDownDegree;
-    [Tooltip("Default 회전 값")]
-    public Vector3 rotation;
 
 }
 

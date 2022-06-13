@@ -6,20 +6,15 @@ using UnityEngine.Events;
 using UnityEngine.Networking;
 using AppleAuth;
 using System;
+using System.Text;
+using System.Security.Cryptography;
+using AppleAuth.Enums;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
 
-    [Serializable]
-    public class AppleAuth
-    {
-        public string appleUser;
-        public string authCode;
-        public string idToken;
-    }
-
-    AppleAuth m_AppleAuth;
-    public AppleAuth appleAuth
+    AppleLoginAuth m_AppleAuth;
+    public AppleLoginAuth appleAuth
     {
         get => m_AppleAuth;
         set => m_AppleAuth = value;
@@ -39,36 +34,71 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         set => m_AppleAuthManager = value;
     }
 
-    [SerializeField] float m_CheckTokenValueTime = 30f;
+    bool m_StopAppleCredentialInspection;
+    public bool stopAppleCredentialInspection
+    {
+        get => m_StopAppleCredentialInspection;
+        set => m_StopAppleCredentialInspection = value;
+    }
 
+    bool m_StopTokenInspection;
+    public bool stopTokenInspection
+    {
+        get => m_StopTokenInspection;
+        set => m_StopTokenInspection = value;
+    }
+
+    [SerializeField] float m_CheckTokenValueTime = 30f;
+    [SerializeField] float m_CheckAppleAuthCredentialTime = 180f;
+ 
     public void Log(string message)
     {
         if (XSettings.networkManagerLog)
         {
             Debug.Log(message);
         }
-
     }
 
-    public void ReqUpdateAppleToken(string token, string id, UnityAction<string> success, UnityAction<string> fail)
+    public void ReqUpdateUserName(string id, string name, UnityAction<string> success, UnityAction<string> fail)
     {
-        string url = Core.settings.url + "/appleUpdateToken";
+        string url = Core.settings.url + "/updateUserName";
 
         WWWForm form = new WWWForm();
-        form.AddField("token", token);
-        form.AddField("id", id);
+        form.AddField("appleId", id);
+        form.AddField("userName", name);
 
         UnityWebRequest request = UnityWebRequest.Post(url, form);
         StartCoroutine(RequestData(request, success, fail));
     }
 
-    public void ReqLoginAppleAuth(string appleUser, UnityAction<string> success, UnityAction<string> fail)
+    public void ReqUpdateAppleToken(UnityAction<string> success, UnityAction<string> fail)
+    {
+        string url = Core.settings.url + "/appleUpdateToken";
+
+        WWWForm form = new WWWForm();
+        form.AddField("token", appleAuth.idToken);
+        form.AddField("id", appleAuth.appleUser);
+        
+        UnityWebRequest request = UnityWebRequest.Post(url, form);
+        StartCoroutine(RequestData(request, success, fail));
+    }
+
+    public void ReqLoginAppleAuth(string appleId, string authCode, string email, string nickName, UnityAction<string> success, UnityAction<string> fail)
     {
         string url = Core.settings.url + "/appleLogin";
 
         WWWForm form = new WWWForm();
-        form.AddField("id", appleUser);
+        form.AddField("appleId", appleId);
+        form.AddField("authCode", authCode);
+        if (!string.IsNullOrEmpty(email))
+        {
+            form.AddField("email", email);
+        }
 
+        if(!string.IsNullOrEmpty(nickName))
+        {
+            form.AddField("name", nickName);
+        }
         UnityWebRequest request = UnityWebRequest.Post(url, form);
         StartCoroutine(RequestData(request, success, fail));
     }
@@ -89,6 +119,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(RequestData(request, success, fail));
     }
 
+    public void ReqUpdatePassword(string email, string password, UnityAction<string> success, UnityAction<string> fail)
+    {
+        string url = Core.settings.url + "/updatePw";
+
+        string pw = GetSHA256Hash(password);
+        if (string.IsNullOrEmpty(pw))
+        {
+            pw = password;
+        }
+
+        WWWForm form = new WWWForm();
+        form.AddField("pw", pw);
+        form.AddField("email", email);
+
+        UnityWebRequest request = UnityWebRequest.Post(url, form);
+        StartCoroutine(RequestData(request, success, fail));
+    }
+
     public void ReqCheckUserId(string id, UnityAction<string> success, UnityAction<string> fail)
     {
         string url = Core.settings.url + "/checkId/" + id;
@@ -97,29 +145,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(RequestData(request, success, fail));
     }
 
-    public void ReqAppleSignup(string email, string name, UnityAction<string> success, UnityAction<string> fail)
-    {
-        //if (appleAuth == null) { return; }
-        string url = Core.settings.url + "/appleSignup";
-
-        WWWForm form = new WWWForm();
-        form.AddField("email", email);
-        form.AddField("name", name);
-        form.AddField("appleUser", appleAuth.appleUser);
-        form.AddField("authCode", appleAuth.authCode);
-        form.AddField("idToken", appleAuth.idToken);
-
-        UnityWebRequest request = UnityWebRequest.Post(url, form);
-        StartCoroutine(RequestData(request, success, fail));
-    }
-
     public void ReqSignup(string id, string password, string email, string name, UnityAction<string> success, UnityAction<string> fail)
     {
         string url = Core.settings.url + "/signup";
+        string pw = GetSHA256Hash(password);
+        if(string.IsNullOrEmpty(pw))
+        {
+            pw = password;
+        }
 
         WWWForm form = new WWWForm();
         form.AddField("id", id);
-        form.AddField("pw", password);
+        form.AddField("pw", pw);
         form.AddField("email", email);
         form.AddField("name", name);
 
@@ -130,49 +167,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void ReqLogin(string id, string password, UnityAction<string> success, UnityAction<string> fail)
     {
         string url = Core.settings.url + "/login";
+        string pw = GetSHA256Hash(password);
+        if(string.IsNullOrEmpty(pw))
+        {
+            pw = password;
+        }
 
         WWWForm form = new WWWForm();
         form.AddField("id", id);
-        form.AddField("password", password);
+        form.AddField("password", pw);
 
         UnityWebRequest request = UnityWebRequest.Post(url, form);
         StartCoroutine(RequestData(request, success, fail));
-    }
-
-    IEnumerator RequestData(UnityWebRequest request, UnityAction<string> success, UnityAction<string> fail)
-    {
-        if (request == null)
-        {
-            Debug.LogError("Check Request Method!!");
-            fail?.Invoke(null);
-            yield break;
-        }
-
-        yield return request.SendWebRequest();
-
-        if (request.result != UnityWebRequest.Result.Success)
-        {
-            string error = "Error Code : " + request.responseCode + "/" + request.error;
-            Debug.LogError("Failed to GetData" + error);
-            fail?.Invoke(error);
-            request.Dispose();
-            yield break;
-        }
-
-        if (request.isDone)
-        {
-            string data = request.downloadHandler.text;
-            if (string.IsNullOrEmpty(request.downloadHandler.text))
-            {
-                string error = "There is no data";
-                fail?.Invoke(error);
-                request.Dispose();
-                yield break;
-            }
-
-            success?.Invoke(data);
-            request.Dispose();
-        }
     }
 
     public void ConnectPhotonNetwork(UnityAction done)
@@ -192,9 +198,20 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(WaitingConnectedToMasterServer(done));
     }
 
-    public void CheckTokenValue()
+    public void OnDisconnectedAppleCredential()
     {
-        StartCoroutine(CheckingTokenValue());
+        StartCoroutine(WaitScenarioReady(OnDisconnectedAppleAuth));
+    }
+
+    public void VerifyValidateAuth()
+    {
+        if (m_AppleAuthManager != null)
+        {
+            StartCoroutine(VerifyValidateAppleCredential());
+            return;
+        }
+
+        StartCoroutine(VerfiyValidateAccessToken());
     }
 
     public override void OnDisconnected(DisconnectCause cause)
@@ -272,12 +289,33 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    void OnApplicationQuit()
+    string GetSHA256Hash(string value)
     {
-        if (PhotonNetwork.IsConnected)
+        SHA256 sha = new SHA256Managed();
+        byte[] hash = sha.ComputeHash(Encoding.ASCII.GetBytes(value));
+        StringBuilder stringBuilder = new StringBuilder();
+        foreach (byte b in hash)
         {
-            PhotonNetwork.Disconnect();
+            stringBuilder.AppendFormat("{0:x2}", b);
         }
+
+        return stringBuilder.ToString();
+    }
+
+    void OnDisconnectedAppleAuth()
+    {
+        NoticePopup.content = Core.language.GetNotifyMessage("network.disconnect");
+        Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+        PhotonNetwork.Disconnect();
+
+        IScenario current = Core.scenario.currentScenario;
+        if (current?.scenarioName == nameof(ScenarioPlay))
+        {
+            Core.gameManager.InitForGamePlay();
+        }
+
+        m_AppleAuthManager = null;
+        Core.scenario.OnLoadScenario(nameof(ScenarioLogin));
     }
 
     IEnumerator ConnectingNetwork(UnityAction done)
@@ -328,34 +366,154 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         done?.Invoke();
     }
 
-    IEnumerator CheckingTokenValue()
+    IEnumerator VerifyValidateAppleCredential()
     {
-        WaitForSeconds waitForSeconds = new WaitForSeconds(m_CheckTokenValueTime);
-        
-        string token = appleAuth.idToken;
-        string url = Core.settings.url + "/CheckToken" + token;
-
-        UnityWebRequest request = UnityWebRequest.Get(url);
-        while(true)
+        WaitForSeconds waitForSeconds = new WaitForSeconds(m_CheckAppleAuthCredentialTime);
+        string userId = m_AppleAuth.appleUser;
+        stopAppleCredentialInspection = false;
+        while (!stopAppleCredentialInspection)
         {
+            if (m_AppleAuthManager == null) { yield break; }
+
+            m_AppleAuthManager?.GetCredentialState(userId,
+                state =>
+                        {
+                            switch (state)
+                            {
+                                case CredentialState.Authorized:
+                                    // User ID is still valid. Login the user.
+                                    break;
+                                case CredentialState.Revoked:
+                                case CredentialState.NotFound:
+                                    // User ID was not found. Go to login screen.
+                                    if(!ScenarioDirector.scenarioReady)
+                                    {
+                                        StartCoroutine(WaitScenarioReady(OnDisconnectedAppleAuth));
+                                        break;
+                                    }
+                                    
+                                    OnDisconnectedAppleAuth();
+                                    break;
+                            }
+                        },
+                error =>
+                        {
+                            // Something went wrong
+                            if (!ScenarioDirector.scenarioReady)
+                            {
+                                StartCoroutine(WaitScenarioReady(OnDisconnectedAppleAuth));
+                                return;
+                            }
+
+                            OnDisconnectedAppleAuth();
+                        });
+
+            yield return waitForSeconds;
+        }
+    }
+
+    IEnumerator WaitScenarioReady(UnityAction done)
+    {
+        while (!ScenarioDirector.scenarioReady) { yield return null; }
+        done?.Invoke();
+    }
+
+    IEnumerator VerfiyValidateAccessToken()
+    {
+        string token = member.mbr_token;
+        if (string.IsNullOrEmpty(token)) { yield break; }
+
+        WaitForSeconds waitForSeconds = new WaitForSeconds(m_CheckTokenValueTime);
+        string url = Core.settings.url + "/checkToken/" + token;
+        int errorCount = 0;
+        stopTokenInspection = false;
+
+        while(!stopTokenInspection)
+        {
+            UnityWebRequest request = UnityWebRequest.Get(url);
             yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.ConnectionError)
+            {
+                if (errorCount > 3)
+                {
+                    NoticePopup.content = Core.language.GetNotifyMessage("network.duplicatelogin");
+                    Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
+                    Application.Quit();
+                    yield break;
+                }
+
+                errorCount++;
+                request.Dispose();
+                yield return null;
+            }
 
             if (request.isDone)
             {
                 string value = request.downloadHandler.text;
-                if(token != value)
+                if(string.IsNullOrEmpty(value) || value != token)
                 {
-                    NoticePopup.content = Core.language.GetNotifyMessage("network.duplicatelogin");
-                    Core.plugs.Get<Popups>()?.OpenPopupAsync<NoticePopup>();
-                    request.Dispose();
-                    yield return new WaitForSeconds(1f);
+                    ConfirmPopup.content = Core.language.GetNotifyMessage("network.duplicatelogin");
+                    Core.plugs.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>();
+                    yield return new WaitForSeconds(5f);
                     Application.Quit();
                 }
-            }
 
+                request.Dispose();
+                //Requset
+            }
+            
             yield return waitForSeconds;
         }
+    }
 
+    IEnumerator RequestData(UnityWebRequest request, UnityAction<string> success, UnityAction<string> fail)
+    {
+        if (request == null)
+        {
+            Debug.LogError("Check Request Method!!");
+            fail?.Invoke(null);
+            yield break;
+        }
+
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            string error = "Error Code : " + request.responseCode + "/" + request.error;
+            Debug.LogError("Failed to GetData" + error);
+            fail?.Invoke(error);
+            request.Dispose();
+            yield break;
+        }
+
+        if (request.isDone)
+        {
+            string data = request.downloadHandler.text;
+            if (string.IsNullOrEmpty(request.downloadHandler.text))
+            {
+                string error = "There is no data";
+                fail?.Invoke(error);
+                request.Dispose();
+                yield break;
+            }
+
+            success?.Invoke(data);
+            request.Dispose();
+        }
+    }
+
+    void OnApplicationQuit()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.Disconnect();
+        }
+
+        if (m_AppleAuthManager != null)
+        {
+            m_AppleAuthManager.SetCredentialsRevokedCallback(null);
+        }
     }
 
     private void Update()

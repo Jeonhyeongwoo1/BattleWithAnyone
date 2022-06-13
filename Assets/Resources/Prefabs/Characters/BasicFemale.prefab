@@ -1192,13 +1192,11 @@ MonoBehaviour:
     rotationSpeed: 0
     lookUpDegree: 0
     lookDownDegree: 0
-    rotation: {x: 0, y: 0, z: 0}
   m_TPCamera:
     camera: {fileID: 2528460063834839060}
     rotationSpeed: 5
     lookUpDegree: -10
     lookDownDegree: 20
-    rotation: {x: 20, y: 0, z: 0}
   m_AniParam: {}
   m_Animator: {fileID: 3731713114564367784}
   m_ShootPoint: {fileID: 4934815051253511300}
@@ -1283,7 +1281,7 @@ MonoBehaviour:
     m_ActionName: Player/MousePosition[/Mouse/rightButton]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 2fe94540-2e28-4c28-a156-be8543ad5da2
+    m_ActionId: d0d1aeaf-3217-40ac-8b27-60483a35d4aa
     m_ActionName: Player/Touch
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
@@ -1343,7 +1341,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &6582625404518664172
 MonoBehaviour:
   m_ObjectHideFlags: 0

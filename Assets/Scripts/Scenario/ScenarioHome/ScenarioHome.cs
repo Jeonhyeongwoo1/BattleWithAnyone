@@ -10,6 +10,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     public UserInfo userInfo;
     public RoomMenu roomMenu;
 
+    [SerializeField] UserNameInput m_UserName;
     [SerializeField] Button m_Language;
     [SerializeField] Button m_Exit;
     [SerializeField] Button m_Settings;
@@ -41,7 +42,14 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
 			return;
 		}
 
+        string userName = Core.networkManager?.member?.mbr_nm;
+        if (Core.networkManager.appleAuth != null && string.IsNullOrEmpty(userName))
+        {
+            m_UserName.gameObject.SetActive(true);
+        }
+
 		Core.networkManager.ConnectPhotonNetwork(() => Core.networkManager.WaitStateToConnectedToMasterServer(JoinLobby));
+        Core.networkManager.VerifyValidateAuth();
 		done?.Invoke();
 	}
 
@@ -59,7 +67,7 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
         {
             roomMenu.gameObject.SetActive(true);
             roomMenu.OnEnableRoomMenu();
-            userInfo.SetUserInfo(Core.networkManager.member.mbr_nm);
+            userInfo.SetUserInfo(Core.networkManager?.member?.mbr_nm);
             userInfo.gameObject.SetActive(true);
             m_Exit.gameObject.SetActive(true);
             m_Settings.gameObject.SetActive(true);
@@ -73,10 +81,9 @@ public class ScenarioHome : MonoBehaviourPunCallbacks, IScenario
     {
         if(XSettings.Profile.local == Core.settings.profile)
         {
-            Core.networkManager.member = MemberFactory.Get();
+            //Core.networkManager.member = MemberFactory.Get();
         }
        
-        PhotonNetwork.NickName = Core.networkManager.member.mbr_nm;
         PhotonNetwork.JoinLobby();
     }
 

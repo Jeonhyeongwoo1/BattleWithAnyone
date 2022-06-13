@@ -28,6 +28,7 @@ public class AppleAuthLogin : MonoBehaviour
             NoticePopup.content = Core.language.GetNotifyMessage("login.apple.failed");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
             Debug.LogError("Received revoke callback " + result);
+            Core.networkManager.OnDisconnectedAppleCredential();
         });
 
         var loginArgs = new AppleAuthLoginArgs(LoginOptions.IncludeEmail | LoginOptions.IncludeFullName);
@@ -37,12 +38,14 @@ public class AppleAuthLogin : MonoBehaviour
             credential =>
             {
                 var appleIdCredential = credential as IAppleIDCredential;
-                NetworkManager.AppleAuth appleAuth = new NetworkManager.AppleAuth();
+                AppleLoginAuth appleAuth = new AppleLoginAuth();
                 appleAuth.appleUser = appleIdCredential.User;
+                appleAuth.email = appleIdCredential.Email;
+                appleAuth.nickName = appleIdCredential.FullName?.Nickname;
                 appleAuth.authCode = Encoding.UTF8.GetString(appleIdCredential.AuthorizationCode);
                 appleAuth.idToken = Encoding.UTF8.GetString(appleIdCredential.IdentityToken);
                 Core.networkManager.appleAuth = appleAuth;
-                Core.networkManager.ReqLoginAppleAuth(appleAuth.appleUser, LoginSuccessed, LoginFailed);
+                Core.networkManager.ReqLoginAppleAuth(appleAuth.appleUser, appleAuth.authCode, appleAuth.email, appleAuth.nickName, LoginSuccessed, LoginFailed);
             },
             error =>
             {
@@ -54,29 +57,52 @@ public class AppleAuthLogin : MonoBehaviour
             });
     }
 
-    public void LoginSuccessed(string data)
+    void LoginSuccessed(string data)
     {
         if (string.IsNullOrEmpty(data))
         {
-            NoticePopup.content = Core.language.GetNotifyMessage("find.failedmember");
-            Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
-            return;
-        }
-
-        try
-        {
-            Member member = JsonUtility.FromJson<Member>(data);
-            Core.networkManager.member = member;
-        }
-        catch (Exception e)
-        {
             NoticePopup.content = Core.language.GetNotifyMessage("login.apple.failed");
             Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
-            Debug.LogError("Apple Login Error: " + e);
             return;
         }
 
-        Core.networkManager.ReqUpdateAppleToken(Core.networkManager.appleAuth.idToken, Core.networkManager.appleAuth.appleUser, UpdateTokenSuccessed, UpdateTokenFailed);
+        if (data != "success")
+        {
+            Member member = new Member();
+            member.mbr_nm = data;
+            Core.networkManager.member = member;
+        }
+
+        Core.audioManager.StopBackground();
+        Core.scenario.OnLoadScenario(nameof(ScenarioHome));
+       // Core.networkManager.ReqUpdateAppleToken(UpdateTokenSuccessed, UpdateTokenFailed);
+    }
+
+    void LoginFailed(string error)
+    {
+        Debug.LogError(error);
+        NoticePopup.content = Core.language.GetNotifyMessage("login.apple.failed");
+        Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
+    }
+
+/*
+    void SignupSuccessed(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            SignupFailed(null);
+            return;
+        }
+
+        ConfirmPopup.content = Core.language.GetNotifyMessage("signup.signupsucceesd");
+        Core.plugs.Get<Popups>().OpenPopupAsync<ConfirmPopup>();
+        Core.networkManager.ReqLoginAppleAuth(Core.networkManager.appleAuth.appleUser, LoginSuccessed, LoginFailed);
+    }
+
+    void SignupFailed(string data)
+    {
+        NoticePopup.content = Core.language.GetNotifyMessage("signup.signupfailed");
+        Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
     }
 
     void UpdateTokenFailed(string error)
@@ -100,14 +126,6 @@ public class AppleAuthLogin : MonoBehaviour
         Core.audioManager.StopBackground();
         Core.scenario.OnLoadScenario(nameof(ScenarioHome));
     }
-
-    public void LoginFailed(string error)
-    {
-        //Create new memeber
-        NoticePopup.content = Core.language.GetNotifyMessage("login.inputemailandname");
-        Core.plugs.Get<Popups>().OpenPopupAsync<NoticePopup>();
-        m_Signup.Open();
-    }
-
+*/
 }
 #endif

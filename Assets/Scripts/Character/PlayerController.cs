@@ -357,7 +357,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         if (m_IsGround && m_State == State.RUN)
         {
-            m_FootStepCycle += m_RBody.velocity.magnitude * m_DeltaTime;
+            m_FootStepCycle += m_RBody.velocity.magnitude * m_DeltaTime; // Speed
             if (m_FootStepCycle > m_FootStepInterval)
             {
                 if (m_RaycastHit.collider == null) { return; }

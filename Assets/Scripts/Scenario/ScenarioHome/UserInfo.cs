@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class UserInfo : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class UserInfo : MonoBehaviour
 
     public void SetUserInfo(string userName)
     {
+        PhotonNetwork.NickName = userName;
         m_UserName.text = userName;
     }
 
