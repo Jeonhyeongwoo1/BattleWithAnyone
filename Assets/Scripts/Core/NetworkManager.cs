@@ -68,7 +68,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         form.AddField("userName", name);
 
         UnityWebRequest request = UnityWebRequest.Post(url, form);
-        StartCoroutine(RequestData(request, success, fail));
+        Core.dispatcher.Request(() => StartCoroutine(RequestData(request, success, fail)));
+        //StartCoroutine(RequestData(request, success, fail));
     }
 
     public void ReqUpdateAppleToken(UnityAction<string> success, UnityAction<string> fail)
@@ -80,7 +81,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         form.AddField("id", appleAuth.appleUser);
         
         UnityWebRequest request = UnityWebRequest.Post(url, form);
-        StartCoroutine(RequestData(request, success, fail));
+        Core.dispatcher.Request(() => StartCoroutine(RequestData(request, success, fail)));
+        //StartCoroutine(RequestData(request, success, fail));
     }
 
     public void ReqLoginAppleAuth(string appleId, string authCode, string email, string nickName, UnityAction<string> success, UnityAction<string> fail)
@@ -99,8 +101,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             form.AddField("name", nickName);
         }
+
         UnityWebRequest request = UnityWebRequest.Post(url, form);
-        StartCoroutine(RequestData(request, success, fail));
+        Core.dispatcher.Request(() => StartCoroutine(RequestData(request, success, fail)));
+        //StartCoroutine(RequestData(request, success, fail));
     }
 
     public void ReqFindId(string email, UnityAction<string> success, UnityAction<string> fail)
@@ -108,7 +112,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         string url = Core.settings.url + "/findId/" + email;
 
         UnityWebRequest request = UnityWebRequest.Get(url);
-        StartCoroutine(RequestData(request, success, fail));
+        Core.dispatcher.Request(() => StartCoroutine(RequestData(request, success, fail)));
+        //StartCoroutine(RequestData(request, success, fail));
     }
 
     public void ReqFindPassword(string id, string email, UnityAction<string> success, UnityAction<string> fail)
@@ -116,7 +121,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         string url = Core.settings.url + "/findPw/" + id + "/" + email;
 
         UnityWebRequest request = UnityWebRequest.Get(url);
-        StartCoroutine(RequestData(request, success, fail));
+        Core.dispatcher.Request(() => StartCoroutine(RequestData(request, success, fail)));
+        //StartCoroutine(RequestData(request, success, fail));
     }
 
     public void ReqUpdatePassword(string email, string password, UnityAction<string> success, UnityAction<string> fail)
@@ -134,7 +140,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         form.AddField("email", email);
 
         UnityWebRequest request = UnityWebRequest.Post(url, form);
-        StartCoroutine(RequestData(request, success, fail));
+        Core.dispatcher.Request(() => StartCoroutine(RequestData(request, success, fail)));
+        //StartCoroutine(RequestData(request, success, fail));
     }
 
     public void ReqCheckUserId(string id, UnityAction<string> success, UnityAction<string> fail)
@@ -142,7 +149,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         string url = Core.settings.url + "/checkId/" + id;
 
         UnityWebRequest request = UnityWebRequest.Get(url);
-        StartCoroutine(RequestData(request, success, fail));
+        Core.dispatcher.Request(() => StartCoroutine(RequestData(request, success, fail)));
+        //StartCoroutine(RequestData(request, success, fail));
     }
 
     public void ReqSignup(string id, string password, string email, string name, UnityAction<string> success, UnityAction<string> fail)
@@ -161,7 +169,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         form.AddField("name", name);
 
         UnityWebRequest request = UnityWebRequest.Post(url, form);
-        StartCoroutine(RequestData(request, success, fail));
+        Core.dispatcher.Request(() => StartCoroutine(RequestData(request, success, fail)));
+        //StartCoroutine(RequestData(request, success, fail));
     }
 
     public void ReqLogin(string id, string password, UnityAction<string> success, UnityAction<string> fail)
@@ -178,7 +187,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         form.AddField("password", pw);
 
         UnityWebRequest request = UnityWebRequest.Post(url, form);
-        StartCoroutine(RequestData(request, success, fail));
+        Core.dispatcher.Request(() => StartCoroutine(RequestData(request, success, fail)));
+        //StartCoroutine(RequestData(request, success, fail));
     }
 
     public void ConnectPhotonNetwork(UnityAction done)
@@ -212,6 +222,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
 
         StartCoroutine(VerfiyValidateAccessToken());
+    }
+
+    public async void RequestDataAsync(UnityWebRequest request, UnityAction<string> success, UnityAction<string> fail)
+    {
+        await Core.dispatcher.RequestAsync(() => StartCoroutine(RequestData(request, success, fail)));
     }
 
     public override void OnDisconnected(DisconnectCause cause)
@@ -433,7 +448,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             UnityWebRequest request = UnityWebRequest.Get(url);
             yield return request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.ConnectionError)
+            if (request.result != UnityWebRequest.Result.Success)
             {
                 if (errorCount > 3)
                 {
@@ -444,25 +459,29 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 }
 
                 errorCount++;
-                request.Dispose();
-                yield return null;
             }
 
             if (request.isDone)
             {
                 string value = request.downloadHandler.text;
+                print(value);
                 if(string.IsNullOrEmpty(value) || value != token)
                 {
-                    ConfirmPopup.content = Core.language.GetNotifyMessage("network.duplicatelogin");
-                    Core.plugs.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>();
-                    yield return new WaitForSeconds(5f);
-                    Application.Quit();
+                    if (errorCount > 3)
+                    {
+                        ConfirmPopup.content = Core.language.GetNotifyMessage("network.duplicatelogin");
+                        Core.plugs.Get<Popups>()?.OpenPopupAsync<ConfirmPopup>();
+                        yield return new WaitForSeconds(5f);
+                        Application.Quit();
+                    }
+                    
+                    errorCount++;
                 }
 
-                request.Dispose();
-                //Requset
+                //success
             }
-            
+
+            request.Dispose();
             yield return waitForSeconds;
         }
     }
@@ -508,11 +527,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.Disconnect();
-        }
-
-        if (m_AppleAuthManager != null)
-        {
-            m_AppleAuthManager.SetCredentialsRevokedCallback(null);
         }
     }
 
