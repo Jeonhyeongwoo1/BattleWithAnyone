@@ -412,7 +412,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.time
   m_Text: {fileID: 83331680}
-  m_TextMeshPro: {fileID: 0}
 --- !u!1 &116824471
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,7 +507,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.cancel
   m_Text: {fileID: 116824473}
-  m_TextMeshPro: {fileID: 0}
 --- !u!1 &128426831
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,7 +954,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.title
   m_Text: {fileID: 423761778}
-  m_TextMeshPro: {fileID: 0}
 --- !u!1 &579579095
 GameObject:
   m_ObjectHideFlags: 0
@@ -1941,7 +1938,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.confirm
   m_Text: {fileID: 810443072}
-  m_TextMeshPro: {fileID: 0}
 --- !u!1 &867758740
 GameObject:
   m_ObjectHideFlags: 0
@@ -3339,7 +3335,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.numberofround
   m_Text: {fileID: 1535136357}
-  m_TextMeshPro: {fileID: 0}
 --- !u!1 &1535836590
 GameObject:
   m_ObjectHideFlags: 0
@@ -6368,7 +6363,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.info
   m_Text: {fileID: 329591681142260880}
-  m_TextMeshPro: {fileID: 0}
 --- !u!114 &7583596134336015153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6417,7 +6411,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.info
   m_Text: {fileID: 7583596134336015153}
-  m_TextMeshPro: {fileID: 0}
 --- !u!1 &7713060409900128160
 GameObject:
   m_ObjectHideFlags: 0
@@ -6451,7 +6444,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.info
   m_Text: {fileID: 575888686398699397}
-  m_TextMeshPro: {fileID: 0}
 --- !u!1 &8076130783628312024
 GameObject:
   m_ObjectHideFlags: 0
@@ -6789,7 +6781,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.info
   m_Text: {fileID: 8769878587314369547}
-  m_TextMeshPro: {fileID: 0}
 --- !u!114 &8992043285854888040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6838,7 +6829,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.info
   m_Text: {fileID: 8992043285854888040}
-  m_TextMeshPro: {fileID: 0}
 --- !u!1 &9213965107990965555
 GameObject:
   m_ObjectHideFlags: 0
@@ -6872,4 +6862,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Id: mapsettings.room.info
   m_Text: {fileID: 1380679106091879702}
-  m_TextMeshPro: {fileID: 0}
