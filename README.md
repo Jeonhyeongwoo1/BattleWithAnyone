@@ -7,7 +7,7 @@
  * IOS/IPad앱 전용 모바일 게임입니다.(안드로이드는 테스트 중)
  * 1:1대전 FPS게임이고 다른 플레이어가 있을 경우에만 게임이 가능합니다.
  * 접속가능한 인원은 최대 20명입니다.
-
+ * Youtube 영상 - https://www.youtube.com/watch?v=y_EhhN19hTY&ab_channel=%EC%A0%84%ED%98%95%EC%9A%B0
 ## Platform & Langauage
 
  * Unity, c#
